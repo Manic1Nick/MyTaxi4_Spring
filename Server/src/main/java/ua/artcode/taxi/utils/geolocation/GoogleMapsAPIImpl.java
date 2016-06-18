@@ -5,11 +5,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import ua.artcode.taxi.exception.InputDataWrongException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class GoogleMapsAPIImpl implements GoogleMapsAPI {
@@ -27,8 +29,9 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
             "AIzaSyAw1tCKgkKOkkCaun42Em3kCf0R9Oo7tZY";
 
     @Override
-    public Location findLocation(String unformatted) {
-        final String preparedQuery = String.format(GET_ADDRESS_UNFORMATTED_QUERY_TEMPLATE, prepareQueryReplaceSpaces(unformatted), GOOGLE_API_KEY);
+    public Location findLocation(String unformatted) throws InputDataWrongException {
+        final String preparedQuery = String.format(GET_ADDRESS_UNFORMATTED_QUERY_TEMPLATE,
+                prepareQueryReplaceSpaces(unformatted), GOOGLE_API_KEY);
 
         try {
             String jsonResponse = sendGetRequest(preparedQuery);
@@ -45,8 +48,10 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
     }
 
     @Override//todo finish all task
-    public Location findLocation(String country, String city, String street, String houseNum) {
-        final String preparedQuery = String.format(GET_ADDRESS_FORMATTED_QUERY_TEMPLATE, prepareQueryReplaceSpaces((houseNum + " " + street)), city, country, GOOGLE_API_KEY);
+    public Location findLocation(String country, String city, String street, String houseNum)
+                                                                            throws InputDataWrongException {
+        final String preparedQuery = String.format(GET_ADDRESS_FORMATTED_QUERY_TEMPLATE,
+                prepareQueryReplaceSpaces((houseNum + " " + street)), city, country, GOOGLE_API_KEY);
 
         try {
             String jsonResponse = sendGetRequest(preparedQuery);
@@ -79,18 +84,23 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
                 Double.parseDouble(lat), Double.parseDouble(lng), placeId);
     }
 
-    private String sendGetRequest(String preparedQuery) throws IOException {
+    private String sendGetRequest(String preparedQuery) throws IOException, InputDataWrongException {
         URL obj = new URL(preparedQuery);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        // optional default is GET
-        con.setRequestMethod("GET");
+        String res = "";
+        try {
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            // optional default is GET
+            con.setRequestMethod("GET");
 
-        int responseCode = con.getResponseCode();
-        System.out.println("Response Code : " + responseCode);
+            int responseCode = con.getResponseCode();
+            System.out.println("Response Code : " + responseCode);
+            res = getStringContent(con.getInputStream());
 
-        return getStringContent(con.getInputStream());
+        } catch (UnknownHostException e) {
+            throw new InputDataWrongException("Wrong calculation in Google API");
+        }
 
-
+        return res;
     }
 
     private String getStringContent(InputStream is) throws IOException {
@@ -104,7 +114,7 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
     }
 
     @Override
-    public double getDistance(Location pointA, Location pointB) {
+    public double getDistance(Location pointA, Location pointB) throws InputDataWrongException {
         final String formattedQuery = String.format(GET_DISTANCE_QUERY_TEMPLATE,
                 pointA.getPlaceId(), pointB.getPlaceId(), GOOGLE_API_KEY);
 

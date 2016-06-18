@@ -35,7 +35,12 @@ public class UserDaoInnerDbImpl implements UserDao {
 
             if (user.getId() == newUser.getId()) {
 
-                user = newUser;
+                user.setPhone(newUser.getPhone());
+                user.setName(newUser.getName());
+                user.setPass(newUser.getPass());
+                user.setHomeAddress(newUser.getHomeAddress());
+                user.setCar(newUser.getCar());
+
                 result = user;
             }
         }

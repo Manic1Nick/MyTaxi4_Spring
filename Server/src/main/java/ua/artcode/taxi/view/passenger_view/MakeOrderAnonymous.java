@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 public class MakeOrderAnonymous extends JFrame {
@@ -171,8 +172,8 @@ public class MakeOrderAnonymous extends JFrame {
                     } catch (OrderMakeException e1) {
                         JOptionPane.showMessageDialog(getParent(),"Order can not make");
                         e1.printStackTrace();
-                    } catch (InputDataWrongException e1) {
-                        JOptionPane.showMessageDialog(getParent(),"Input data wrong");
+                    } catch (InputDataWrongException | UnknownHostException | NullPointerException e1) {
+                        JOptionPane.showMessageDialog(getParent(),"Check input data in format COUNTRY CITY STREET HOMENUM");
                         e1.printStackTrace();
                     }
                 }
@@ -213,7 +214,8 @@ public class MakeOrderAnonymous extends JFrame {
                         distanceText.setText(map.get("distance") + "");
                         priceText.setText(map.get("price") + "");
 
-                    } catch (InputDataWrongException e1) {
+                    } catch (InputDataWrongException | UnknownHostException | NullPointerException e1) {
+                        JOptionPane.showMessageDialog(getParent(),"Check input data in format COUNTRY CITY STREET HOMENUM");
                         e1.printStackTrace();
                     }
                 }

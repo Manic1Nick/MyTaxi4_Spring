@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 public class MakeOrder extends JFrame {
@@ -194,9 +195,9 @@ public class MakeOrder extends JFrame {
                     } catch (UserNotFoundException e1) {
                         JOptionPane.showMessageDialog(getParent(),"User not found");
                         e1.printStackTrace();
-                    } catch (InputDataWrongException inputDataWrong) {
-                        JOptionPane.showMessageDialog(getParent(),"Input data wrong");
-                        inputDataWrong.printStackTrace();
+                    } catch (InputDataWrongException | UnknownHostException | NullPointerException e1) {
+                        JOptionPane.showMessageDialog(getParent(),"Check input data in format COUNTRY CITY STREET HOMENUM");
+                        e1.printStackTrace();
                     }
                 }
             }
@@ -232,10 +233,11 @@ public class MakeOrder extends JFrame {
                     try {
                         Map<String, Object> map = userService.calculateOrder(fromText.getText(), toText.getText());
 
-                        distanceText.setText(map.get("distance") + "");
-                        priceText.setText(map.get("price") + "");
+                        distanceText.setText(map.get("distance").toString());
+                        priceText.setText(map.get("price").toString());
 
-                    } catch (InputDataWrongException e1) {
+                    } catch (InputDataWrongException | UnknownHostException | NullPointerException e1) {
+                        JOptionPane.showMessageDialog(getParent(),"Check input data in format COUNTRY CITY STREET HOMENUM");
                         e1.printStackTrace();
                     }
                 }

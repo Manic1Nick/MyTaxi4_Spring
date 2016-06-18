@@ -120,19 +120,23 @@ public class DriverRegistration extends JFrame {
                             //for change registration
                             userService.updateUser(regDataDriver, ClientAccessToken.accessToken);
 
+                            dispose();
+                            new DriverMenu(userService);
+                            JOptionPane.showMessageDialog(getParent(), "Your registered data was changed");
+
                         } else if (ClientAccessToken.accessToken == null) {
                             //for new registration
                             User newDriver = userService.registerDriver(regDataDriver);
                             ClientAccessToken.accessToken = userService.login(newDriver.getPhone(), newDriver.getPass());
+
+                            dispose();
+                            new DriverMenu(userService);
+                            JOptionPane.showMessageDialog(getParent(), "You have been successfully registered");
                         }
 
-                        dispose();
-                        new DriverMenu(userService);
-                        JOptionPane.showMessageDialog(getParent(), "You have been successfully registered");
-
-                    } catch (RegisterException e1) {
-                        JOptionPane.showMessageDialog(getParent(), "You enter wrong data! Try a different phone number");
                     } catch (LoginException e1) {
+                        JOptionPane.showMessageDialog(getParent(), "User not found or incorrect password");
+                    } catch (RegisterException e1) {
                         JOptionPane.showMessageDialog(getParent(), "You enter wrong data! Try a different phone number");
                     }
                 }
@@ -140,12 +144,17 @@ public class DriverRegistration extends JFrame {
         });
 
         buttonPanel2 = new JPanel(new GridLayout(1,1));
-        returnButton = new JButton("RETURN");
+        returnButton = new JButton("Return to login");
         returnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new UserLogin(userService);
+                if (ClientAccessToken.getAccessToken() != null) {
+                    JOptionPane.showMessageDialog(getParent(),
+                            userService.getUser(ClientAccessToken.getAccessToken()).getName() + " logs out");
+                    ClientAccessToken.setAccessToken(null);
+                }
                 dispose();
+                new UserLogin(userService);
             }
         });
 

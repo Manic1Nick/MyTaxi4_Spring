@@ -38,7 +38,6 @@ public class RemoteUserService implements UserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -66,6 +65,13 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (registerPassenger): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("RegisterException")) {
+            throw new RegisterException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return getUserFromMessage(response.getMessageBody().getMap());
@@ -96,6 +102,13 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (registerDriver): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("RegisterException")) {
+            throw new RegisterException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return getUserFromMessage(response.getMessageBody().getMap());
@@ -125,6 +138,13 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (login): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("LoginException")) {
+            throw new LoginException();
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return response.getMessageBody().getMap().get("accessKey").toString();
@@ -157,6 +177,17 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (makeOrder): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("OrderMakeException")) {
+            throw new OrderMakeException(jsonResponse);
+        } else if (jsonResponse.contains("UserNotFoundException")) {
+            throw new UserNotFoundException(jsonResponse);
+        } else if (jsonResponse.contains("InputDataWrongException")) {
+            throw new InputDataWrongException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return getOrderFromMessage(response.getMessageBody().getMap());
@@ -170,11 +201,11 @@ public class RemoteUserService implements UserService {
         src.setMethodName("makeOrderAnonymous");
 
         MessageBody messageBody = new MessageBody();
-        messageBody.getMap().put("phoneUser", phone);
-        messageBody.getMap().put("nameUser", name);
-        messageBody.getMap().put("addressFromText", from);
-        messageBody.getMap().put("addressToText", to);
-        messageBody.getMap().put("messageText", message);
+        messageBody.getMap().put("phone", phone);
+        messageBody.getMap().put("name", name);
+        messageBody.getMap().put("addressFrom", from);
+        messageBody.getMap().put("addressTo", to);
+        messageBody.getMap().put("message", message);
 
         src.setMessageBody(messageBody);
         String jsonMessage = gson.toJson(src);
@@ -190,6 +221,15 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (makeOrderAnonymous): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("OrderMakeException")) {
+            throw new OrderMakeException(jsonResponse);
+        } else if (jsonResponse.contains("InputDataWrongException")) {
+            throw new InputDataWrongException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return getOrderFromMessage(response.getMessageBody().getMap());
@@ -219,6 +259,13 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (calculateOrder): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("InputDataWrongException")) {
+            throw new InputDataWrongException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return response.getMessageBody().getMap();
@@ -247,6 +294,13 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (getOrderInfo): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("OrderNotFoundException")) {
+            throw new OrderNotFoundException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return getOrderFromMessage(response.getMessageBody().getMap());
@@ -275,6 +329,17 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (getLastOrderInfo): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("OrderNotFoundException")) {
+            throw new OrderNotFoundException(jsonResponse);
+        } else if (jsonResponse.contains("UserNotFoundException")) {
+            throw new UserNotFoundException(jsonResponse);
+        } else if (jsonResponse.contains("NullPointerException")) {
+            throw new UserNotFoundException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return getOrderFromMessage(response.getMessageBody().getMap());
@@ -303,13 +368,21 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (cancelOrder): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("OrderNotFoundException")) {
+            throw new OrderNotFoundException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return getOrderFromMessage(response.getMessageBody().getMap());
     }
 
     @Override
-    public Order closeOrder(String accessToken, long orderId) throws OrderNotFoundException, WrongStatusOrderException, DriverOrderActionException {
+    public Order closeOrder(String accessToken, long orderId) throws
+            OrderNotFoundException, WrongStatusOrderException, DriverOrderActionException {
 
         Message src = new Message();
         src.setMethodName("closeOrder");
@@ -332,13 +405,25 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (closeOrder): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("OrderNotFoundException")) {
+            throw new OrderNotFoundException(jsonResponse);
+        } else if (jsonResponse.contains("WrongStatusOrderException")) {
+            throw new WrongStatusOrderException(jsonResponse);
+        } else if (jsonResponse.contains("DriverOrderActionException")) {
+            throw new DriverOrderActionException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return getOrderFromMessage(response.getMessageBody().getMap());
     }
 
     @Override
-    public Order takeOrder(String accessToken, long orderId) throws OrderNotFoundException, WrongStatusOrderException, DriverOrderActionException {
+    public Order takeOrder(String accessToken, long orderId) throws
+            OrderNotFoundException, WrongStatusOrderException, DriverOrderActionException {
 
         Message src = new Message();
         src.setMethodName("takeOrder");
@@ -361,13 +446,25 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (takeOrder): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("OrderNotFoundException")) {
+            throw new OrderNotFoundException(jsonResponse);
+        } else if (jsonResponse.contains("WrongStatusOrderException")) {
+            throw new WrongStatusOrderException(jsonResponse);
+        } else if (jsonResponse.contains("DriverOrderActionException")) {
+            throw new DriverOrderActionException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return getOrderFromMessage(response.getMessageBody().getMap());
     }
 
     @Override
-    public Map<Integer, Order> getMapDistancesToDriver(String orderStatus, String lineAddressDriver) {
+    public Map<Integer, Order> getMapDistancesToDriver(String orderStatus, String lineAddressDriver)
+                                                                                throws InputDataWrongException {
 
         Message src = new Message();
         src.setMethodName("getMapDistancesToDriver");
@@ -390,6 +487,13 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (getMapDistanceToDriver): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("OrderNotFoundException")) {
+            throw new InputDataWrongException(jsonResponse);
+        }
+
 
         // json -> Object
         Message response = gson.fromJson(jsonResponse, Message.class);
@@ -502,6 +606,13 @@ public class RemoteUserService implements UserService {
         }
 
         System.out.println("SERVER OUT ---> CLIENT TAKE (updateUser): " + jsonResponse);
+
+        if (jsonResponse == null) {
+            // ??
+        } else if (jsonResponse.contains("RegisterException")) {
+            throw new RegisterException(jsonResponse);
+        }
+
         Message response = gson.fromJson(jsonResponse, Message.class);
 
         return getUserFromMessage(response.getMessageBody().getMap());
@@ -546,10 +657,18 @@ public class RemoteUserService implements UserService {
         );
 
         user.setId(Integer.parseInt(map.get("id").toString()));
-        user.setPass(map.get("pass").toString());
 
-        user.setHomeAddress(gson.fromJson(map.get("homeAddress").toString(), Address.class));
-        user.setCar(gson.fromJson(map.get("car").toString(), Car.class));
+        if (map.get("pass") != null) {
+            user.setPass(map.get("pass").toString());
+        }
+
+        if (map.get("homeAddress") != null) {
+            user.setHomeAddress(gson.fromJson(map.get("homeAddress").toString(), Address.class));
+        }
+
+        if (map.get("car") != null) {
+            user.setCar(gson.fromJson(map.get("car").toString(), Car.class));
+        }
 
         //get long list from line string with split ","
         if (map.get("orderIds") != null) {

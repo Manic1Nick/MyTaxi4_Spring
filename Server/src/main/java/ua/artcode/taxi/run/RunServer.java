@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class RunServer {
 
-    public static void main(String[] args) throws IOException, LoginException {
+    public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(43009);
 
         Gson gson = new Gson();
@@ -35,11 +35,8 @@ public class RunServer {
         OrderDao orderDao = new OrderDaoInnerDbImpl(appDB);
         ValidatorImpl validator = new ValidatorImpl(appDB);
 
-        UserService userService = new UserServiceImpl(
-                new UserDaoInnerDbImpl(appDB),
-                new OrderDaoInnerDbImpl(appDB),
-                new ValidatorImpl(appDB));
-
+        UserService userService = new UserServiceImpl(userDao, orderDao, validator);
+/*
         User passenger1 = new User(UserIdentifier.P,
                 "1234", "test", "Vasya", new Address("Ukraine", "Kiev", "Khreschatik", "5"));
         User passenger2 = new User(UserIdentifier.P,
@@ -74,7 +71,7 @@ public class RunServer {
         orderDao.create(passenger2, order4);
         orderDao.create(passenger2, order5);
         orderDao.create(passenger1, order6);
-
+*/
 
         while(true){
             // waiting for new client
@@ -87,7 +84,7 @@ public class RunServer {
             while(true){
 
                 String requestBody = bf.readLine() + "\n";
-                System.out.println("CLIENT OUT ---> SERVER TAKE: " + requestBody);
+                System.out.print("\nCLIENT OUT ---> SERVER TAKE: " + requestBody);
 
                 Message message = gson.fromJson(requestBody, Message.class);
 
@@ -110,7 +107,8 @@ public class RunServer {
                         pw.flush();
 
                     } catch (RegisterException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 
@@ -133,7 +131,8 @@ public class RunServer {
                         pw.flush();
 
                     } catch (RegisterException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 
@@ -143,16 +142,22 @@ public class RunServer {
                     Object phone = map.get("phone");
                     Object pass = map.get("pass");
 
-                    String accessKey = userService.login(phone.toString(), pass.toString());
+                    try {
+                        String accessKey = userService.login(phone.toString(), pass.toString());
 
-                    Message responseMessage = new Message();
-                    MessageBody messageBody = new MessageBody();
+                        Message responseMessage = new Message();
+                        MessageBody messageBody = new MessageBody();
 
-                    messageBody.getMap().put("accessKey", accessKey);
-                    responseMessage.setMessageBody(messageBody);
+                        messageBody.getMap().put("accessKey", accessKey);
+                        responseMessage.setMessageBody(messageBody);
 
-                    pw.println(gson.toJson(responseMessage));
-                    pw.flush();
+                        pw.println(gson.toJson(responseMessage));
+                        pw.flush();
+
+                    } catch (LoginException e) {
+                        pw.println(e);
+                        pw.flush();
+                    }
                 }
 
                 //makeOrder
@@ -177,11 +182,14 @@ public class RunServer {
                         pw.flush();
 
                     } catch (OrderMakeException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     } catch (UserNotFoundException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     } catch (InputDataWrongException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 
@@ -190,9 +198,9 @@ public class RunServer {
                     Map<String, Object> map = message.getMessageBody().getMap();
                     Object phone = map.get("phone");
                     Object name = map.get("name");
-                    Object addressFrom = map.get("addressFromText");
-                    Object addressTo = map.get("addressToText");
-                    Object messageText = map.get("messageText");
+                    Object addressFrom = map.get("addressFrom");
+                    Object addressTo = map.get("addressTo");
+                    Object messageText = map.get("message");
                     try {
                         Order newOrder = userService.makeOrderAnonymous(
                                 phone.toString(),
@@ -209,9 +217,11 @@ public class RunServer {
                         pw.flush();
 
                     } catch (OrderMakeException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     } catch (InputDataWrongException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 
@@ -232,7 +242,8 @@ public class RunServer {
                         pw.flush();
 
                     } catch (InputDataWrongException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 
@@ -252,7 +263,8 @@ public class RunServer {
                         pw.flush();
 
                     } catch (OrderNotFoundException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 
@@ -272,9 +284,11 @@ public class RunServer {
                         pw.flush();
 
                     } catch (OrderNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (UserNotFoundException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
+                    } catch (UserNotFoundException | NullPointerException e) {
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 
@@ -294,7 +308,8 @@ public class RunServer {
                         pw.flush();
 
                     } catch (OrderNotFoundException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 
@@ -316,11 +331,14 @@ public class RunServer {
                         pw.flush();
 
                     } catch (OrderNotFoundException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     } catch (WrongStatusOrderException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     } catch (DriverOrderActionException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 
@@ -342,11 +360,14 @@ public class RunServer {
                         pw.flush();
 
                     } catch (OrderNotFoundException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     } catch (WrongStatusOrderException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     } catch (DriverOrderActionException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 
@@ -356,26 +377,35 @@ public class RunServer {
                     Object orderStatus = map.get("orderStatus");
                     Object addressDriver = map.get("addressDriver");
 
-                    Map<Integer, Order> ordersMap = userService.getMapDistancesToDriver(
-                            orderStatus.toString(),
-                            addressDriver.toString());
+                    Map<Integer, Order> ordersMap = null;
+                    try {
+                        ordersMap = userService.getMapDistancesToDriver(
+                                orderStatus.toString(),
+                                addressDriver.toString());
 
-                    Map<String, Object> mapForMessage = new HashMap<>();
-                    for (Integer key : ordersMap.keySet()) {
-                        Map<String, Object> concreteOrder = ReflectionFormatter.orderToJsonMap(ordersMap.get(key));
-                        Message concreteMessage = new Message();
-                        MessageBody concreteMessageBody = new MessageBody(concreteOrder);
-                        concreteMessage.setMessageBody(concreteMessageBody);
+                        Map<String, Object> mapForMessage = new HashMap<>();
+                        for (Integer key : ordersMap.keySet()) {
+                            Map<String, Object> concreteOrder = ReflectionFormatter.orderToJsonMap(ordersMap.get(key));
+                            Message concreteMessage = new Message();
+                            MessageBody concreteMessageBody = new MessageBody(concreteOrder);
+                            concreteMessage.setMessageBody(concreteMessageBody);
 
-                        mapForMessage.put(key + "", gson.toJson(concreteMessage));
+                            mapForMessage.put(key + "", gson.toJson(concreteMessage));
+                        }
+
+                        Message responseMessage = new Message();
+                        MessageBody messageBody = new MessageBody(mapForMessage);
+                        responseMessage.setMessageBody(messageBody);
+
+                        pw.println(gson.toJson(responseMessage));
+                        pw.flush();
+
+                    } catch (InputDataWrongException e) {
+                        pw.println(e);
+                        pw.flush();
                     }
 
-                    Message responseMessage = new Message();
-                    MessageBody messageBody = new MessageBody(mapForMessage);
-                    responseMessage.setMessageBody(messageBody);
 
-                    pw.println(gson.toJson(responseMessage));
-                    pw.flush();
                 }
 
                 //getUser
@@ -438,7 +468,8 @@ public class RunServer {
                         pw.flush();
 
                     } catch (RegisterException e) {
-                        e.printStackTrace();
+                        pw.println(e);
+                        pw.flush();
                     }
                 }
 

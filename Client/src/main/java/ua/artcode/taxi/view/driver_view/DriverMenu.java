@@ -56,8 +56,8 @@ public class DriverMenu extends JFrame {
         showOrdersButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
                 new CurrentOrders(userService);
+                dispose();
             }
         });
         buttonPanel1.add(showOrdersButton);

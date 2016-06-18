@@ -100,15 +100,19 @@ public class PassengerRegistration extends JFrame {
                             //for change registration
                             userService.updateUser(regDataPassenger, ClientAccessToken.getAccessToken());
 
+                            dispose();
+                            new PassengerMenu(userService);
+                            JOptionPane.showMessageDialog(getParent(), "Your registered data was changed");
+
                         } else if (ClientAccessToken.accessToken == null) {
                             //for new registration
                             User newUser = userService.registerPassenger(regDataPassenger);
                             ClientAccessToken.accessToken = userService.login(newUser.getPhone(), newUser.getPass());
-                        }
 
-                        dispose();
-                        new PassengerMenu(userService);
-                        JOptionPane.showMessageDialog(getParent(), "You have been successfully registered");
+                            dispose();
+                            new PassengerMenu(userService);
+                            JOptionPane.showMessageDialog(getParent(), "You have been successfully registered");
+                        }
 
                     } catch (LoginException e1) {
                         JOptionPane.showMessageDialog(getParent(), "User not found or incorrect password");

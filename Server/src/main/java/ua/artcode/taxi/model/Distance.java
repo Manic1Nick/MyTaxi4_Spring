@@ -1,5 +1,6 @@
 package ua.artcode.taxi.model;
 
+import ua.artcode.taxi.exception.InputDataWrongException;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 import ua.artcode.taxi.utils.geolocation.Location;
@@ -37,7 +38,7 @@ public class Distance implements Comparable {
         this.toLocation = toLocation;
     }
 
-    public int calculateDistance() {
+    public int calculateDistance() throws InputDataWrongException {
         return (int) googleMapsAPI.getDistance(fromLocation, toLocation);
     }
 
@@ -45,7 +46,7 @@ public class Distance implements Comparable {
         this.speedKmH = speedKmH;
     }
 
-    public int getTimeInMin() {
+    public int getTimeInMin() throws InputDataWrongException {
         return (this.calculateDistance() / 1000) / this.speedKmH;
     }
 
@@ -53,13 +54,17 @@ public class Distance implements Comparable {
     public int compareTo(Object o) {
 
         Distance tmp = (Distance)o;
-        if(this.googleMapsAPI.getDistance(fromLocation, toLocation) <
-                tmp.googleMapsAPI.getDistance(fromLocation, toLocation)) {
-            return -1;
+        try {
+            if(this.googleMapsAPI.getDistance(fromLocation, toLocation) <
+                    tmp.googleMapsAPI.getDistance(fromLocation, toLocation)) {
+                return -1;
 
-        } else if (this.googleMapsAPI.getDistance(fromLocation, toLocation) >
-                tmp.googleMapsAPI.getDistance(fromLocation, toLocation)) {
-            return 1;
+            } else if (this.googleMapsAPI.getDistance(fromLocation, toLocation) >
+                    tmp.googleMapsAPI.getDistance(fromLocation, toLocation)) {
+                return 1;
+            }
+        } catch (InputDataWrongException e) {
+            e.printStackTrace();
         }
         return 0;
     }

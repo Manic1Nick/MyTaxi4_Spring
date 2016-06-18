@@ -59,6 +59,7 @@ public class ReflectionFormatter {
 
         if (order.getDriver() != null) {
             Message messageDriver = new Message();
+
             messageDriver.setMessageBody(new MessageBody(userToJsonMap(order.getDriver())));
             map.put("driver", new Gson().toJson(messageDriver));
         }

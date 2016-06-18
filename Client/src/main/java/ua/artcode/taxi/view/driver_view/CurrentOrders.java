@@ -1,5 +1,6 @@
 package ua.artcode.taxi.view.driver_view;
 
+import ua.artcode.taxi.exception.InputDataWrongException;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.service.UserService;
 
@@ -89,7 +90,13 @@ public class CurrentOrders extends JFrame {
         final int viewOrders = 10;
         String[] textOrders = new String[viewOrders];
 
-        Map<Integer, Order> distanceMap = userService.getMapDistancesToDriver("NEW", myLocationText.getText());
+        Map<Integer, Order> testDistanceMap = null;
+        try {
+            testDistanceMap = userService.getMapDistancesToDriver("NEW", myLocationText.getText());
+        } catch (InputDataWrongException e) {
+            e.printStackTrace();
+        }
+        Map<Integer, Order> distanceMap = testDistanceMap;
 
         Object[] objArray = distanceMap.keySet().toArray();
         int[] distances = new int[objArray.length];

@@ -36,7 +36,7 @@ public class OrderDaoInnerDbImpl implements OrderDao {
 
             if (order.getId() == newOrder.getId()) {
 
-                order = newOrder;
+                order.setOrderStatus(newOrder.getOrderStatus());
 
                 result = order;
             }

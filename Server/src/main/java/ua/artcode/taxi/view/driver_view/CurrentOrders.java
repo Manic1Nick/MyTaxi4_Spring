@@ -1,5 +1,6 @@
 package ua.artcode.taxi.view.driver_view;
 
+import ua.artcode.taxi.exception.InputDataWrongException;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.service.UserService;
 
@@ -89,7 +90,13 @@ public class CurrentOrders extends JFrame {
         final int viewOrders = 10;
         String[] textOrders = new String[viewOrders];
 
-        Map<Integer, Order> distanceMap = userService.getMapDistancesToDriver("NEW", myLocationText.getText());
+        Map<Integer, Order> testDistanceMap = null;
+        try {
+            testDistanceMap = userService.getMapDistancesToDriver("NEW", myLocationText.getText());
+        } catch (InputDataWrongException e) {
+            e.printStackTrace();
+        }
+        Map<Integer, Order> distanceMap = testDistanceMap;
 
         Object[] objArray = distanceMap.keySet().toArray();
         int[] distances = new int[objArray.length];
@@ -97,8 +104,9 @@ public class CurrentOrders extends JFrame {
             distances[i] = (int) objArray[i];
         }
         Arrays.sort(distances);
+        int indexEnd = distanceMap.size() < viewOrders ? distanceMap.size() : viewOrders ;
 
-        for (int i = 0; i < viewOrders; i++) {
+        for (int i = 0; i < indexEnd; i++) {
             textOrders[i] = distanceMap.get(distances[i]).toStringForViewShort() +
                     ", distance to you: "  + distances[i]/1000 + "km";
         }

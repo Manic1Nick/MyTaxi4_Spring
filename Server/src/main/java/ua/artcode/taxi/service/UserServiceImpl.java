@@ -10,6 +10,7 @@ import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 import ua.artcode.taxi.utils.geolocation.Location;
 
 import javax.security.auth.login.LoginException;
+import java.net.UnknownHostException;
 import java.util.*;
 
 public class UserServiceImpl implements UserService {
@@ -19,14 +20,17 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     private OrderDao orderDao;
     private ValidatorImpl validator;
-    private double pricePerKilometer = 5;
-    private GoogleMapsAPI googleMapsAPI = new GoogleMapsAPIImpl();
-    private Map<String, User> accessKeys = new HashMap<>();
+    private double pricePerKilometer;
+    private GoogleMapsAPI googleMapsAPI;
+    private Map<String, User> accessKeys;
 
     public UserServiceImpl(UserDao userDao, OrderDao orderDao, ValidatorImpl validator) {
         this.userDao = userDao;
         this.orderDao = orderDao;
         this.validator = validator;
+        pricePerKilometer = Constants.pricePerKilometer;
+        googleMapsAPI = new GoogleMapsAPIImpl();
+        accessKeys = new HashMap<>();
     }
 
     @Override
@@ -34,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
         if (!validator.validateRegistration(map.get("phone"))) {
 
-            LOG.error("RegisterException");
+            LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
 
             throw new RegisterException("can not create exception");
         }
@@ -48,7 +52,7 @@ public class UserServiceImpl implements UserService {
 
         User createdUser = userDao.createUser(newUser);
 
-        LOG.info("new passenger " + createdUser.getName() + " registered");
+        LOG.info("New passenger " + createdUser.getName() + " registered");
 
         return createdUser;
     }
@@ -58,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
         if (!validator.validateRegistration(map.get("phone"))) {
 
-            LOG.error("RegisterException");
+            LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
 
             throw new RegisterException("can not create exception");
         }
@@ -72,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
         User createdUser = userDao.createUser(newUser);
 
-        LOG.info("new driver " + createdUser.getName() + " registered");
+        LOG.info("New driver " + createdUser.getName() + " registered");
 
         return createdUser;
     }
@@ -92,7 +96,7 @@ public class UserServiceImpl implements UserService {
 
         } else {
 
-            LOG.error("LoginException");
+            LOG.error("LoginException: failed attempt to log in with phone " + phone);
 
             throw new LoginException("User not found or incorrect password");
         }
@@ -100,14 +104,14 @@ public class UserServiceImpl implements UserService {
         String accessKey = UUID.randomUUID().toString();
         accessKeys.put(accessKey, found);
 
-        LOG.info("user " + phone + " logged in");
+        LOG.info("User " + phone + " logged in");
 
         return accessKey;
     }
 
     @Override
-    public Order makeOrder(String accessToken, String lineFrom, String lineTo, String message)
-                            throws OrderMakeException, UserNotFoundException, InputDataWrongException {
+    public Order makeOrder(String accessToken, String lineFrom, String lineTo, String message) throws
+            OrderMakeException, UserNotFoundException, InputDataWrongException, UnknownHostException {
 
         Address from = new Address(lineFrom);
         Address to = new Address(lineTo);
@@ -115,28 +119,36 @@ public class UserServiceImpl implements UserService {
 
         if (!validator.validateAddress(from) && !validator.validateAddress(to)) {
 
-            LOG.error("InputDataWrongException");
+            LOG.error("InputDataWrongException: wrong input data address");
 
             throw  new InputDataWrongException("Wrong input data addresses. Can not make order");
         }
 
         if (accessKeys.get(accessToken) != null) {
 
-            Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
-                    from.getStreet(), from.getHouseNum());
-            Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
-                    to.getStreet(), to.getHouseNum());
-            int distance = (int) (googleMapsAPI.getDistance(location, location1) / 1000);
-            int price = (int) pricePerKilometer * distance + 30;
-            message = message.equals("") ? "" : accessKeys.get(accessToken).getName() + ": " + message;
+            try {
+                Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
+                        from.getStreet(), from.getHouseNum());
+                Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
+                        to.getStreet(), to.getHouseNum());
+                int distance = (int) (googleMapsAPI.getDistance(location, location1) / 1000);
+                int price = (int) pricePerKilometer * distance + 30;
+                message = message.equals("") ? "" : accessKeys.get(accessToken).getName() + ": " + message;
 
-            newOrder = new Order(from, to, accessKeys.get(accessToken), distance, price, message);
+                newOrder = new Order(from, to, accessKeys.get(accessToken), distance, price, message);
 
-            orderDao.create(accessKeys.get(accessToken), newOrder);
-            accessKeys.get(accessToken).getOrderIds().add(newOrder.getId());
+                orderDao.create(accessKeys.get(accessToken), newOrder);
+                accessKeys.get(accessToken).getOrderIds().add(newOrder.getId());
 
-            LOG.info("User " + accessKeys.get(accessToken).getName() + " makes new order " + newOrder.getId());
+            } catch (InputDataWrongException | IndexOutOfBoundsException e) {
+
+                LOG.error("InputDataWrongException: errors in calculate locations in Google API");
+
+                throw new InputDataWrongException("Wrong calculation in Google API");
+            }
         }
+
+        LOG.info("User " + accessKeys.get(accessToken).getPhone() + " makes new order " + newOrder.getId());
 
         return newOrder;
     }
@@ -147,25 +159,33 @@ public class UserServiceImpl implements UserService {
 
         Address from = new Address(lineFrom);
         Address to = new Address(lineTo);
+        Order newOrder = null;
 
         if (!validator.validateAddress(from) && !validator.validateAddress(to)) {
 
-            LOG.error("InputDataWrongException");
+            LOG.error("InputDataWrongException: wrong input data address");
 
             throw new InputDataWrongException("Wrong input data. Can not make order");
         }
 
-        Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
-                from.getStreet(), from.getHouseNum());
-        Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
-                to.getStreet(), to.getHouseNum());
-        int distance = (int) (googleMapsAPI.getDistance(location, location1) / 1000);
-        int price = (int) pricePerKilometer * distance + 30;
+        try {
+            Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
+                    from.getStreet(), from.getHouseNum());
+            Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
+                    to.getStreet(), to.getHouseNum());
+            int distance = (int) (googleMapsAPI.getDistance(location, location1) / 1000);
+            int price = (int) pricePerKilometer * distance + 30;
 
+            User anonymousUser = userDao.createUser(new User(UserIdentifier.A, phone, name));
+            newOrder = new Order(from, to, anonymousUser, distance, price, message);
+            orderDao.create(anonymousUser, newOrder);
 
-        User anonymousUser = userDao.createUser(new User(UserIdentifier.A, phone, name));
-        Order newOrder = new Order(from, to, anonymousUser, distance, price, message);
-        orderDao.create(anonymousUser, newOrder);
+        } catch (InputDataWrongException | IndexOutOfBoundsException e) {
+
+            LOG.error("InputDataWrongException: errors in calculate locations in Google API");
+
+            throw new InputDataWrongException("Wrong calculation in Google API");
+        }
 
         LOG.info("User anonymous makes new order " + newOrder.getId());
 
@@ -173,30 +193,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, Object> calculateOrder(String lineFrom, String lineTo) throws InputDataWrongException {
+    public Map<String, Object> calculateOrder(String lineFrom, String lineTo) throws
+            InputDataWrongException, UnknownHostException {
 
         Address from = new Address(lineFrom);
         Address to = new Address(lineTo);
+        Map<String, Object> map = new HashMap<>();
 
         if (!validator.validateAddress(from) && !validator.validateAddress(to)) {
 
-            LOG.error("InputDataWrongException");
+            LOG.error("InputDataWrongException: wrong input data address");
 
             throw new InputDataWrongException("Wrong input data. Can not make order");
         }
 
-        Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
-                        from.getStreet(), from.getHouseNum());
-        Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
-                        to.getStreet(), to.getHouseNum());
-        int distance = ((int) googleMapsAPI.getDistance(location, location1) / 1000);
-        int price = (int) pricePerKilometer * distance + 30;
+        try {
+            Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
+                    from.getStreet(), from.getHouseNum());
+            Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
+                    to.getStreet(), to.getHouseNum());
+            int distance = ((int) googleMapsAPI.getDistance(location, location1) / 1000);
+            int price = (int) pricePerKilometer * distance + 30;
 
-        LOG.info("Someone calculates order");
+            map.put("distance", distance + "");
+            map.put("price", price + "");
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("distance", distance + "");
-        map.put("price", price + "");
+        } catch (InputDataWrongException | IndexOutOfBoundsException e) {
+
+            LOG.error("InputDataWrongException: errors in calculate locations in Google API");
+
+            throw new InputDataWrongException("Wrong calculation in Google API");
+        }
+
+        LOG.info("Someone calculates order from " + lineFrom + " to " + lineTo);
 
         return map;
     }
@@ -208,7 +237,8 @@ public class UserServiceImpl implements UserService {
 
         if (found == null) {
 
-            LOG.error("OrderNotFoundException");
+            LOG.error("OrderNotFoundException: failed attempt to get info about order with ID " +
+                    orderId + " (order not found in data base)");
 
             throw new OrderNotFoundException("Order not found in data base");
         }
@@ -221,30 +251,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public Order getLastOrderInfo(String accessToken) throws UserNotFoundException, OrderNotFoundException {
 
-        if (accessToken != null) {
-            List<Order> allUserOrders = getAllOrdersUser(accessToken);
+        if (accessToken == null) {
 
-            if (allUserOrders == null) {
-
-                LOG.error("OrderNotFoundException");
-
-                throw new OrderNotFoundException("User don't have any orders");
-
-            }
-
-            Order lastOrder = allUserOrders.get(allUserOrders.size() - 1);
-
-            LOG.info("User " + accessKeys.get(accessToken).getName() +
-                        " get information for his last order " + lastOrder.getId());
-
-            return lastOrder;
-
-        } else {
-
-            LOG.error("UserNotFoundException");
+            LOG.error("UserNotFoundException: failed attempt to find user by key " +
+                    accessToken + " in data base");
 
             throw new UserNotFoundException("wrong data user");
         }
+
+        List<Order> allUserOrders = getAllOrdersUser(accessToken);
+
+        if (allUserOrders.size() == 0) {
+
+            LOG.error("OrderNotFoundException: failed attempt to get info about last order of user " +
+                    accessKeys.get(accessToken).getPhone());
+
+            throw new OrderNotFoundException("User don't have any orders");
+        }
+
+        Order lastOrder = allUserOrders.get(allUserOrders.size() - 1);
+
+        LOG.info("User " + accessKeys.get(accessToken).getPhone() +
+                " get information for his last order " + lastOrder.getId());
+
+        return lastOrder;
     }
 
     @Override
@@ -252,15 +282,17 @@ public class UserServiceImpl implements UserService {
 
         Order cancelled = orderDao.find(orderId);
 
-        if (cancelled != null) {
-            cancelled.setOrderStatus(OrderStatus.CANCELLED);
+        if (cancelled == null) {
 
-        } else {
-
-            LOG.error("OrderNotFoundException");
+            LOG.error("OrderNotFoundException: failed attempt to cancel order with ID " +
+                    orderId + " (not found in data base)");
 
             throw new OrderNotFoundException("Order not found in data base");
+
         }
+
+        cancelled.setOrderStatus(OrderStatus.CANCELLED);
+        orderDao.update(cancelled);
 
         LOG.info("Order " + cancelled.getId() + " was cancelled by user");
 
@@ -284,26 +316,31 @@ public class UserServiceImpl implements UserService {
 
         if (closed == null) {
 
-            LOG.error("OrderNotFoundException");
+            LOG.error("OrderNotFoundException: failed attempt to close order with ID " +
+                    orderId + " by user " + user.getPhone());
 
             throw new OrderNotFoundException("Order not found in data base");
 
         } else if (result == null) {
 
-            LOG.error("DriverOrderActionException");
+            LOG.error("DriverOrderActionException: failed attempt to close order with ID " +
+                    orderId + " by user " + user.getPhone());
 
             throw new DriverOrderActionException("Order not found in driver orders list");
 
         } else if (!result.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
 
-            LOG.error("WrongStatusOrderException");
+            LOG.error("WrongStatusOrderException: failed attempt to close order with ID " +
+                    orderId + " by user " + user.getPhone());
 
             throw new WrongStatusOrderException("This order has wrong status (not IN_PROGRESS)");
-        } else {
-            closed.setOrderStatus(OrderStatus.DONE);
+
         }
 
-        LOG.info("User " + accessKeys.get(accessToken).getName() + " was closed his order " + orderId);
+        closed.setOrderStatus(OrderStatus.DONE);
+        orderDao.update(closed);
+
+        LOG.info("User " + user.getPhone() + " closed his order " + orderId);
 
         return closed;
     }
@@ -319,7 +356,8 @@ public class UserServiceImpl implements UserService {
         for (Order order : ordersUser) {
             if (order.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
 
-                LOG.error("DriverOrderActionException");
+                LOG.error("DriverOrderActionException: failed attempt to take order with ID " +
+                        orderId + " by user " + user.getPhone());
 
                 throw new DriverOrderActionException("Driver has orders IN_PROGRESS already");
             }
@@ -327,15 +365,18 @@ public class UserServiceImpl implements UserService {
 
         if (inProgress == null) {
 
-            LOG.error("OrderNotFoundException");
+            LOG.error("OrderNotFoundException: failed attempt to take order with ID" +
+                    orderId + " by user " + user.getPhone());
 
             throw new OrderNotFoundException("Order not found in data base");
 
         } else if (!inProgress.getOrderStatus().equals(OrderStatus.NEW)) {
 
-            LOG.error("WrongStatusOrderException");
+            LOG.error("WrongStatusOrderException: failed attempt to take order with ID " +
+                    orderId + " by user " + user.getPhone());
 
             throw new WrongStatusOrderException("This order has wrong status (not NEW)");
+
         }
 
         inProgress.setDriver(user);
@@ -346,7 +387,7 @@ public class UserServiceImpl implements UserService {
 
         user.getOrderIds().add(inProgress.getId());
 
-        LOG.info("User " + user.getName() + " was take order " + orderId + " for execution");
+        LOG.info("User " + user.getPhone() + " was take order " + orderId + " for execution");
 
         return inProgress;
     }
@@ -354,24 +395,33 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(String accessToken) {
 
-        LOG.info("Request user " + accessKeys.get(accessToken).getName());
+        User foundUser = accessKeys.get(accessToken);
 
-        return accessKeys.get(accessToken);
+        LOG.info("Request user " + foundUser.getPhone());
+
+        return foundUser;
     }
 
     @Override
     public List<Order> getAllOrdersUser(String accessToken) {
 
-        LOG.info("Get all order for user " + accessKeys.get(accessToken).getName());
+        User user = accessKeys.get(accessToken);
 
-        return userDao.getOrdersOfUser(accessKeys.get(accessToken));
+        List<Order> ordersOfUser = userDao.getOrdersOfUser(user);
+
+        LOG.info("Get all orders of user " + user.getPhone());
+
+        return ordersOfUser;
     }
 
     @Override
-    public Map<Integer, Order> getMapDistancesToDriver(String orderStatus, String lineAddressDriver) {
+    public Map<Integer, Order> getMapDistancesToDriver(String orderStatus, String lineAddressDriver)
+                                                                            throws InputDataWrongException {
 
         //find all orders with status
         List<Order> ordersInProgress = getAllOrdersByStatus(Enum.valueOf(OrderStatus.class, orderStatus));
+
+        LOG.info("Found " + ordersInProgress.size() + " orders with status " + orderStatus);
 
         //create array of int distances
         int[] distances = getArrayDistancesToDriver(ordersInProgress, new Address(lineAddressDriver));
@@ -389,21 +439,22 @@ public class UserServiceImpl implements UserService {
             sortingMapDistances.put(distances[i], mapDistances.get(distances[i]));
         }
 
+        LOG.info("Create map of distances from orders to driver address " + lineAddressDriver);
+
         return sortingMapDistances;
     }
 
     @Override
     public User updateUser(Map<String, String> map, String accessToken) throws RegisterException {
 
-        UserIdentifier typeUser = accessKeys.get(accessToken).getIdentifier();
-        int idUser = accessKeys.get(accessToken).getId();
+        User user = accessKeys.get(accessToken);
+        UserIdentifier typeUser = user.getIdentifier();
+        int idUser = user.getId();
 
-        if (!validator.validateChangeRegistration(
-                typeUser,
-                idUser,
-                map.get("phone"))) {
+        if (!validator.validateChangeRegistration(typeUser, idUser, map.get("phone"))) {
 
-            LOG.error("RegisterException");
+            LOG.error("RegisterException: failed attempt to update user " +
+                    user.getPhone() + " (phone " + map.get("phone") + " already in use by another user)");
 
             throw new RegisterException("This phone is already in use by another user");
 
@@ -418,12 +469,12 @@ public class UserServiceImpl implements UserService {
             } else if (typeUser.equals(UserIdentifier.D)) {
                 newUser.setCar(new Car(map.get("carType"), map.get("carModel"), map.get("carNumber")));
             }
-            newUser.setOrderIds(accessKeys.get(accessToken).getOrderIds());
+            newUser.setOrderIds(user.getOrderIds());
 
             User updatedUser = userDao.updateUser(newUser);
             accessKeys.put(accessToken, updatedUser);
 
-            LOG.info("User " + updatedUser.getName() + " was updated");
+            LOG.info("Change registered data for user. User " + updatedUser.getPhone() + " was updated");
 
             return updatedUser;
         }
@@ -432,12 +483,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public User deleteUser(String accessToken) {
 
-        LOG.info("User " + accessKeys.get(accessToken).getName() + " was deleted");
+        User user = accessKeys.get(accessToken);
 
-        return userDao.deleteUser(accessKeys.get(accessToken).getId());
+        User deleteUser = userDao.deleteUser(user.getId());
+
+        LOG.info("User " + user.getPhone() + " was deleted");
+
+        return deleteUser;
     }
 
-    public int[] getArrayDistancesToDriver(List<Order> orders, Address addressDriver){
+    public int[] getArrayDistancesToDriver(List<Order> orders, Address addressDriver)
+                                                                    throws InputDataWrongException {
 
         Location locationDriver = googleMapsAPI.findLocation
                 (addressDriver.getCountry(), addressDriver.getCity(),
@@ -458,18 +514,20 @@ public class UserServiceImpl implements UserService {
 
     public List<Order> getAllOrdersByStatus(OrderStatus status) {
 
+        List<Order> ordersByStatus = orderDao.getOrdersByStatus(status);
+
         LOG.info("Get all order by status " + status.toString());
 
-        return orderDao.getOrdersByStatus(status);
+        return ordersByStatus;
     }
 
     public class Distance implements Comparable {
 
         private Location fromLocation;
         private Location toLocation;
-        private GoogleMapsAPI googleMapsAPI = new GoogleMapsAPIImpl();
+        private GoogleMapsAPI googleMapsAPI;
 
-        private int speedKmH = 60;
+        private int averageSpeedKmH;
         private int timeInMin;
 
         public Distance() {
@@ -478,6 +536,8 @@ public class UserServiceImpl implements UserService {
         public Distance(Location fromLocation, Location toLocation) {
             this.fromLocation = fromLocation;
             this.toLocation = toLocation;
+            googleMapsAPI = new GoogleMapsAPIImpl();
+            averageSpeedKmH = Constants.averageSpeedKmH;
         }
 
         public Location getFromLocation() {
@@ -496,29 +556,34 @@ public class UserServiceImpl implements UserService {
             this.toLocation = toLocation;
         }
 
-        public int calculateDistance() {
+        public int calculateDistance() throws InputDataWrongException {
             return (int) googleMapsAPI.getDistance(fromLocation, toLocation);
         }
 
         public void setSpeedKmH(int speedKmH) {
-            this.speedKmH = speedKmH;
+            this.averageSpeedKmH = speedKmH;
         }
 
-        public int getTimeInMin() {
-            return (this.calculateDistance() / 1000) / this.speedKmH;
+        public int getTimeInMin() throws InputDataWrongException {
+            return (this.calculateDistance() / 1000) / this.averageSpeedKmH;
         }
 
         @Override
         public int compareTo(Object o) {
 
             Distance tmp = (Distance)o;
-            if(this.googleMapsAPI.getDistance(fromLocation, toLocation) <
-                    tmp.googleMapsAPI.getDistance(fromLocation, toLocation)) {
-                return -1;
+            try {
+                if(this.googleMapsAPI.getDistance(fromLocation, toLocation) <
+                        tmp.googleMapsAPI.getDistance(fromLocation, toLocation)) {
+                    return -1;
 
-            } else if (this.googleMapsAPI.getDistance(fromLocation, toLocation) >
-                    tmp.googleMapsAPI.getDistance(fromLocation, toLocation)) {
-                return 1;
+                } else if (this.googleMapsAPI.getDistance(fromLocation, toLocation) >
+                        tmp.googleMapsAPI.getDistance(fromLocation, toLocation)) {
+                    return 1;
+                }
+
+            } catch (InputDataWrongException e) {
+                e.printStackTrace();
             }
             return 0;
         }

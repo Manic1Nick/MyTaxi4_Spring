@@ -55,8 +55,6 @@ public class DriverHistory extends JFrame {
         userText.setEditable(false);
 
         //create list orders
-
-
         List<Order> allUserOrders = userService.getAllOrdersUser(ClientAccessToken.getAccessToken());
         int length = allUserOrders.size() < 10 ? allUserOrders.size() : 10;
         String[] textOrders = new String[10];
