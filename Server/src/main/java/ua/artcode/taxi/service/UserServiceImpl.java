@@ -12,6 +12,7 @@ import ua.artcode.taxi.utils.geolocation.Location;
 import javax.security.auth.login.LoginException;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UserServiceImpl implements UserService {
 
@@ -30,7 +31,7 @@ public class UserServiceImpl implements UserService {
         this.validator = validator;
         pricePerKilometer = Constants.pricePerKilometer;
         googleMapsAPI = new GoogleMapsAPIImpl();
-        accessKeys = new HashMap<>();
+        accessKeys = new ConcurrentHashMap<>();
     }
 
     @Override

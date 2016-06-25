@@ -4,17 +4,20 @@ import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AppDB {
 
-    private static int userIdCounter = 1;
-    private static int orderIdCounter = 1;
+    private AtomicInteger userIdCounter = new AtomicInteger(1);
+    private AtomicInteger orderIdCounter = new AtomicInteger(1);
     private Map<User, List<Order>> users;
     private Collection<Order> orders;
 
     public AppDB() {
-        users = new HashMap<User, List<Order>>();
-        orders = new ArrayList<Order>();
+        users = new ConcurrentHashMap<>();
+        orders = new CopyOnWriteArrayList<>();
     }
 
     public AppDB(Map<User, List<Order>> users, List<Order> orders) {
@@ -48,7 +51,7 @@ public class AppDB {
 
     public User addUser(User user){
 
-        user.setId(userIdCounter++);
+        user.setId(userIdCounter.getAndIncrement());
         users.put(user, new ArrayList<>());
 
         return user;
@@ -56,7 +59,7 @@ public class AppDB {
 
     public Order addOrder(User user, Order order){
 
-        order.setId(orderIdCounter++);
+        order.setId(orderIdCounter.getAndIncrement());
         orders.add(order);
 
         List<Order> newList = users.get(user);
