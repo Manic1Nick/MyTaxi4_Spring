@@ -29,7 +29,7 @@ public class RunServer {
 
         //create test data
         AppDB appDB = new AppDB();
-        UserDao userDao = new UserDaoInnerDbImpl(appDB);
+        UserDao userDao = new UserJdbcDao();
         OrderDao orderDao = new OrderDaoInnerDbImpl(appDB);
         ValidatorImpl validator = new ValidatorImpl(appDB);
 
