@@ -4,7 +4,7 @@ use taxi_app;
 
 CREATE TABLE cities (
   id int AUTO_INCREMENT PRIMARY KEY,
-  city_name VARCHAR (50)
+  city_name VARCHAR (50) UNIQUE
 );
 
 CREATE TABLE addresses (
