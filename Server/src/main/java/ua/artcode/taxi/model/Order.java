@@ -127,4 +127,26 @@ public class Order {
         return "id " + id +
                 ", price " + price + "uah";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof Order) {
+
+            return  id == (((Order)obj).id) &&
+                    orderStatus.equals(((Order)obj).orderStatus) &&
+                    from.equals(((Order)obj).from) &&
+                    to.equals(((Order)obj).to) &&
+                    passenger.equals(((Order)obj).passenger) &&
+                    driver.equals(((Order)obj).driver) &&
+                    distance == (((Order)obj).distance) &&
+                    price == (((Order)obj).price) &&
+                    message.equals(((Order)obj).message);
+        }
+
+        return false;
+
+        //todo equals list ids
+    }
 }
+

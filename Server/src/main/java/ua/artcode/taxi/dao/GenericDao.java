@@ -22,4 +22,6 @@ public interface GenericDao<T> {
 
     T getLast();
 
+    long getId(T el);
+
 }

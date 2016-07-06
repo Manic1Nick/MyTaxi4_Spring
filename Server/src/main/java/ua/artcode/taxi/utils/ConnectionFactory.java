@@ -4,9 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- * Created by serhii on 25.06.16.
- */
+
 public class ConnectionFactory {
 
     private static String url;
@@ -14,11 +12,11 @@ public class ConnectionFactory {
     private static String password;
 
     static {
-        /*try {
+        try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }*/
+        }
 
         // load from properties
         url = "jdbc:mysql://localhost:3306/mytaxi";

@@ -90,12 +90,6 @@ public class RunServer {
             clientThread.start();
         }
     }
-
-
-    public static String getMenu(){
-
-        return "1. Add user \n" + "2. Exit\n";
-    }
 }
 
 class ClientThreadLogic implements Runnable {
@@ -127,6 +121,8 @@ class ClientThreadLogic implements Runnable {
             }
 
             Message message = gson.fromJson(requestBody, Message.class);
+
+            System.out.println("CLIENT ---> SERVER: " + requestBody);
 
             //registerPassenger
             if ("registerPassenger".equals(message.getMethodName())) {
@@ -527,15 +523,21 @@ class ClientThreadLogic implements Runnable {
                 Map<String, Object> map = message.getMessageBody().getMap();
                 Object accessToken = map.get("accessToken");
 
-                User deletedUser = userService.deleteUser(
-                        accessToken.toString());
+                try {
+                    User deletedUser = userService.deleteUser(
+                            accessToken.toString());
 
-                Message responseMessage = new Message();
-                MessageBody messageBody = new MessageBody(ReflectionFormatter.userToJsonMap(deletedUser));
-                responseMessage.setMessageBody(messageBody);
+                    Message responseMessage = new Message();
+                    MessageBody messageBody = new MessageBody(ReflectionFormatter.userToJsonMap(deletedUser));
+                    responseMessage.setMessageBody(messageBody);
 
-                pw.println(gson.toJson(responseMessage));
-                pw.flush();
+                    pw.println(gson.toJson(responseMessage));
+                    pw.flush();
+
+                } catch (WrongStatusOrderException e) {
+                    pw.println(e);
+                    pw.flush();
+                }
             }
         }
     }

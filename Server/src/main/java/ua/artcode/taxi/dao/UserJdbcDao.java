@@ -23,7 +23,7 @@ public class UserJdbcDao implements UserDao {
     public User createUser(User user) {
 
         //for all users (incl. anonymous)
-        User newUser = addBaseUserToJdbc(user.getIdentifier(), user.getPhone(), user.getName());
+        int id = addBaseUserToJdbc(user.getIdentifier(), user.getPhone(), user.getName());
 
         try (Connection connection = ConnectionFactory.createConnection();
              Statement statement = connection.createStatement()) {
@@ -31,9 +31,7 @@ public class UserJdbcDao implements UserDao {
             connection.setAutoCommit(false);
 
             String sqlInsert = String.format
-                    ("UPDATE users SET pass='%s' WHERE phone='%s';",
-                            user.getPass(),
-                            newUser.getPhone());
+                    ("UPDATE users SET pass='%s' WHERE id=%d;", user.getPass(), id);
             statement.execute(sqlInsert);
 
             //for passenger
@@ -45,9 +43,7 @@ public class UserJdbcDao implements UserDao {
 
                 if (addressId > 0) {
                     sqlInsert = String.format
-                            ("UPDATE users SET address_id=%d WHERE phone='%s';",
-                                    addressId,
-                                    newUser.getPhone());
+                            ("UPDATE users SET address_id=%d WHERE id=%d;", addressId, id);
                     statement.execute(sqlInsert);
                 }
             }
@@ -55,9 +51,7 @@ public class UserJdbcDao implements UserDao {
             //for driver
             else if (user.getIdentifier().equals(UserIdentifier.D)) {
                 sqlInsert = String.format
-                        ("UPDATE users SET car_id=%d WHERE phone='%s';",
-                                carDao.create(user.getCar()).getId(),
-                                newUser.getPhone());
+                        ("UPDATE users SET car_id=%d WHERE id=%d;", carDao.create(user.getCar()).getId(), id);
                 statement.execute(sqlInsert);
             }
 
@@ -67,7 +61,9 @@ public class UserJdbcDao implements UserDao {
             e.printStackTrace();
         }
 
-        return newUser;
+        user.setId(id);
+
+        return user;
     }
 
     @Override
@@ -104,15 +100,34 @@ public class UserJdbcDao implements UserDao {
             connection.setAutoCommit(false);
 
             String sqlUpdate = String.format
-                    ("UPDATE users SET identifier_id=%d, phone='%s', pass='%s', name='%s', address_id=%d, car_id=%d WHERE id=%d;",
-                            getIdIdentifierFromJdbs(newUser.getIdentifier()),
+                    ("UPDATE users SET phone='%s', pass='%s', name='%s' WHERE id=%d;",
                             newUser.getPhone(),
                             newUser.getPass(),
                             newUser.getName(),
-                            addressDao.update(newUser.getHomeAddress()).getId(),
-                            carDao.update(newUser.getCar()).getId(),
                             newUser.getId());
-            statement.executeQuery(sqlUpdate);
+            statement.execute(sqlUpdate);
+
+            //update address
+            if (newUser.getHomeAddress() != null) {
+                Address newAddress = addressDao.update(newUser.getHomeAddress());
+                newUser.setHomeAddress(newAddress);
+                sqlUpdate = String.format
+                        ("UPDATE users SET address_id=%s WHERE id=%d;",
+                                newAddress.getId(),
+                                newUser.getId());
+                statement.execute(sqlUpdate);
+            }
+
+            //update car
+            if (newUser.getCar() != null) {
+                Car newCar = carDao.update(newUser.getCar());
+                newUser.setCar(newCar);
+                sqlUpdate = String.format
+                        ("UPDATE users SET car_id=%s WHERE id=%d;",
+                                newCar.getId(),
+                                newUser.getId());
+                statement.execute(sqlUpdate);
+            }
 
             connection.commit();
 
@@ -130,12 +145,12 @@ public class UserJdbcDao implements UserDao {
 
         try(Connection connection =
                     ConnectionFactory.createConnection();
+
             PreparedStatement preparedStatement = connection.prepareStatement
-                    ("DELETE FROM clients c WHERE c.id = ?;")){
+                    ("DELETE FROM users WHERE id = ?;")){
 
             preparedStatement.setInt((int) 1, id);
             preparedStatement.execute();
-
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -149,8 +164,7 @@ public class UserJdbcDao implements UserDao {
 
         User user = null;
 
-        try (Connection connection =
-                     ConnectionFactory.createConnection();
+        try (Connection connection = ConnectionFactory.createConnection();
              Statement statement = connection.createStatement();) {
 
             connection.setAutoCommit(false);
@@ -307,9 +321,9 @@ public class UserJdbcDao implements UserDao {
         return resultSet.getInt("id");
     }
 
-    public User addBaseUserToJdbc(UserIdentifier identifier, String phone, String name) {
+    public int addBaseUserToJdbc(UserIdentifier identifier, String phone, String name) {
 
-        User baseUser = new User(identifier, phone, name);
+        int id = 0;
 
         try (Connection connection = ConnectionFactory.createConnection();
              Statement statement = connection.createStatement()) {
@@ -321,14 +335,16 @@ public class UserJdbcDao implements UserDao {
             String sqlInsert = String.format
                     ("INSERT INTO users(identifier_id, phone, name) VALUES (%d, '%s', '%s');",
                             identifierId,
-                            baseUser.getPhone(),
-                            baseUser.getName());
+                            phone,
+                            name);
             statement.execute(sqlInsert);
 
             //set id for new user
-            ResultSet resultSet = statement.executeQuery("SELECT id FROM users s ORDER BY id DESC LIMIT 1;");
+            String sqlSelect = String.format("SELECT id FROM users WHERE phone='%s' AND identifier_id=%d;",
+                    phone, identifierId);
+            ResultSet resultSet = statement.executeQuery(sqlSelect);
             resultSet.next();
-            baseUser.setId(resultSet.getInt("id"));
+            id = resultSet.getInt("id");
 
             connection.commit();
 
@@ -336,7 +352,7 @@ public class UserJdbcDao implements UserDao {
             e.printStackTrace();
         }
 
-        return baseUser;
+        return id;
     }
 }
 

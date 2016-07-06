@@ -14,28 +14,35 @@ public class AddressDao implements GenericDao<Address> {
     @Override
     public Address create(Address el) {
 
-        try (Connection connection = ConnectionFactory.createConnection();
-             Statement statement = connection.createStatement();) {
+        long id = getId(el);
 
-            connection.setAutoCommit(false);
+        if (id > 0) {
+            el.setId(id);
 
-            String sqlInsert = String.format
-                    ("INSERT INTO addresses(country, city, street, house_num) VALUES ('%s', '%s', '%s', '%s');",
-                            el.getCountry(),
-                            el.getCity(),
-                            el.getStreet(),
-                            el.getHouseNum());
-            statement.execute(sqlInsert);
+        } else if (id < 0) {
+            try (Connection connection = ConnectionFactory.createConnection();
+                 Statement statement = connection.createStatement();) {
 
-            ResultSet resultSet = statement.executeQuery
-                    ("SELECT id FROM addresses s ORDER BY id DESC LIMIT 1;");
-            resultSet.next();
-            el.setId(resultSet.getLong("id"));
+                connection.setAutoCommit(false);
 
-            connection.commit();
+                String sqlInsert = String.format
+                        ("INSERT INTO addresses(country, city, street, house_num) VALUES ('%s', '%s', '%s', '%s');",
+                                el.getCountry(),
+                                el.getCity(),
+                                el.getStreet(),
+                                el.getHouseNum());
+                statement.execute(sqlInsert);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+                ResultSet resultSet = statement.executeQuery
+                        ("SELECT id FROM addresses s ORDER BY id DESC LIMIT 1;");
+                resultSet.next();
+                el.setId(resultSet.getLong("id"));
+
+                connection.commit();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return el;
@@ -67,7 +74,7 @@ public class AddressDao implements GenericDao<Address> {
                         resultSet.getString("city"),
                         resultSet.getString("street"),
                         resultSet.getString("house_num"));
-                address.setId(resultSet.getLong("id"));
+                address.setId(id);
             }
 
             connection.commit();
@@ -86,11 +93,40 @@ public class AddressDao implements GenericDao<Address> {
 
     @Override
     public Address update(Address el) {
-        return null;
+
+        return create(el);
     }
 
     @Override
     public Address getLast() {
         return null;
+    }
+
+    @Override
+    public long getId(Address el) {
+
+        long id = -1;
+
+        try (Connection connection = ConnectionFactory.createConnection();
+             Statement statement = connection.createStatement();) {
+
+            connection.setAutoCommit(false);
+
+            ResultSet resultSet = statement.executeQuery(String.format
+                    ("SELECT id FROM addresses WHERE country='%s' AND city='%s' AND street='%s' AND house_num='%s' LIMIT 1;",
+                            el.getCountry(),
+                            el.getCity(),
+                            el.getStreet(),
+                            el.getHouseNum()));
+
+            if (resultSet.next()) {
+                id = resultSet.getLong("id");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return id;
     }
 }

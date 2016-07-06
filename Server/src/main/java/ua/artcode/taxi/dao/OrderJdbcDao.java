@@ -40,9 +40,6 @@ public class OrderJdbcDao implements OrderDao {
                             order.getDistance(),
                             order.getPrice(),
                             order.getMessage());
-
-            System.out.println(sqlInsert);
-
             statement.execute(sqlInsert);
 
             //set id for new order
@@ -94,8 +91,14 @@ public class OrderJdbcDao implements OrderDao {
 
             connection.setAutoCommit(false);
 
+            String sqlSelect = String.format("SELECT id FROM statuses WHERE status='%s';",
+                    newOrder.getOrderStatus());
+            ResultSet resultSet = statement.executeQuery(sqlSelect);
+            resultSet.next();
+
             String sqlUpdate = String.format
-                    ("UPDATE orders SET addressfrom_id=%d, addressto_id=%d, passenger_id=%d, driver_id=%d, distance=%d, price=%d, message='%s' WHERE id=%d;",
+                    ("UPDATE orders SET status_id=%d, addressfrom_id=%d, addressto_id=%d, passenger_id=%d, driver_id=%d, distance=%d, price=%d, message='%s' WHERE id=%d;",
+                            resultSet.getInt("id"),
                             addressDao.update(newOrder.getFrom()).getId(),
                             addressDao.update(newOrder.getTo()).getId(),
                             userDao.updateUser(newOrder.getPassenger()).getId(),
@@ -104,7 +107,7 @@ public class OrderJdbcDao implements OrderDao {
                             newOrder.getPrice(),
                             newOrder.getMessage(),
                             newOrder.getId());
-            statement.executeQuery(sqlUpdate);
+            statement.execute(sqlUpdate);
 
             connection.commit();
 
@@ -123,11 +126,10 @@ public class OrderJdbcDao implements OrderDao {
         try(Connection connection =
                     ConnectionFactory.createConnection();
             PreparedStatement preparedStatement = connection.prepareStatement
-                    ("DELETE FROM orders c WHERE c.id = ?;")){
+                    ("DELETE FROM orders WHERE id = ?;")){
 
             preparedStatement.setLong((int) 1, id);
             preparedStatement.execute();
-
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -237,7 +239,7 @@ public class OrderJdbcDao implements OrderDao {
     @Override
     public Order addToDriver(User user, Order order) {
 
-        try (Connection connection = ConnectionFactory.createConnection();
+        /*try (Connection connection = ConnectionFactory.createConnection();
              Statement statement = connection.createStatement();) {
 
             connection.setAutoCommit(false);
@@ -250,7 +252,7 @@ public class OrderJdbcDao implements OrderDao {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
 
         return order;
     }

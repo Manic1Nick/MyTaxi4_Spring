@@ -48,4 +48,17 @@ public class Car {
     public void setNumber(String number) {
         this.number = number;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof Car) {
+            return id == (((Car) obj).id) &&
+                    type.equals(((Car) obj).type) &&
+                    model.equals(((Car) obj).model) &&
+                    number.equals(((Car) obj).number);
+        }
+
+        return false;
+    }
 }

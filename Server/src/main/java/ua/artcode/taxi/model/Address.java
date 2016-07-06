@@ -117,4 +117,17 @@ public class Address {
     }
 
 
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof Address) {
+            return id == (((Address) obj).id) &&
+                    country.equals(((Address) obj).country) &&
+                    city.equals(((Address) obj).city) &&
+                    street.equals(((Address) obj).street) &&
+                    houseNum.equals(((Address) obj).houseNum);
+        }
+
+        return false;
+    }
 }

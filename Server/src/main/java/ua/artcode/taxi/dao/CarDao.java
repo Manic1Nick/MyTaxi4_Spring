@@ -14,27 +14,34 @@ public class CarDao implements GenericDao<Car> {
     @Override
     public Car create(Car el) {
 
-        try (Connection connection = ConnectionFactory.createConnection();
-             Statement statement = connection.createStatement();) {
+        long id = getId(el);
 
-            connection.setAutoCommit(false);
+        if (id > 0) {
+            el.setId(id);
 
-            String sqlInsert = String.format
-                    ("INSERT INTO cars(type, model, number) VALUES ('%s', '%s', '%s');",
-                            el.getType(),
-                            el.getModel(),
-                            el.getNumber());
-            statement.execute(sqlInsert);
+        } else if (id < 0) {
+            try (Connection connection = ConnectionFactory.createConnection();
+                 Statement statement = connection.createStatement();) {
 
-            ResultSet resultSet = statement.executeQuery
-                    ("SELECT id FROM cars s ORDER BY id DESC LIMIT 1;");
-            resultSet.next();
-            el.setId(resultSet.getLong("id"));
+                connection.setAutoCommit(false);
 
-            connection.commit();
+                String sqlInsert = String.format
+                        ("INSERT INTO cars(type, model, number) VALUES ('%s', '%s', '%s');",
+                                el.getType(),
+                                el.getModel(),
+                                el.getNumber());
+                statement.execute(sqlInsert);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+                ResultSet resultSet = statement.executeQuery
+                        ("SELECT id FROM cars s ORDER BY id DESC LIMIT 1;");
+                resultSet.next();
+                el.setId(resultSet.getLong("id"));
+
+                connection.commit();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return el;
@@ -42,7 +49,20 @@ public class CarDao implements GenericDao<Car> {
 
     @Override
     public boolean delete(Car el) {
-        return false;
+
+        Connection connection = null;
+        boolean resultSet = false;
+        try {
+            connection = ConnectionFactory.createConnection();
+            Statement statement = connection.createStatement();
+            connection.setAutoCommit(false);
+            resultSet = statement.execute(String.format("delete from cars where type=%d;", el.getId()));
+            connection.commit();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultSet;
     }
 
     @Override
@@ -65,7 +85,7 @@ public class CarDao implements GenericDao<Car> {
                         resultSet.getString("type"),
                         resultSet.getString("model"),
                         resultSet.getString("number"));
-                car.setId(resultSet.getLong("id"));
+                car.setId(id);
             }
 
             connection.commit();
@@ -84,11 +104,60 @@ public class CarDao implements GenericDao<Car> {
 
     @Override
     public Car update(Car el) {
-        return null;
+
+        return create(el);
+
+       /* try (Connection connection = ConnectionFactory.createConnection();
+             Statement statement = connection.createStatement();) {
+
+            connection.setAutoCommit(false);
+
+            String sqlUpdate = String.format
+                    ("UPDATE cars SET type='%s', model='%s', number='%s' WHERE id=%d;",
+                            el.getType(),
+                            el.getModel(),
+                            el.getNumber(),
+                            el.getId());
+            statement.execute(sqlUpdate);
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return el;*/
     }
 
     @Override
     public Car getLast() {
         return null;
+    }
+
+    @Override
+    public long getId(Car el) {
+
+        long id = -1;
+
+        try (Connection connection = ConnectionFactory.createConnection();
+             Statement statement = connection.createStatement();) {
+
+            connection.setAutoCommit(false);
+
+            ResultSet resultSet = statement.executeQuery(String.format
+                    ("Select id from cars where type='%s' and model='%s' and number='%s' limit 1;",
+                            el.getType(),
+                            el.getModel(),
+                            el.getNumber()));
+
+            if (resultSet.next()) {
+                id = resultSet.getLong("id");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return id;
     }
 }

@@ -121,11 +121,22 @@ public class UserServiceJdbcImpl implements UserService {
             LOG.error("InputDataWrongException: wrong input data address");
 
             throw  new InputDataWrongException("Wrong input data addresses. Can not make order");
+
         }
 
         User user = accessKeys.get(accessToken);
 
         if (user != null) {
+
+            for (Long id : user.getOrderIds()) {
+                if (orderDao.findById(id).getOrderStatus().equals(OrderStatus.NEW)) {
+
+                    LOG.error("OrderMakeException: failed attempt to make order with ID " +
+                            id + " by user " + user.getPhone());
+
+                    throw new OrderMakeException("User has orders NEW already");
+                }
+            }
 
             try {
                 Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
@@ -141,6 +152,8 @@ public class UserServiceJdbcImpl implements UserService {
                 orderDao.create(user, newOrder);
                 user.getOrderIds().add(newOrder.getId());
 
+                LOG.info("User " + user.getPhone() + " makes new order " + newOrder.getId());
+
             } catch (InputDataWrongException | IndexOutOfBoundsException e) {
 
                 LOG.error("InputDataWrongException: errors in calculate locations in Google API");
@@ -148,9 +161,6 @@ public class UserServiceJdbcImpl implements UserService {
                 throw new InputDataWrongException("Wrong calculation in Google API");
             }
         }
-
-        LOG.info("User " + user.getPhone() + " makes new order " + newOrder.getId());
-
         return newOrder;
     }
 
@@ -167,6 +177,21 @@ public class UserServiceJdbcImpl implements UserService {
             LOG.error("InputDataWrongException: wrong input data address");
 
             throw new InputDataWrongException("Wrong input data. Can not make order");
+        }
+
+
+        User user = userDao.findByPhone(phone);
+
+        if (user != null) {
+            for (Long id : user.getOrderIds()) {
+                if (orderDao.findById(id).getOrderStatus().equals(OrderStatus.NEW)) {
+
+                    LOG.error("OrderMakeException: failed attempt to make order with ID " +
+                            id + " by user " + phone);
+
+                    throw new OrderMakeException("User has orders NEW already");
+                }
+            }
         }
 
         try {
@@ -383,14 +408,13 @@ public class UserServiceJdbcImpl implements UserService {
         inProgress.setDriver(user);
         inProgress.setOrderStatus(OrderStatus.IN_PROGRESS);
 
-        orderDao.addToDriver(user, inProgress);
-        orderDao.update(inProgress);
+        Order takenOrder = orderDao.update(inProgress);
 
-        user.getOrderIds().add(inProgress.getId());
+        user.getOrderIds().add(takenOrder.getId());
 
-        LOG.info("User " + user.getPhone() + " was take order " + orderId + " for execution");
+        LOG.info("User " + user.getPhone() + " was take order " + takenOrder.getId() + " for execution");
 
-        return inProgress;
+        return takenOrder;
     }
 
     @Override
@@ -482,9 +506,27 @@ public class UserServiceJdbcImpl implements UserService {
     }
 
     @Override
-    public User deleteUser(String accessToken) {
+    public User deleteUser(String accessToken) throws WrongStatusOrderException {
 
         User user = accessKeys.get(accessToken);
+
+        //check open orders of user (NEW or IN_PROGRESS)
+        List<Order> orders = getAllOrdersUser(accessToken);
+        for (Order order : orders) {
+            if (order.getOrderStatus().equals(OrderStatus.NEW) ||
+                    order.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
+
+                LOG.error("WrongStatusOrderException: failed attempt to delete user " + user.getPhone());
+
+                throw new WrongStatusOrderException
+                        ("Can't delete user. User can't has orders with status NEW or IN_PROGRESS");
+            }
+        }
+
+        //delete orders of user from jdbc
+        for (Order order : orders) {
+            orderDao.delete(order.getId());
+        }
 
         User deleteUser = userDao.deleteUser(user.getId());
 

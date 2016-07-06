@@ -118,4 +118,45 @@ public class User implements PassengerActive, DriverActive {
     public void setCar(Car car) {
         this.car = car;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", identifier=" + identifier +
+                ", phone='" + phone + '\'' +
+                ", pass='" + pass + '\'' +
+                ", name='" + name + '\'' +
+                ", homeAddress=" + homeAddress +
+                ", car=" + car +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof User) {
+
+            if (((User)obj).identifier.equals(UserIdentifier.P)) {
+                return  id == (((User)obj).id) &&
+                        identifier.equals(((User)obj).identifier) &&
+                        phone.equals(((User)obj).phone) &&
+                        name.equals(((User)obj).name) &&
+                        pass.equals(((User)obj).pass) &&
+                        homeAddress.equals(((User)obj).homeAddress);
+
+            } else if (((User)obj).identifier.equals(UserIdentifier.D)) {
+                return  id == (((User)obj).id) &&
+                        identifier.equals(((User)obj).identifier) &&
+                        phone.equals(((User)obj).phone) &&
+                        name.equals(((User)obj).name) &&
+                        pass.equals(((User)obj).pass) &&
+                        car.equals(((User)obj).car);
+            }
+        }
+
+        return false;
+
+        //todo equals list ids
+    }
 }
