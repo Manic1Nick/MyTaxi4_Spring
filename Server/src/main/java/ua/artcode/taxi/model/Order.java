@@ -1,19 +1,45 @@
 package ua.artcode.taxi.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "orders")
+@NamedQueries({@NamedQuery(name = "getAllOrders", query = "SELECT c FROM Order c")})
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private Address from;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private Address to;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private User passenger;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private User driver;
+
+    @Column(name = "distance", nullable = false)
     private int distance;
+
+    @Column(name = "price", nullable = false)
     private int price;
+
     private String message;
 
+    @Transient
     private LocalDateTime makeOrderTime;
 
     public Order() {
@@ -114,6 +140,8 @@ public class Order {
         this.makeOrderTime = makeOrderTime;
     }
 
+
+
     public String toStringForView() {
         return "id " + id +
                 ", status " + orderStatus +
@@ -145,8 +173,11 @@ public class Order {
         }
 
         return false;
+    }
 
-        //todo equals list ids
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 }
 

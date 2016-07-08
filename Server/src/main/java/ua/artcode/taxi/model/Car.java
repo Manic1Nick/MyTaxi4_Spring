@@ -1,10 +1,27 @@
 package ua.artcode.taxi.model;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "cars")
 public class Car {
 
+    @OneToMany(mappedBy = "car",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    List<User> users = new ArrayList<>();
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @Column(name = "type", nullable = false)
     String type;
+
+    @Column(name = "model", nullable = false)
     String model;
+
+    @Column(name = "number", nullable = false)
     String number;
 
     public Car() {
@@ -49,16 +66,28 @@ public class Car {
         this.number = number;
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     @Override
     public boolean equals(Object obj) {
 
         if (obj instanceof Car) {
-            return id == (((Car) obj).id) &&
-                    type.equals(((Car) obj).type) &&
+            return  type.equals(((Car) obj).type) &&
                     model.equals(((Car) obj).model) &&
                     number.equals(((Car) obj).number);
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 }

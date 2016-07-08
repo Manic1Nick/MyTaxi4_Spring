@@ -128,11 +128,10 @@ public class UserServiceJdbcImpl implements UserService {
 
         if (user != null) {
 
-            for (Long id : user.getOrderIds()) {
-                if (orderDao.findById(id).getOrderStatus().equals(OrderStatus.NEW)) {
+            for (Order order : user.getOrdersPassenger()) {
+                if (order.getOrderStatus().equals(OrderStatus.NEW)) {
 
-                    LOG.error("OrderMakeException: failed attempt to make order with ID " +
-                            id + " by user " + user.getPhone());
+                    LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
 
                     throw new OrderMakeException("User has orders NEW already");
                 }
@@ -150,7 +149,6 @@ public class UserServiceJdbcImpl implements UserService {
                 newOrder = new Order(from, to, user, distance, price, message);
 
                 orderDao.create(user, newOrder);
-                user.getOrderIds().add(newOrder.getId());
 
                 LOG.info("User " + user.getPhone() + " makes new order " + newOrder.getId());
 
@@ -183,11 +181,10 @@ public class UserServiceJdbcImpl implements UserService {
         User user = userDao.findByPhone(phone);
 
         if (user != null) {
-            for (Long id : user.getOrderIds()) {
-                if (orderDao.findById(id).getOrderStatus().equals(OrderStatus.NEW)) {
+            for (Order order : user.getOrdersPassenger()) {
+                if (order.getOrderStatus().equals(OrderStatus.NEW)) {
 
-                    LOG.error("OrderMakeException: failed attempt to make order with ID " +
-                            id + " by user " + phone);
+                    LOG.error("OrderMakeException: failed attempt to make order by user " + phone);
 
                     throw new OrderMakeException("User has orders NEW already");
                 }
@@ -377,9 +374,8 @@ public class UserServiceJdbcImpl implements UserService {
 
         User user = accessKeys.get(accessToken);
         Order inProgress = orderDao.findById(orderId);
-        List<Order> ordersUser = orderDao.getOrdersOfUser(user);
 
-        for (Order order : ordersUser) {
+        for (Order order : user.getOrdersDriver()) {
             if (order.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
 
                 LOG.error("DriverOrderActionException: failed attempt to take order with ID " +
@@ -409,8 +405,6 @@ public class UserServiceJdbcImpl implements UserService {
         inProgress.setOrderStatus(OrderStatus.IN_PROGRESS);
 
         Order takenOrder = orderDao.update(inProgress);
-
-        user.getOrderIds().add(takenOrder.getId());
 
         LOG.info("User " + user.getPhone() + " was take order " + takenOrder.getId() + " for execution");
 
@@ -494,7 +488,6 @@ public class UserServiceJdbcImpl implements UserService {
             } else if (typeUser.equals(UserIdentifier.D)) {
                 newUser.setCar(new Car(map.get("carType"), map.get("carModel"), map.get("carNumber")));
             }
-            newUser.setOrderIds(user.getOrderIds());
 
             User updatedUser = userDao.updateUser(newUser);
             accessKeys.put(accessToken, updatedUser);

@@ -26,18 +26,6 @@ public class ReflectionFormatter {
         map.put("homeAddress", new Gson().toJson(user.getHomeAddress()));
         map.put("car", new Gson().toJson(user.getCar()));
 
-        //create string list of ids with split sigh ","
-        if (user.getOrderIds().size() > 0) {
-            List<Long> orderIds = new ArrayList<>(user.getOrderIds());
-            String stringIds = "";
-            for (int i = 0; i < orderIds.size(); i++) {
-                stringIds += orderIds.get(i) + ",";
-            }
-            int indexEnd = orderIds.size() > 0 ? stringIds.length()-1 : stringIds.length() ;
-
-            map.put("orderIds", stringIds.substring(0, indexEnd));
-        }
-
         return map;
     }
 
@@ -110,8 +98,6 @@ public class ReflectionFormatter {
             } else if (!line.contains(",")) {
                 orderIds.add(Long.parseLong(line));
             }
-
-            user.setOrderIds(orderIds);
         }
 
         return user;

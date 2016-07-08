@@ -1,18 +1,46 @@
 package ua.artcode.taxi.model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "users")
+@NamedQueries({@NamedQuery(name = "getAllUsers", query = "SELECT c FROM User c")})
 public class User implements PassengerActive, DriverActive {
 
+    @OneToMany(mappedBy = "passenger",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    List<Order> ordersPassenger = new ArrayList<>();
+
+    @OneToMany(mappedBy = "driver",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    List<Order> ordersDriver = new ArrayList<>();
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Enumerated(EnumType.STRING)
     private UserIdentifier identifier;
+
+    @Column(name = "phone", nullable = false)
     private String phone;
+
+    @Column(name = "pass", nullable = false)
     private String pass;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private Address homeAddress;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private Car car;
-    private List<Long> orderIds = new ArrayList<>();
+
+    public User() {
+    }
 
     //for passenger
     public User(UserIdentifier identifier, String phone, String pass, String name, Address homeAddress) {
@@ -100,16 +128,6 @@ public class User implements PassengerActive, DriverActive {
     }
 
     @Override
-    public List<Long> getOrderIds() {
-        return orderIds;
-    }
-
-    @Override
-    public void setOrderIds(List<Long> orderIds) {
-        this.orderIds = orderIds;
-    }
-
-    @Override
     public Car getCar() {
         return car;
     }
@@ -117,6 +135,22 @@ public class User implements PassengerActive, DriverActive {
     @Override
     public void setCar(Car car) {
         this.car = car;
+    }
+
+    public List<Order> getOrdersPassenger() {
+        return ordersPassenger;
+    }
+
+    public void setOrdersPassenger(List<Order> ordersPassenger) {
+        this.ordersPassenger = ordersPassenger;
+    }
+
+    public List<Order> getOrdersDriver() {
+        return ordersDriver;
+    }
+
+    public void setOrdersDriver(List<Order> ordersDriver) {
+        this.ordersDriver = ordersDriver;
     }
 
     @Override
@@ -158,5 +192,10 @@ public class User implements PassengerActive, DriverActive {
         return false;
 
         //todo equals list ids
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

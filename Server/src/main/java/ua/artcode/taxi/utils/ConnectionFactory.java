@@ -1,5 +1,8 @@
 package ua.artcode.taxi.utils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -28,5 +31,13 @@ public class ConnectionFactory {
 
         return DriverManager.getConnection(
                 url, user, password);
+    }
+
+    public static EntityManager createEntityManager() {
+
+        EntityManagerFactory entityManagerFactory =
+                Persistence.createEntityManagerFactory("myunit");
+
+        return entityManagerFactory.createEntityManager();
     }
 }

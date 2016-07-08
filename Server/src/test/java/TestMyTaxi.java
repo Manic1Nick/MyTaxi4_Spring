@@ -3,8 +3,6 @@ import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import ua.artcode.taxi.dao.AddressDao;
-import ua.artcode.taxi.dao.CarDao;
 import ua.artcode.taxi.dao.OrderJdbcDao;
 import ua.artcode.taxi.dao.UserJdbcDao;
 import ua.artcode.taxi.model.*;
@@ -23,8 +21,6 @@ public class TestMyTaxi {
 
     private static UserJdbcDao userDao;
     private static OrderJdbcDao orderDao;
-    private static AddressDao addressDao;
-    private static CarDao carDao;
     private static ValidatorJdbcImpl validator;
     private static double pricePerKilometer = 5;
     private static GoogleMapsAPI googleMapsAPI = new GoogleMapsAPIImpl();
@@ -46,10 +42,8 @@ public class TestMyTaxi {
 
     @BeforeClass
     public static void beforeClass() {
-        addressDao = new AddressDao();
-        carDao = new CarDao();
-        userDao = new UserJdbcDao(addressDao, carDao);
-        orderDao = new OrderJdbcDao(userDao, addressDao);
+        userDao = new UserJdbcDao();
+        orderDao = new OrderJdbcDao(userDao);
         validator = new ValidatorJdbcImpl(userDao);
         userService = new UserServiceJdbcImpl(userDao, orderDao, validator);
 
@@ -241,7 +235,6 @@ public class TestMyTaxi {
         Order testOrder = orderDao.create(passenger1, order2);
         if (testOrder != null) {
             order2.setId(testOrder.getId());
-            passenger1.getOrderIds().add(order2.getId());
         }
 
         List<Order> allUserOrders = orderDao.getOrdersOfUser(passenger1);
@@ -301,8 +294,6 @@ public class TestMyTaxi {
 
         orderDao.addToDriver(driver1, testOrder);
         orderDao.update(testOrder);
-
-        driver1.getOrderIds().add(testOrder.getId());
 
         Assert.assertEquals(OrderStatus.IN_PROGRESS, testOrder.getOrderStatus());
         Assert.assertEquals(true, testOrder.getDriver().equals(driver1));

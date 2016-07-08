@@ -32,10 +32,8 @@ public class RunServer {
         Gson gson = new Gson();
 
         //create test data
-        AddressDao addressDao = new AddressDao();
-        CarDao carDao = new CarDao();
-        UserDao userDao = new UserJdbcDao(addressDao, carDao);
-        OrderDao orderDao = new OrderJdbcDao(userDao, addressDao);
+        UserDao userDao = new UserJdbcDao();
+        OrderDao orderDao = new OrderJdbcDao(userDao);
         ValidatorJdbcImpl validator = new ValidatorJdbcImpl(userDao);
 
         UserService userService = new UserServiceJdbcImpl(userDao, orderDao, validator);

@@ -1,15 +1,42 @@
 package ua.artcode.taxi.model;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "addresses")
 public class Address {
 
+    @OneToMany(mappedBy = "homeAddress",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    List<User> users = new ArrayList<>();
+
+    @OneToMany(mappedBy = "from",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    List<Order> ordersFrom = new ArrayList<>();
+
+    @OneToMany(mappedBy = "to",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    List<Order> ordersTo = new ArrayList<>();
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @Column(name = "country", nullable = false)
     private String country;
+
+    @Column(name = "city", nullable = false)
     private String city;
+
+    @Column(name = "street", nullable = false)
     private String street;
+
+    @Column(name = "houseNum", nullable = false)
     private String houseNum;
 
     // google api
+    @Transient
     private double lat;
+    @Transient
     private double lon;
 
     public Address(String country, String city, String street, String houseNum) {
@@ -100,6 +127,30 @@ public class Address {
         this.lon = lon;
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public List<Order> getOrdersFrom() {
+        return ordersFrom;
+    }
+
+    public void setOrdersFrom(List<Order> ordersFrom) {
+        this.ordersFrom = ordersFrom;
+    }
+
+    public List<Order> getOrdersTo() {
+        return ordersTo;
+    }
+
+    public void setOrdersTo(List<Order> ordersTo) {
+        this.ordersTo = ordersTo;
+    }
+
     @Override
     public String toString() {
         return "Address{" +
@@ -121,13 +172,21 @@ public class Address {
     public boolean equals(Object obj) {
 
         if (obj instanceof Address) {
-            return id == (((Address) obj).id) &&
-                    country.equals(((Address) obj).country) &&
+            return country.equals(((Address) obj).country) &&
                     city.equals(((Address) obj).city) &&
                     street.equals(((Address) obj).street) &&
                     houseNum.equals(((Address) obj).houseNum);
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = country.hashCode();
+        result = 31 * result + city.hashCode();
+        result = 31 * result + street.hashCode();
+        result = 31 * result + houseNum.hashCode();
+        return result;
     }
 }
