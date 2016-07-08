@@ -29,8 +29,6 @@
 
             <property name="hibernate.hbm2ddl.auto" value="update" /> <!-- init DDL operations -->
             <!--update,create, create-drop-->
-
-            <property name="hibernate.enable_lazy_load_no_trans" value="true" />
         </properties>
 
     </persistence-unit>

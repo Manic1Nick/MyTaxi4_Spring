@@ -8,7 +8,7 @@ import java.util.List;
 @Table(name = "cars")
 public class Car {
 
-    @OneToMany(mappedBy = "car",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "car", cascade=CascadeType.ALL)
     List<User> users = new ArrayList<>();
 
     @Id
@@ -88,6 +88,9 @@ public class Car {
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        int result = type.hashCode();
+        result = 31 * result + model.hashCode();
+        result = 31 * result + number.hashCode();
+        return result;
     }
 }

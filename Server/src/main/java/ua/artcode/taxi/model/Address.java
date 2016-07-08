@@ -8,13 +8,13 @@ import java.util.List;
 @Table(name = "addresses")
 public class Address {
 
-    @OneToMany(mappedBy = "homeAddress",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "homeAddress", cascade=CascadeType.ALL)
     List<User> users = new ArrayList<>();
 
-    @OneToMany(mappedBy = "from",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "from", cascade=CascadeType.ALL)
     List<Order> ordersFrom = new ArrayList<>();
 
-    @OneToMany(mappedBy = "to",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "to", cascade=CascadeType.ALL)
     List<Order> ordersTo = new ArrayList<>();
 
     @Id
@@ -127,29 +127,7 @@ public class Address {
         this.lon = lon;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
-    public List<Order> getOrdersFrom() {
-        return ordersFrom;
-    }
-
-    public void setOrdersFrom(List<Order> ordersFrom) {
-        this.ordersFrom = ordersFrom;
-    }
-
-    public List<Order> getOrdersTo() {
-        return ordersTo;
-    }
-
-    public void setOrdersTo(List<Order> ordersTo) {
-        this.ordersTo = ordersTo;
-    }
 
     @Override
     public String toString() {

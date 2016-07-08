@@ -9,10 +9,10 @@ import java.util.List;
 @NamedQueries({@NamedQuery(name = "getAllUsers", query = "SELECT c FROM User c")})
 public class User implements PassengerActive, DriverActive {
 
-    @OneToMany(mappedBy = "passenger",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "passenger",cascade=CascadeType.ALL)
     List<Order> ordersPassenger = new ArrayList<>();
 
-    @OneToMany(mappedBy = "driver",cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL)
     List<Order> ordersDriver = new ArrayList<>();
 
     @Id
@@ -31,11 +31,11 @@ public class User implements PassengerActive, DriverActive {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
     private Address homeAddress;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
     private Car car;
 
