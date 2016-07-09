@@ -24,13 +24,12 @@ public class OrderJdbcDao implements OrderDao {
     @Override
     public Order create(User user, Order order) {
 
+        order.setOrderStatus(OrderStatus.NEW);
         order.setPassenger(user);
 
         manager.getTransaction().begin();
         manager.persist(order);
         manager.getTransaction().commit();
-
-        manager.clear();
 
         return order;
     }
@@ -40,10 +39,8 @@ public class OrderJdbcDao implements OrderDao {
 
         manager.getTransaction().begin();
         Query query = manager.createNamedQuery("getAllOrders");
-        List<Order> orders = query.getResultList();
+        Collection<Order> orders = query.getResultList();
         manager.getTransaction().commit();
-
-        manager.clear();
 
         return orders;
     }
@@ -54,8 +51,6 @@ public class OrderJdbcDao implements OrderDao {
         manager.getTransaction().begin();
         manager.persist(newOrder);
         manager.getTransaction().commit();
-
-        manager.clear();
 
         return newOrder;
     }
@@ -69,8 +64,6 @@ public class OrderJdbcDao implements OrderDao {
         manager.remove(delOrder);
         manager.getTransaction().commit();
 
-        manager.clear();
-
         return delOrder;
     }
 
@@ -80,8 +73,6 @@ public class OrderJdbcDao implements OrderDao {
         manager.getTransaction().begin();
         Order order = manager.find(Order.class, id);
         manager.getTransaction().commit();
-
-        manager.clear();
 
         return order;
     }
@@ -103,7 +94,7 @@ public class OrderJdbcDao implements OrderDao {
     @Override
     public List<Order> getOrdersOfUser(User user) {
 
-        return userDao.getAllOrdersByUser(user);
+        return userDao.getAllOrdersOfUser(user);
     }
 
     @Override
@@ -114,8 +105,6 @@ public class OrderJdbcDao implements OrderDao {
         manager.getTransaction().begin();
         manager.persist(order);
         manager.getTransaction().commit();
-
-        manager.clear();
 
         return order;
     }

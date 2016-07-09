@@ -8,8 +8,12 @@ import java.util.List;
 @Table(name = "cars")
 public class Car {
 
-    @OneToMany(mappedBy = "car", cascade=CascadeType.ALL)
-    List<User> users = new ArrayList<>();
+   /* @OneToMany(mappedBy = "car", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    List<User> users = new ArrayList<>();*/
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
+    private User user;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -66,12 +70,12 @@ public class Car {
         this.number = number;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

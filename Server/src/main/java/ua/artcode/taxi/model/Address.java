@@ -8,14 +8,18 @@ import java.util.List;
 @Table(name = "addresses")
 public class Address {
 
-    @OneToMany(mappedBy = "homeAddress", cascade=CascadeType.ALL)
+    /*@OneToMany(mappedBy = "homeAddress", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     List<User> users = new ArrayList<>();
 
-    @OneToMany(mappedBy = "from", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "from", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     List<Order> ordersFrom = new ArrayList<>();
 
-    @OneToMany(mappedBy = "to", cascade=CascadeType.ALL)
-    List<Order> ordersTo = new ArrayList<>();
+    @OneToMany(mappedBy = "to", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    List<Order> ordersTo = new ArrayList<>();*/
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
+    private User user;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -127,7 +131,13 @@ public class Address {
         this.lon = lon;
     }
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @Override
     public String toString() {

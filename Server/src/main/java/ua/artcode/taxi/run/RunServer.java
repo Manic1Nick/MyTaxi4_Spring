@@ -1,7 +1,10 @@
 package ua.artcode.taxi.run;
 
 import com.google.gson.Gson;
-import ua.artcode.taxi.dao.*;
+import ua.artcode.taxi.dao.OrderDao;
+import ua.artcode.taxi.dao.OrderJdbcDao;
+import ua.artcode.taxi.dao.UserDao;
+import ua.artcode.taxi.dao.UserJdbcDao;
 import ua.artcode.taxi.exception.*;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
@@ -90,6 +93,7 @@ public class RunServer {
     }
 }
 
+
 class ClientThreadLogic implements Runnable {
 
 
@@ -106,6 +110,7 @@ class ClientThreadLogic implements Runnable {
         this.pw = pw;
         this.bf = bf;
     }
+
 
     @Override
     public void run() {
@@ -447,8 +452,6 @@ class ClientThreadLogic implements Runnable {
                     pw.println(e);
                     pw.flush();
                 }
-
-
             }
 
             //getUser

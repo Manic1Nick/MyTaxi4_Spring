@@ -146,9 +146,7 @@ public class UserServiceJdbcImpl implements UserService {
                 int price = (int) pricePerKilometer * distance + 30;
                 message = message.equals("") ? "" : user.getName() + ": " + message;
 
-                newOrder = new Order(from, to, user, distance, price, message);
-
-                orderDao.create(user, newOrder);
+                newOrder = orderDao.create(user, new Order(from, to, user, distance, price, message));
 
                 LOG.info("User " + user.getPhone() + " makes new order " + newOrder.getId());
 
@@ -276,8 +274,7 @@ public class UserServiceJdbcImpl implements UserService {
 
         if (accessToken == null) {
 
-            LOG.error("UserNotFoundException: failed attempt to find user by key " +
-                    accessToken + " in data base");
+            LOG.error("UserNotFoundException: failed attempt to find user in data base");
 
             throw new UserNotFoundException("wrong data user");
         }
@@ -426,7 +423,7 @@ public class UserServiceJdbcImpl implements UserService {
 
         User user = accessKeys.get(accessToken);
 
-        List<Order> ordersOfUser = orderDao.getOrdersOfUser(user);
+        List<Order> ordersOfUser = userDao.getAllOrdersOfUser(user);
 
         LOG.info("Get all orders of user " + user.getPhone());
 

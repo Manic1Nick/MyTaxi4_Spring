@@ -45,8 +45,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Address from, Address to, User passenger,
-                                            int distance, int price, String message) {
+    public Order(Address from, Address to, User passenger, int distance, int price, String message) {
         this.from = from;
         this.to = to;
         this.passenger = passenger;
@@ -177,7 +176,15 @@ public class Order {
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        int result = orderStatus.hashCode();
+        result = 31 * result + from.hashCode();
+        result = 31 * result + to.hashCode();
+        result = 31 * result + passenger.hashCode();
+        result = 31 * result + driver.hashCode();
+        result = 31 * result + distance;
+        result = 31 * result + price;
+        result = 31 * result + message.hashCode();
+        return result;
     }
 }
 

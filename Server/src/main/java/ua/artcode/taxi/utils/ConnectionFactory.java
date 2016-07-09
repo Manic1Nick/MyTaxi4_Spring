@@ -33,6 +33,7 @@ public class ConnectionFactory {
                 url, user, password);
     }
 
+
     public static EntityManager createEntityManager() {
 
         EntityManagerFactory entityManagerFactory =

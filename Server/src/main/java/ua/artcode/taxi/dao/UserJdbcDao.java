@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 public class UserJdbcDao implements UserDao {
 
     private EntityManager manager = ConnectionFactory.createEntityManager();
@@ -26,8 +25,6 @@ public class UserJdbcDao implements UserDao {
         manager.persist(user);
         manager.getTransaction().commit();
 
-        manager.clear();
-
         return user;
     }
 
@@ -36,10 +33,8 @@ public class UserJdbcDao implements UserDao {
 
         manager.getTransaction().begin();
         Query query = manager.createNamedQuery("getAllUsers");
-        List<User> users = query.getResultList();
+        Collection<User> users = query.getResultList();
         manager.getTransaction().commit();
-
-        manager.clear();
 
         return users;
     }
@@ -50,8 +45,6 @@ public class UserJdbcDao implements UserDao {
         manager.getTransaction().begin();
         manager.persist(newUser);
         manager.getTransaction().commit();
-
-        manager.clear();
 
         return newUser;
     }
@@ -64,8 +57,6 @@ public class UserJdbcDao implements UserDao {
         manager.getTransaction().begin();
         manager.remove(delUser);
         manager.getTransaction().commit();
-
-        manager.clear();
 
         return delUser;
     }
@@ -103,8 +94,6 @@ public class UserJdbcDao implements UserDao {
         User user = manager.find(User.class, id);
         manager.getTransaction().commit();
 
-        manager.clear();
-
         return user;
     }
 
@@ -122,7 +111,7 @@ public class UserJdbcDao implements UserDao {
     }
 
     @Override
-    public List<Order> getAllOrdersByUser(User user) {
+    public List<Order> getAllOrdersOfUser(User user) {
 
         List<Order> orders = new ArrayList<>();
 

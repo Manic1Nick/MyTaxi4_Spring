@@ -20,5 +20,5 @@ public interface UserDao {
     List<User> getAllUsersByIdentifier(UserIdentifier identifier);
 
     List<String> getAllRegisteredPhones();
-    List<Order> getAllOrdersByUser(User user);
+    List<Order> getAllOrdersOfUser(User user);
 }

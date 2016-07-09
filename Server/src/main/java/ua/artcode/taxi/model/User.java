@@ -9,10 +9,10 @@ import java.util.List;
 @NamedQueries({@NamedQuery(name = "getAllUsers", query = "SELECT c FROM User c")})
 public class User implements PassengerActive, DriverActive {
 
-    @OneToMany(mappedBy = "passenger",cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "passenger", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     List<Order> ordersPassenger = new ArrayList<>();
 
-    @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     List<Order> ordersDriver = new ArrayList<>();
 
     @Id
@@ -31,13 +31,21 @@ public class User implements PassengerActive, DriverActive {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
+    private Address homeAddress;
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
+    private Car car;
+
+    /*@ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
     private Address homeAddress;
 
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
-    private Car car;
+    private Car car;*/
 
     public User() {
     }
@@ -190,12 +198,16 @@ public class User implements PassengerActive, DriverActive {
         }
 
         return false;
-
-        //todo equals list ids
     }
 
     @Override
     public int hashCode() {
-        return id;
+        int result = identifier.hashCode();
+        result = 31 * result + phone.hashCode();
+        result = 31 * result + pass.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + homeAddress.hashCode();
+        result = 31 * result + car.hashCode();
+        return result;
     }
 }
