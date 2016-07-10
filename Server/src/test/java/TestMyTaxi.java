@@ -4,7 +4,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import ua.artcode.taxi.dao.OrderJpaDao;
-import ua.artcode.taxi.dao.UserJdbcDao;
+import ua.artcode.taxi.dao.UserJpaDao;
 import ua.artcode.taxi.model.*;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.service.UserServiceJdbcImpl;
@@ -19,7 +19,7 @@ import java.util.Map;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestMyTaxi {
 
-    private static UserJdbcDao userDao;
+    private static UserJpaDao userDao;
     private static OrderJpaDao orderDao;
     private static ValidatorJdbcImpl validator;
     private static double pricePerKilometer = 5;
@@ -42,7 +42,7 @@ public class TestMyTaxi {
 
     @BeforeClass
     public static void beforeClass() {
-        userDao = new UserJdbcDao();
+        userDao = new UserJpaDao();
         orderDao = new OrderJpaDao(userDao);
         validator = new ValidatorJdbcImpl(userDao);
         userService = new UserServiceJdbcImpl(userDao, orderDao, validator);

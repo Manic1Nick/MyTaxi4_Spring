@@ -3,7 +3,7 @@ package ua.artcode.taxi.model;
 import ua.artcode.taxi.dao.OrderDao;
 import ua.artcode.taxi.dao.OrderJpaDao;
 import ua.artcode.taxi.dao.UserDao;
-import ua.artcode.taxi.dao.UserJdbcDao;
+import ua.artcode.taxi.dao.UserJpaDao;
 
 public class Factory {
     private static Factory instance = null;
@@ -19,7 +19,7 @@ public class Factory {
 
     public UserDao getUserDao() {
         if (userDao == null) {
-            userDao = new UserJdbcDao();
+            userDao = new UserJpaDao();
         }
         return userDao;
     }

@@ -2686,3 +2686,15 @@
 2016-07-10 10:07:26 INFO  UserServiceJdbcImpl:442 - Found 0 orders with status NEW
 2016-07-10 10:07:26 INFO  UserServiceJdbcImpl:460 - Create map of distances from orders to driver address Ukraine Kiev Starokievskaya 10
 2016-07-10 10:08:28 INFO  UserServiceJdbcImpl:418 - Request user 5678
+2016-07-10 13:51:52 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-10 13:51:52 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-10 13:51:52 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-10 13:51:52 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-10 13:51:52 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-10 13:51:53 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-10 13:51:53 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi_hibernate]
+2016-07-10 13:51:53 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-10 13:51:53 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-10 13:51:53 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)

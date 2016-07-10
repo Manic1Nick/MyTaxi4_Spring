@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class UserJdbcDao implements UserDao {
+public class UserJpaDao implements UserDao {
 
     private EntityManager manager = ConnectionFactory.createEntityManager();
 
-    public UserJdbcDao() {
+    public UserJpaDao() {
     }
 
     @Override

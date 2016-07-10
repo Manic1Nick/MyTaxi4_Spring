@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import ua.artcode.taxi.dao.OrderDao;
 import ua.artcode.taxi.dao.OrderJpaDao;
 import ua.artcode.taxi.dao.UserDao;
-import ua.artcode.taxi.dao.UserJdbcDao;
+import ua.artcode.taxi.dao.UserJpaDao;
 import ua.artcode.taxi.exception.*;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
@@ -35,7 +35,7 @@ public class RunServer {
         Gson gson = new Gson();
 
         //create test data
-        UserDao userDao = new UserJdbcDao();
+        UserDao userDao = new UserJpaDao();
         OrderDao orderDao = new OrderJpaDao(userDao);
         ValidatorJdbcImpl validator = new ValidatorJdbcImpl(userDao);
 

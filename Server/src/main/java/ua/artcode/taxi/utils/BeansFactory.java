@@ -19,7 +19,7 @@ public class BeansFactory {
             return (UserService) objectMap.get("userService");
 
         } else {
-            UserDao userDao = new UserJdbcDao();
+            UserDao userDao = new UserJpaDao();
             OrderDao orderDao = new OrderJpaDao(userDao);
             ValidatorJdbcImpl validator = new ValidatorJdbcImpl(userDao);
 
