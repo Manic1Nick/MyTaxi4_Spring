@@ -129,11 +129,12 @@ public class UserServiceJdbcImpl implements UserService {
         if (user != null) {
 
             for (Order order : user.getOrdersPassenger()) {
-                if (order.getOrderStatus().equals(OrderStatus.NEW)) {
+                if (order.getOrderStatus().equals(OrderStatus.NEW) ||
+                        order.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
 
                     LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
 
-                    throw new OrderMakeException("User has orders NEW already");
+                    throw new OrderMakeException("User has orders NEW or IN_PROGRESS already");
                 }
             }
 
@@ -144,7 +145,8 @@ public class UserServiceJdbcImpl implements UserService {
                         to.getStreet(), to.getHouseNum());
                 int distance = (int) (googleMapsAPI.getDistance(location, location1) / 1000);
                 int price = (int) pricePerKilometer * distance + 30;
-                message = message.equals("") ? "" : user.getName() + ": " + message;
+
+                message = message == null ? "" : user.getName() + ": " + message;
 
                 newOrder = orderDao.create(user, new Order(from, to, user, distance, price, message));
 
@@ -400,6 +402,7 @@ public class UserServiceJdbcImpl implements UserService {
 
         inProgress.setDriver(user);
         inProgress.setOrderStatus(OrderStatus.IN_PROGRESS);
+        orderDao.addToDriver(user, inProgress);
 
         Order takenOrder = orderDao.update(inProgress);
 

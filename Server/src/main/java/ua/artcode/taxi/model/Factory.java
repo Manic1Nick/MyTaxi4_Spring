@@ -1,7 +1,7 @@
 package ua.artcode.taxi.model;
 
 import ua.artcode.taxi.dao.OrderDao;
-import ua.artcode.taxi.dao.OrderJdbcDao;
+import ua.artcode.taxi.dao.OrderJpaDao;
 import ua.artcode.taxi.dao.UserDao;
 import ua.artcode.taxi.dao.UserJdbcDao;
 
@@ -26,7 +26,7 @@ public class Factory {
 
     public OrderDao getOrderDao() {
         if (orderDao == null) {
-            orderDao = new OrderJdbcDao(userDao);
+            orderDao = new OrderJpaDao(userDao);
         }
         return orderDao;
     }

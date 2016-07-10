@@ -20,10 +20,12 @@ public class BeansFactory {
 
         } else {
             UserDao userDao = new UserJdbcDao();
-            OrderDao orderDao = new OrderJdbcDao(userDao);
+            OrderDao orderDao = new OrderJpaDao(userDao);
             ValidatorJdbcImpl validator = new ValidatorJdbcImpl(userDao);
 
-            return new UserServiceJdbcImpl(userDao, orderDao, validator);
+            UserServiceJdbcImpl userServiceJdbc = new UserServiceJdbcImpl(userDao, orderDao, validator);
+            objectMap.put("userService", userServiceJdbc);
+            return userServiceJdbc;
         }
 
 

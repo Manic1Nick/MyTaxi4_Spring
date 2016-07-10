@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/make-order"})
@@ -34,12 +35,21 @@ public class MakeOrderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String accessToken = req.getParameter("accessToken");
-        String lineFrom = req.getParameter("countryFrom" + " " + "cityFrom" + " " + "streetFrom" + " " + "houseNumFrom");
-        String lineTo = req.getParameter("countryTo" + " " + "cityTo" + " " + "streetTo" + " " + "houseNumTo");
+        /*String accessToken = String.valueOf(req.getAttribute("accessToken"));*/
+        String lineFrom = req.getParameter("countryFrom") + " " +
+                        req.getParameter("cityFrom") + " " +
+                        req.getParameter("streetFrom") + " " +
+                        req.getParameter("houseNumFrom");
+        String lineTo = req.getParameter("countryTo") + " " +
+                        req.getParameter("cityTo") + " " +
+                        req.getParameter("streetTo") + " " +
+                        req.getParameter("houseNumTo");
         String message = req.getParameter("message");
 
         try {
+            HttpSession session = req.getSession(true);
+            String accessToken = String.valueOf(session.getAttribute("accessToken"));
+
             Order order = userService.makeOrder(accessToken, lineFrom, lineTo, message);
 
             req.setAttribute("order", order);

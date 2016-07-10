@@ -14,6 +14,7 @@ public class ReflectionFormatter {
     private Gson gson;
 
     public static Map<String, Object> userToJsonMap(User user) {
+        Gson gson = new Gson();
 
         Map<String, Object> map = new HashMap<>();
 
@@ -22,8 +23,8 @@ public class ReflectionFormatter {
         map.put("phone", user.getPhone());
         map.put("pass", user.getPass());
         map.put("name", user.getName());
-        map.put("homeAddress", new Gson().toJson(user.getHomeAddress()));
-        map.put("car", new Gson().toJson(user.getCar()));
+        map.put("homeAddress", gson.toJson(user.getHomeAddress()));
+        map.put("car", gson.toJson(user.getCar()));
 
         return map;
     }

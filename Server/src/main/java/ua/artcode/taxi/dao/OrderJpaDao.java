@@ -11,24 +11,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class OrderJdbcDao implements OrderDao {
+public class OrderJpaDao implements OrderDao {
 
     private EntityManager manager = ConnectionFactory.createEntityManager();
 
     private UserDao userDao;
 
-    public OrderJdbcDao(UserDao userDao) {
+    public OrderJpaDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
     @Override
     public Order create(User user, Order order) {
 
+        manager.getTransaction().begin();
+
         order.setOrderStatus(OrderStatus.NEW);
         order.setPassenger(user);
-
-        manager.getTransaction().begin();
         manager.persist(order);
+
+        user.getOrdersPassenger().add(order);
+        manager.merge(user);
+
         manager.getTransaction().commit();
 
         return order;
@@ -49,18 +53,31 @@ public class OrderJdbcDao implements OrderDao {
     public Order update(Order newOrder) {
 
         manager.getTransaction().begin();
-        manager.persist(newOrder);
+
+        Order foundOrder = manager.find(Order.class, newOrder.getId());
+
+        OrderStatus status = newOrder.getOrderStatus();
+
+        foundOrder.setOrderStatus(status);
+        foundOrder.setFrom(newOrder.getFrom());
+        foundOrder.setTo(newOrder.getTo());
+        foundOrder.setPassenger(newOrder.getPassenger());
+        foundOrder.setDriver(newOrder.getDriver());
+        foundOrder.setDistance(newOrder.getDistance());
+        foundOrder.setPrice(newOrder.getPrice());
+        foundOrder.setMessage(newOrder.getMessage());
+
+        manager.merge(foundOrder);
         manager.getTransaction().commit();
 
-        return newOrder;
+        return foundOrder;
     }
 
     @Override
     public Order delete(long id) {
 
-        Order delOrder = findById(id);
-
         manager.getTransaction().begin();
+        Order delOrder = manager.find(Order.class, id);
         manager.remove(delOrder);
         manager.getTransaction().commit();
 
@@ -101,10 +118,10 @@ public class OrderJdbcDao implements OrderDao {
     public Order addToDriver(User user, Order order) {
 
         order.setDriver(user);
+        update(order);
 
-        manager.getTransaction().begin();
-        manager.persist(order);
-        manager.getTransaction().commit();
+        user.getOrdersDriver().add(order);
+        userDao.updateUser(user);
 
         return order;
     }

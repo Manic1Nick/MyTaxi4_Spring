@@ -2313,3 +2313,376 @@
 2016-07-09 09:24:07 INFO  UserServiceJdbcImpl:416 - Request user 5678
 2016-07-09 09:24:07 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
 2016-07-09 09:24:10 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 10:03:51 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-09 10:03:52 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-09 10:03:52 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-09 10:03:52 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-09 10:03:52 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-09 10:03:52 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-09 10:03:52 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi]
+2016-07-09 10:03:52 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-09 10:03:52 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-09 10:03:52 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-09 10:03:53 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-09 10:03:53 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-09 10:03:54 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-09 10:03:54 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-09 10:04:18 INFO  UserServiceJdbcImpl:106 - User 1234 logged in
+2016-07-09 10:04:18 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 10:13:11 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-09 10:13:11 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-09 10:13:11 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-09 10:13:11 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-09 10:13:11 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-09 10:13:12 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-09 10:13:12 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi]
+2016-07-09 10:13:12 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-09 10:13:12 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-09 10:13:12 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-09 10:13:13 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-09 10:13:13 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-09 10:13:14 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-09 10:13:14 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-09 10:13:23 INFO  UserServiceJdbcImpl:106 - User 1234 logged in
+2016-07-09 10:13:23 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 10:15:00 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-09 10:15:00 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-09 10:15:00 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-09 10:15:00 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-09 10:15:00 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-09 10:15:01 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-09 10:15:01 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi]
+2016-07-09 10:15:01 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-09 10:15:01 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-09 10:15:01 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-09 10:15:02 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-09 10:15:02 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-09 10:15:03 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-09 10:15:03 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-09 10:15:11 INFO  UserServiceJdbcImpl:106 - User 1234 logged in
+2016-07-09 10:15:11 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 10:16:26 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-09 10:16:27 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-09 10:16:27 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-09 10:16:27 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-09 10:16:27 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-09 10:16:27 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-09 10:16:27 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi]
+2016-07-09 10:16:27 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-09 10:16:27 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-09 10:16:27 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-09 10:16:28 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-09 10:16:28 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-09 10:16:29 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-09 10:16:30 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-09 10:16:48 INFO  UserServiceJdbcImpl:106 - User 1234 logged in
+2016-07-09 10:16:48 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 10:20:35 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-09 10:20:36 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-09 10:20:36 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-09 10:20:36 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-09 10:20:36 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-09 10:20:36 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-09 10:20:36 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi]
+2016-07-09 10:20:36 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-09 10:20:36 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-09 10:20:36 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-09 10:20:37 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-09 10:20:37 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-09 10:20:39 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-09 10:20:39 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-09 10:20:48 INFO  UserServiceJdbcImpl:106 - User 1234 logged in
+2016-07-09 10:20:48 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 10:21:32 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 10:21:39 INFO  UserServiceJdbcImpl:151 - User 1234 makes new order 20
+2016-07-09 10:21:43 INFO  UserServiceJdbcImpl:428 - Get all orders of user 1234
+2016-07-09 10:21:43 ERROR UserServiceJdbcImpl:286 - OrderNotFoundException: failed attempt to get info about last order of user 1234
+2016-07-09 10:21:45 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 10:21:45 INFO  UserServiceJdbcImpl:428 - Get all orders of user 1234
+2016-07-09 10:21:48 INFO  UserServiceJdbcImpl:428 - Get all orders of user 1234
+2016-07-09 10:21:48 ERROR UserServiceJdbcImpl:286 - OrderNotFoundException: failed attempt to get info about last order of user 1234
+2016-07-09 10:21:51 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 10:21:51 INFO  UserServiceJdbcImpl:428 - Get all orders of user 1234
+2016-07-09 10:21:55 INFO  UserServiceJdbcImpl:428 - Get all orders of user 1234
+2016-07-09 10:21:55 ERROR UserServiceJdbcImpl:286 - OrderNotFoundException: failed attempt to get info about last order of user 1234
+2016-07-09 10:58:50 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 10:58:50 INFO  UserServiceJdbcImpl:428 - Get all orders of user 1234
+2016-07-09 11:11:36 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 11:11:49 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-09 11:11:49 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-09 11:11:49 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-09 11:11:49 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-09 11:11:49 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-09 11:11:50 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-09 11:11:50 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi]
+2016-07-09 11:11:50 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-09 11:11:50 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-09 11:11:50 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-09 11:11:51 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-09 11:11:51 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-09 11:11:52 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-09 11:11:52 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-09 11:12:05 INFO  UserServiceJdbcImpl:106 - User 5678 logged in
+2016-07-09 11:12:05 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:12:05 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:12:06 INFO  UserServiceJdbcImpl:552 - Get all order by status NEW
+2016-07-09 11:12:06 INFO  UserServiceJdbcImpl:440 - Found 2 orders with status NEW
+2016-07-09 11:12:08 INFO  UserServiceJdbcImpl:458 - Create map of distances from orders to driver address Ukraine Kiev Starokievskaya 10
+2016-07-09 11:12:12 INFO  UserServiceJdbcImpl:406 - User 5678 was take order 20 for execution
+2016-07-09 11:12:18 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:12:18 ERROR UserServiceJdbcImpl:286 - OrderNotFoundException: failed attempt to get info about last order of user 5678
+2016-07-09 11:12:20 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:12:20 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:18:33 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-09 11:18:33 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-09 11:18:33 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-09 11:18:33 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-09 11:18:33 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-09 11:18:34 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-09 11:18:34 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi]
+2016-07-09 11:18:34 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-09 11:18:34 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-09 11:18:34 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-09 11:18:35 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-09 11:18:35 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-09 11:18:36 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-09 11:18:36 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-09 11:18:43 INFO  UserServiceJdbcImpl:106 - User 5678 logged in
+2016-07-09 11:18:43 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:18:43 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:18:44 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:18:44 ERROR UserServiceJdbcImpl:286 - OrderNotFoundException: failed attempt to get info about last order of user 5678
+2016-07-09 11:18:47 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:18:47 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:21:30 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-09 11:21:30 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-09 11:21:30 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-09 11:21:30 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-09 11:21:30 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-09 11:21:30 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-09 11:21:30 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi]
+2016-07-09 11:21:30 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-09 11:21:30 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-09 11:21:31 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-09 11:21:31 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-09 11:21:31 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-09 11:21:33 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-09 11:21:33 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-09 11:21:42 INFO  UserServiceJdbcImpl:106 - User 5678 logged in
+2016-07-09 11:21:42 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:21:42 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:21:43 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:21:43 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 20
+2016-07-09 11:21:48 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:21:48 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:23:09 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:23:09 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 20
+2016-07-09 11:23:12 INFO  UserServiceJdbcImpl:363 - User 5678 closed his order 20
+2016-07-09 11:23:16 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:23:16 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 20
+2016-07-09 11:23:19 ERROR UserServiceJdbcImpl:394 - WrongStatusOrderException: failed attempt to take order with ID 20 by user 5678
+2016-07-09 11:23:21 ERROR UserServiceJdbcImpl:353 - WrongStatusOrderException: failed attempt to close order with ID 20 by user 5678
+2016-07-09 11:23:26 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:23:26 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:23:29 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:23:35 INFO  UserServiceJdbcImpl:106 - User 1234 logged in
+2016-07-09 11:23:35 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 11:23:36 INFO  UserServiceJdbcImpl:428 - Get all orders of user 1234
+2016-07-09 11:23:36 INFO  UserServiceJdbcImpl:294 - User 1234 get information for his last order 20
+2016-07-09 11:23:39 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 11:23:39 INFO  UserServiceJdbcImpl:428 - Get all orders of user 1234
+2016-07-09 11:27:33 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 11:27:38 INFO  UserServiceJdbcImpl:492 - Change registered data for user. User 1234 was updated
+2016-07-09 11:29:12 INFO  UserServiceJdbcImpl:416 - Request user 1234
+2016-07-09 11:29:25 INFO  UserServiceJdbcImpl:106 - User 066755 logged in
+2016-07-09 11:29:25 INFO  UserServiceJdbcImpl:416 - Request user 066755
+2016-07-09 11:29:29 INFO  UserServiceJdbcImpl:416 - Request user 066755
+2016-07-09 11:29:40 ERROR UserServiceJdbcImpl:134 - OrderMakeException: failed attempt to make order by user 066755
+2016-07-09 11:29:45 INFO  UserServiceJdbcImpl:428 - Get all orders of user 066755
+2016-07-09 11:29:45 INFO  UserServiceJdbcImpl:294 - User 066755 get information for his last order 16
+2016-07-09 11:29:50 INFO  UserServiceJdbcImpl:317 - Order 16 was cancelled by user
+2016-07-09 11:30:05 INFO  UserServiceJdbcImpl:249 - Someone calculates order from Ukraine Kiev Starokievskaya 10 to Russia Moscow Lenina 10
+2016-07-09 11:30:07 INFO  UserServiceJdbcImpl:151 - User 066755 makes new order 24
+2016-07-09 11:30:19 INFO  UserServiceJdbcImpl:428 - Get all orders of user 066755
+2016-07-09 11:30:19 INFO  UserServiceJdbcImpl:294 - User 066755 get information for his last order 24
+2016-07-09 11:30:22 INFO  UserServiceJdbcImpl:416 - Request user 066755
+2016-07-09 11:30:22 INFO  UserServiceJdbcImpl:428 - Get all orders of user 066755
+2016-07-09 11:30:29 INFO  UserServiceJdbcImpl:416 - Request user 066755
+2016-07-09 11:30:38 INFO  UserServiceJdbcImpl:106 - User 5678 logged in
+2016-07-09 11:30:38 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:30:38 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:30:39 INFO  UserServiceJdbcImpl:552 - Get all order by status NEW
+2016-07-09 11:30:39 INFO  UserServiceJdbcImpl:440 - Found 1 orders with status NEW
+2016-07-09 11:30:40 INFO  UserServiceJdbcImpl:458 - Create map of distances from orders to driver address Ukraine Kiev Starokievskaya 10
+2016-07-09 11:30:44 ERROR UserServiceJdbcImpl:346 - DriverOrderActionException: failed attempt to close order with ID 24 by user 5678
+2016-07-09 11:30:47 INFO  UserServiceJdbcImpl:406 - User 5678 was take order 24 for execution
+2016-07-09 11:30:55 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:31:00 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:31:00 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 20
+2016-07-09 11:31:03 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:31:04 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:31:06 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:31:06 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 20
+2016-07-09 11:31:10 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:31:10 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 20
+2016-07-09 11:31:50 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:31:50 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 20
+2016-07-09 11:32:00 INFO  UserServiceJdbcImpl:416 - Request user 5678
+2016-07-09 11:32:00 INFO  UserServiceJdbcImpl:428 - Get all orders of user 5678
+2016-07-09 11:38:30 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-09 11:38:31 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-09 11:38:31 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-09 11:38:31 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-09 11:38:31 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-09 11:38:31 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-09 11:38:31 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi]
+2016-07-09 11:38:31 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-09 11:38:31 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-09 11:38:31 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-09 11:38:32 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-09 11:38:32 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-09 11:38:33 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-09 11:38:33 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-09 11:38:41 INFO  UserServiceJdbcImpl:106 - User 1234 logged in
+2016-07-09 11:38:41 INFO  UserServiceJdbcImpl:417 - Request user 1234
+2016-07-09 11:38:44 INFO  UserServiceJdbcImpl:417 - Request user 1234
+2016-07-09 11:38:59 INFO  UserServiceJdbcImpl:151 - User 1234 makes new order 27
+2016-07-09 11:39:02 INFO  UserServiceJdbcImpl:429 - Get all orders of user 1234
+2016-07-09 11:39:02 INFO  UserServiceJdbcImpl:294 - User 1234 get information for his last order 27
+2016-07-09 11:39:06 INFO  UserServiceJdbcImpl:417 - Request user 1234
+2016-07-09 11:39:06 INFO  UserServiceJdbcImpl:429 - Get all orders of user 1234
+2016-07-09 11:39:46 INFO  UserServiceJdbcImpl:417 - Request user 1234
+2016-07-09 11:39:55 INFO  UserServiceJdbcImpl:106 - User 5678 logged in
+2016-07-09 11:39:55 INFO  UserServiceJdbcImpl:417 - Request user 5678
+2016-07-09 11:39:55 INFO  UserServiceJdbcImpl:417 - Request user 5678
+2016-07-09 11:39:56 INFO  UserServiceJdbcImpl:553 - Get all order by status NEW
+2016-07-09 11:39:56 INFO  UserServiceJdbcImpl:441 - Found 1 orders with status NEW
+2016-07-09 11:39:56 INFO  UserServiceJdbcImpl:459 - Create map of distances from orders to driver address Ukraine Kiev Starokievskaya 10
+2016-07-09 11:40:16 ERROR UserServiceJdbcImpl:378 - DriverOrderActionException: failed attempt to take order with ID 27 by user 5678
+2016-07-09 11:40:22 INFO  UserServiceJdbcImpl:429 - Get all orders of user 5678
+2016-07-09 11:40:22 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 24
+2016-07-09 11:40:26 INFO  UserServiceJdbcImpl:417 - Request user 5678
+2016-07-09 11:40:26 INFO  UserServiceJdbcImpl:429 - Get all orders of user 5678
+2016-07-09 11:40:32 INFO  UserServiceJdbcImpl:429 - Get all orders of user 5678
+2016-07-09 11:40:32 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 24
+2016-07-09 11:40:42 ERROR UserServiceJdbcImpl:378 - DriverOrderActionException: failed attempt to take order with ID 24 by user 5678
+2016-07-09 11:40:45 INFO  UserServiceJdbcImpl:363 - User 5678 closed his order 24
+2016-07-09 11:40:50 INFO  UserServiceJdbcImpl:417 - Request user 5678
+2016-07-09 11:40:50 INFO  UserServiceJdbcImpl:429 - Get all orders of user 5678
+2016-07-09 11:40:52 INFO  UserServiceJdbcImpl:429 - Get all orders of user 5678
+2016-07-09 11:40:52 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 24
+2016-07-09 11:40:56 INFO  UserServiceJdbcImpl:553 - Get all order by status NEW
+2016-07-09 11:40:56 INFO  UserServiceJdbcImpl:441 - Found 1 orders with status NEW
+2016-07-09 11:40:56 INFO  UserServiceJdbcImpl:459 - Create map of distances from orders to driver address Ukraine Kiev Starokievskaya 10
+2016-07-09 11:40:59 INFO  UserServiceJdbcImpl:407 - User 5678 was take order 27 for execution
+2016-07-09 11:41:03 INFO  UserServiceJdbcImpl:429 - Get all orders of user 5678
+2016-07-09 11:41:03 INFO  UserServiceJdbcImpl:294 - User 5678 get information for his last order 27
+2016-07-09 11:41:07 INFO  UserServiceJdbcImpl:417 - Request user 5678
+2016-07-09 11:41:07 INFO  UserServiceJdbcImpl:429 - Get all orders of user 5678
+2016-07-09 11:41:14 INFO  UserServiceJdbcImpl:417 - Request user 5678
+2016-07-09 11:41:14 INFO  UserServiceJdbcImpl:429 - Get all orders of user 5678
+2016-07-09 11:41:17 INFO  UserServiceJdbcImpl:553 - Get all order by status NEW
+2016-07-09 11:41:17 INFO  UserServiceJdbcImpl:441 - Found 0 orders with status NEW
+2016-07-09 11:41:17 INFO  UserServiceJdbcImpl:459 - Create map of distances from orders to driver address Ukraine Kiev Starokievskaya 10
+2016-07-09 11:41:21 INFO  UserServiceJdbcImpl:417 - Request user 5678
+2016-07-09 11:41:21 INFO  UserServiceJdbcImpl:429 - Get all orders of user 5678
+2016-07-09 11:41:32 INFO  UserServiceJdbcImpl:417 - Request user 5678
+2016-07-09 11:41:51 INFO  UserServiceJdbcImpl:106 - User 1234 logged in
+2016-07-09 11:41:51 INFO  UserServiceJdbcImpl:417 - Request user 1234
+2016-07-09 11:41:53 INFO  UserServiceJdbcImpl:429 - Get all orders of user 1234
+2016-07-09 11:41:53 INFO  UserServiceJdbcImpl:294 - User 1234 get information for his last order 27
+2016-07-09 11:41:56 INFO  UserServiceJdbcImpl:417 - Request user 1234
+2016-07-09 11:41:56 INFO  UserServiceJdbcImpl:429 - Get all orders of user 1234
+2016-07-09 11:42:05 INFO  UserServiceJdbcImpl:417 - Request user 1234
+2016-07-09 11:42:06 INFO  UserServiceJdbcImpl:151 - User 1234 makes new order 30
+2016-07-09 11:42:14 INFO  UserServiceJdbcImpl:417 - Request user 1234
+2016-07-09 11:42:14 INFO  UserServiceJdbcImpl:429 - Get all orders of user 1234
+2016-07-09 11:42:20 INFO  UserServiceJdbcImpl:417 - Request user 1234
+2016-07-10 09:59:36 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-10 09:59:37 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-10 09:59:37 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-10 09:59:37 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-10 09:59:37 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-10 09:59:38 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-10 09:59:38 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi_hibernate]
+2016-07-10 09:59:38 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-10 09:59:38 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-10 09:59:38 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-10 09:59:40 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-10 09:59:40 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-10 09:59:42 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-10 09:59:42 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-10 09:59:56 INFO  UserServiceJdbcImpl:106 - User 1234 logged in
+2016-07-10 09:59:56 INFO  UserServiceJdbcImpl:418 - Request user 1234
+2016-07-10 09:59:57 INFO  UserServiceJdbcImpl:430 - Get all orders of user 1234
+2016-07-10 09:59:57 ERROR UserServiceJdbcImpl:287 - OrderNotFoundException: failed attempt to get info about last order of user 1234
+2016-07-10 10:00:01 INFO  UserServiceJdbcImpl:418 - Request user 1234
+2016-07-10 10:00:04 INFO  UserServiceJdbcImpl:152 - User 1234 makes new order 5
+2016-07-10 10:00:07 INFO  UserServiceJdbcImpl:430 - Get all orders of user 1234
+2016-07-10 10:00:07 INFO  UserServiceJdbcImpl:295 - User 1234 get information for his last order 5
+2016-07-10 10:00:25 INFO  UserServiceJdbcImpl:418 - Request user 1234
+2016-07-10 10:00:30 INFO  UserServiceJdbcImpl:106 - User 5678 logged in
+2016-07-10 10:00:30 INFO  UserServiceJdbcImpl:418 - Request user 5678
+2016-07-10 10:00:30 INFO  UserServiceJdbcImpl:418 - Request user 5678
+2016-07-10 10:00:32 INFO  UserServiceJdbcImpl:554 - Get all order by status NEW
+2016-07-10 10:00:32 INFO  UserServiceJdbcImpl:442 - Found 1 orders with status NEW
+2016-07-10 10:00:33 INFO  UserServiceJdbcImpl:460 - Create map of distances from orders to driver address Ukraine Kiev Starokievskaya 10
+2016-07-10 10:00:35 INFO  UserServiceJdbcImpl:408 - User 5678 was take order 5 for execution
+2016-07-10 10:00:40 INFO  UserServiceJdbcImpl:430 - Get all orders of user 5678
+2016-07-10 10:00:40 INFO  UserServiceJdbcImpl:295 - User 5678 get information for his last order 5
+2016-07-10 10:00:57 INFO  UserServiceJdbcImpl:418 - Request user 5678
+2016-07-10 10:00:57 INFO  UserServiceJdbcImpl:430 - Get all orders of user 5678
+2016-07-10 10:01:25 INFO  UserServiceJdbcImpl:418 - Request user 5678
+2016-07-10 10:01:27 INFO  UserServiceJdbcImpl:494 - Change registered data for user. User 5678 was updated
+2016-07-10 10:01:32 INFO  UserServiceJdbcImpl:418 - Request user 5678
+2016-07-10 10:04:15 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: myunit
+	...]
+2016-07-10 10:04:15 INFO  Version:37 - HHH000412: Hibernate Core {5.0.3.Final}
+2016-07-10 10:04:15 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2016-07-10 10:04:15 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2016-07-10 10:04:15 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.0.Final}
+2016-07-10 10:04:16 WARN  DriverManagerConnectionProviderImpl:72 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2016-07-10 10:04:16 INFO  DriverManagerConnectionProviderImpl:128 - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost:3306/mytaxi_hibernate]
+2016-07-10 10:04:16 INFO  DriverManagerConnectionProviderImpl:137 - HHH000046: Connection properties: {user=root, password=****}
+2016-07-10 10:04:16 INFO  DriverManagerConnectionProviderImpl:142 - HHH000006: Autocommit mode: false
+2016-07-10 10:04:16 INFO  DriverManagerConnectionProviderImpl:39 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2016-07-10 10:04:17 INFO  Dialect:154 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2016-07-10 10:04:17 INFO  LobCreatorBuilderImpl:98 - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2016-07-10 10:04:18 INFO  SchemaUpdate:101 - HHH000228: Running hbm2ddl schema update
+2016-07-10 10:04:18 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2016-07-10 10:04:51 INFO  UserServiceJdbcImpl:106 - User 1234 logged in
+2016-07-10 10:04:51 INFO  UserServiceJdbcImpl:418 - Request user 1234
+2016-07-10 10:06:29 INFO  UserServiceJdbcImpl:418 - Request user 1234
+2016-07-10 10:06:29 INFO  UserServiceJdbcImpl:430 - Get all orders of user 1234
+2016-07-10 10:06:44 INFO  UserServiceJdbcImpl:418 - Request user 1234
+2016-07-10 10:06:50 INFO  UserServiceJdbcImpl:106 - User 5678 logged in
+2016-07-10 10:06:50 INFO  UserServiceJdbcImpl:418 - Request user 5678
+2016-07-10 10:06:50 INFO  UserServiceJdbcImpl:418 - Request user 5678
+2016-07-10 10:06:51 INFO  UserServiceJdbcImpl:554 - Get all order by status NEW
+2016-07-10 10:06:51 INFO  UserServiceJdbcImpl:442 - Found 0 orders with status NEW
+2016-07-10 10:06:52 INFO  UserServiceJdbcImpl:460 - Create map of distances from orders to driver address Ukraine Kiev Starokievskaya 10
+2016-07-10 10:07:26 INFO  UserServiceJdbcImpl:554 - Get all order by status NEW
+2016-07-10 10:07:26 INFO  UserServiceJdbcImpl:442 - Found 0 orders with status NEW
+2016-07-10 10:07:26 INFO  UserServiceJdbcImpl:460 - Create map of distances from orders to driver address Ukraine Kiev Starokievskaya 10
+2016-07-10 10:08:28 INFO  UserServiceJdbcImpl:418 - Request user 5678

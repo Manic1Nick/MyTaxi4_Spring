@@ -1,38 +1,50 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ include file="include.jsp"%>
+
 <html>
 <head>
     <title>Make Order Page</title>
 </head>
 <body>
 
-<h1>Make Order form</h1>
+<div class="container">
+    <h1>Make Order form</h1>
 
-<form action="make-order" method="post">
+    <form method="post" action="make-order">
+        <ul>
+            <li>Input country from:
+                <input name="countryFrom" type="text">
+            </li>
+            <li>Input city from:
+                <input name="cityFrom" type="text">
+            </li>
+            <li>Input street from:
+                <input name="streetFrom" type="text">
+            </li>
+            <li>Input house number from:
+                <input name="houseNumFrom" type="text">
+            </li>
 
-    <label>Input country from</label>
-    <input type="text" name="countryFrom">
-    <label>Input city from</label>
-    <input type="text" name="cityFrom">
-    <label>Input street from</label>
-    <input type="text" name="streetFrom">
-    <label>Input house number from</label>
-    <input type="text" name="houseNumFrom">
+            <li>Input country to:
+                <input name="countryTo" type="text">
+            </li>
+            <li>Input city to:
+                <input name="cityTo" type="text">
+            </li>
+            <li>Input street to:
+                <input name="streetTo" type="text">
+            </li>
+            <li>Input house number to:
+                <input name="houseNumTo" type="text">
+            </li>
 
-    <label>Input country to </label>
-    <input type="text" name="countryFrom">
-    <label>Input city to</label>
-    <input type="text" name="cityFrom">
-    <label>Input street to </label>
-    <input type="text" name="streetFrom">
-    <label>Input house number to</label>
-    <input type="text" name="houseNumFrom">
+            <li>Submit:
+                <input type="submit">
+            </li>
+        </ul>
+    </form>
 
-    <label>Input message</label>
-    <input type="text" name="message">
 
-    <input type="submit">
-</form>
-
+</div>
 
 </body>
 </html>

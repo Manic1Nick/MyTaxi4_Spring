@@ -43,10 +43,27 @@ public class UserJdbcDao implements UserDao {
     public User updateUser(User newUser) {
 
         manager.getTransaction().begin();
-        manager.persist(newUser);
+        User foundUser = manager.find(User.class, newUser.getId());
+
+        UserIdentifier identifier = newUser.getIdentifier();
+
+        foundUser.setIdentifier(identifier);
+        foundUser.setPhone(newUser.getPhone());
+        foundUser.setPass(newUser.getPass());
+        foundUser.setName(newUser.getName());
+
+        if (identifier.equals(UserIdentifier.P)) {
+            foundUser.setHomeAddress(newUser.getHomeAddress());
+        } else if (identifier.equals(UserIdentifier.D)) {
+            foundUser.setCar(newUser.getCar());
+        }
+        foundUser.setOrdersDriver(newUser.getOrdersDriver());
+        foundUser.setOrdersPassenger(newUser.getOrdersPassenger());
+
+        manager.merge(foundUser);
         manager.getTransaction().commit();
 
-        return newUser;
+        return foundUser;
     }
 
     @Override
@@ -116,11 +133,11 @@ public class UserJdbcDao implements UserDao {
         List<Order> orders = new ArrayList<>();
 
         if (user.getIdentifier().equals(UserIdentifier.P)) {
-            return user.getOrdersPassenger();
+            orders = user.getOrdersPassenger();
         }
 
         else if (user.getIdentifier().equals(UserIdentifier.D)) {
-            return user.getOrdersDriver();
+            orders = user.getOrdersDriver();
         }
         return orders;
     }

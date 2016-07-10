@@ -1,5 +1,7 @@
 package ua.artcode.taxi.model;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +10,9 @@ import java.util.List;
 @Table(name = "cars")
 public class Car {
 
-   /* @OneToMany(mappedBy = "car", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-    List<User> users = new ArrayList<>();*/
+    /*@Expose(serialize = false, deserialize = false)
+    @OneToMany(mappedBy = "car", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    transient List<User> users = new ArrayList<>();*/
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")

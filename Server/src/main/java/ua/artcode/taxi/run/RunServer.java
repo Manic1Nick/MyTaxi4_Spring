@@ -2,7 +2,7 @@ package ua.artcode.taxi.run;
 
 import com.google.gson.Gson;
 import ua.artcode.taxi.dao.OrderDao;
-import ua.artcode.taxi.dao.OrderJdbcDao;
+import ua.artcode.taxi.dao.OrderJpaDao;
 import ua.artcode.taxi.dao.UserDao;
 import ua.artcode.taxi.dao.UserJdbcDao;
 import ua.artcode.taxi.exception.*;
@@ -36,7 +36,7 @@ public class RunServer {
 
         //create test data
         UserDao userDao = new UserJdbcDao();
-        OrderDao orderDao = new OrderJdbcDao(userDao);
+        OrderDao orderDao = new OrderJpaDao(userDao);
         ValidatorJdbcImpl validator = new ValidatorJdbcImpl(userDao);
 
         UserService userService = new UserServiceJdbcImpl(userDao, orderDao, validator);

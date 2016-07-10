@@ -52,7 +52,7 @@ public class RegisterPassengerServlet extends HttpServlet {
             User user = userService.registerPassenger(registerData);
 
             req.setAttribute("user", user);
-            resp.sendRedirect("index.jsp");
+            req.getRequestDispatcher("/WEB-INF/pages/user-info.jsp").forward(req, resp);
 
         } catch (RegisterException e) {
             LOG.error(e);

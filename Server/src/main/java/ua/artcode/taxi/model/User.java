@@ -1,5 +1,7 @@
 package ua.artcode.taxi.model;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

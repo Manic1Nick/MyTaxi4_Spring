@@ -9,7 +9,7 @@
 <div class="container">
     <h1>Register Driver form</h1>
 
-    <form method="post" action="register-passenger">
+    <form method="post" action="register-driver">
         <ul>
             <li>Input phone:
                 <input name="phone" type="text">

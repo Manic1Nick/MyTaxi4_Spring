@@ -51,6 +51,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("currentUserName", found.getName());
 
             req.setAttribute("user", found);
+            req.setAttribute("session", session);
 
             req.getRequestDispatcher("/WEB-INF/pages/user-info.jsp").forward(req, resp);
 

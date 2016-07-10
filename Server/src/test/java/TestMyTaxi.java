@@ -3,7 +3,7 @@ import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import ua.artcode.taxi.dao.OrderJdbcDao;
+import ua.artcode.taxi.dao.OrderJpaDao;
 import ua.artcode.taxi.dao.UserJdbcDao;
 import ua.artcode.taxi.model.*;
 import ua.artcode.taxi.service.UserService;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class TestMyTaxi {
 
     private static UserJdbcDao userDao;
-    private static OrderJdbcDao orderDao;
+    private static OrderJpaDao orderDao;
     private static ValidatorJdbcImpl validator;
     private static double pricePerKilometer = 5;
     private static GoogleMapsAPI googleMapsAPI = new GoogleMapsAPIImpl();
@@ -43,7 +43,7 @@ public class TestMyTaxi {
     @BeforeClass
     public static void beforeClass() {
         userDao = new UserJdbcDao();
-        orderDao = new OrderJdbcDao(userDao);
+        orderDao = new OrderJpaDao(userDao);
         validator = new ValidatorJdbcImpl(userDao);
         userService = new UserServiceJdbcImpl(userDao, orderDao, validator);
 
