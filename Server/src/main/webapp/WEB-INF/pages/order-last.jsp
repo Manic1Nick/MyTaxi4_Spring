@@ -50,7 +50,7 @@
         </li>
 
 
-        <c:if test="${transfered.driver != null}">
+        <c:if test="${transfered.driver}">
             <div class="column">
                 driver : ${transfered.driver.name},
                     ${transfered.driver.phone}
@@ -75,7 +75,7 @@
             </div>
         </li>
 
-        <c:if test="${transfered.message != null}">
+        <c:if test="${transfered.message != 0}">
             <li>
                 <div class="column">
                     message : ${transfered.message}

@@ -54,8 +54,8 @@
                 </li>
 
                 <p>
-                    <a href="make-order">
-                        <input type="button" value="FIND TAXI" name="make-order"/></a>
+                    <a href="order-make">
+                        <input type="button" value="FIND TAXI" name="order-make"/></a>
                 </p>
                 <p>
                     <a href="register-passenger">
@@ -77,8 +77,8 @@
                 </li>
 
                 <p>
-                    <a href="current-orders">
-                        <input type="button" value="FIND PASSENGERS" name="current-orders"/></a>
+                    <a href="order/all">
+                        <input type="button" value="FIND PASSENGERS" name="order/all"/></a>
                 </p>
                 <p>
                     <a href="register-driver">
@@ -88,12 +88,12 @@
 
 
             <p>
-                <a href="show-last-order">
-                    <input type="button" value="SHOW LAST ORDER" name="show-last-order"/></a>
+                <a href="order-last">
+                    <input type="button" value="SHOW LAST ORDER" name="order-last"/></a>
             </p>
             <p>
-                <a href="show-my-history">
-                    <input type="button" value="SHOW MY HISTORY" name="show-my-history"/></a>
+                <a href="user-history">
+                    <input type="button" value="SHOW MY HISTORY" name="user-history"/></a>
             </p>
             <p>
                 <a href="login">

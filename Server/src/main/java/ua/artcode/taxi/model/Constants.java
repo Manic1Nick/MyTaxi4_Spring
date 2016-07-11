@@ -6,4 +6,5 @@ public final class Constants {
 
     public static final double pricePerKilometer = 5;
     public static final int averageSpeedKmH = 60;
+    public static final String DRIVER_LOCATION_PATH = "UA Kiev Starokievskaya 10";
 }

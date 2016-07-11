@@ -146,7 +146,7 @@ public class UserServiceJdbcImpl implements UserService {
                 int distance = (int) (googleMapsAPI.getDistance(location, location1) / 1000);
                 int price = (int) pricePerKilometer * distance + 30;
 
-                message = message == null ? "" : user.getName() + ": " + message;
+                message = message == null || message.equals("") ? "" : user.getName() + ": " + message;
 
                 newOrder = orderDao.create(user, new Order(from, to, user, distance, price, message));
 
@@ -446,14 +446,14 @@ public class UserServiceJdbcImpl implements UserService {
         int[] distances = getArrayDistancesToDriver(ordersInProgress, new Address(lineAddressDriver));
 
         //create map of distances
-        Map<Integer, Order> mapDistances = new HashMap<>(ordersInProgress.size());
+        Map<Integer, Order> mapDistances = new TreeMap<>();
         for (int i = 0; i < distances.length; i++) {
             mapDistances.put(distances[i], ordersInProgress.get(i));
         }
 
         //sorting map by distances
         Arrays.sort(distances);
-        Map<Integer, Order> sortingMapDistances = new HashMap<>(ordersInProgress.size());
+        Map<Integer, Order> sortingMapDistances = new TreeMap<>();
         for (int i = 0; i < distances.length; i++) {
             sortingMapDistances.put(distances[i], mapDistances.get(distances[i]));
         }
@@ -538,8 +538,10 @@ public class UserServiceJdbcImpl implements UserService {
         int[] distances = new int[orders.size()];
 
         for (int i = 0; i < orders.size(); i++) {
-            Location locationPassenger = googleMapsAPI.findLocation(orders.get(i).getFrom().getCountry(),
-                    orders.get(i).getFrom().getCity(), orders.get(i).getFrom().getStreet(),
+            Location locationPassenger = googleMapsAPI.findLocation(
+                    orders.get(i).getFrom().getCountry(),
+                    orders.get(i).getFrom().getCity(),
+                    orders.get(i).getFrom().getStreet(),
                     orders.get(i).getFrom().getHouseNum());
 
             distances[i] = new Distance(locationDriver, locationPassenger).calculateDistance();

@@ -20,6 +20,19 @@
                 <input type="submit">
             </li>
         </ul>
+
+        <ul>
+            <p>
+            <a href="register-passenger">
+                <input type="button" value="REGISTER PASSENGER" name="register-passenger"/></a>
+            </p>
+
+            <p>
+                <a href="register-driver">
+                    <input type="button" value="REGISTER DRIVER" name="register-driver"/></a>
+            </p>
+
+        </ul>
     </form>
 
 

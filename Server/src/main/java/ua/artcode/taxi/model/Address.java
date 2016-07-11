@@ -10,14 +10,17 @@ import java.util.List;
 @Table(name = "addresses")
 public class Address {
 
-    /*@OneToMany(mappedBy = "homeAddress", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-    List<User> users = new ArrayList<>();
+    /*@Expose(serialize = false, deserialize = false)
+    @OneToMany(mappedBy = "homeAddress", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    transient List<User> users = new ArrayList<>();
 
+    @Expose(serialize = false, deserialize = false)
     @OneToMany(mappedBy = "from", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Order> ordersFrom = new ArrayList<>();
+    transient List<Order> ordersFrom = new ArrayList<>();
 
+    @Expose(serialize = false, deserialize = false)
     @OneToMany(mappedBy = "to", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Order> ordersTo = new ArrayList<>();*/
+    transient List<Order> ordersTo = new ArrayList<>();*/
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")

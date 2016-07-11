@@ -1,7 +1,7 @@
 package ua.artcode.taxi.servlets;
 
 import org.apache.log4j.Logger;
-import ua.artcode.taxi.model.User;
+import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -11,13 +11,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-@WebServlet(urlPatterns = {"/user-info"})
-public class PassengerMenuServlet extends HttpServlet {
-
-    private static final Logger LOG = Logger.getLogger(PassengerMenuServlet.class);
+@WebServlet(urlPatterns = {"/user-history"})
+public class ShowUserHistoryServlet extends HttpServlet {
 
     private UserService userService;
+    private static final Logger LOG = Logger.getLogger(ShowUserHistoryServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -30,17 +31,20 @@ public class PassengerMenuServlet extends HttpServlet {
         try {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
 
-            User found = userService.getUser(accessToken);
+            List<Order> orders = userService.getAllOrdersUser(accessToken);
+            List<String> textOrders = new ArrayList<>();
 
-            req.setAttribute("user", found);
+            for (Order order : orders) {
+                textOrders.add(order.toStringForView());
+            }
 
-            req.getRequestDispatcher("/WEB-INF/pages/user-info.jsp").forward(req, resp);
+            req.setAttribute("textOrders", textOrders);
+            req.getRequestDispatcher("/WEB-INF/pages/user-history.jsp").forward(req, resp);
 
         } catch (Exception e) {
-            req.setAttribute("errorTitle", "Login Error");
-            req.setAttribute("errorMessage", "invalid name");
+            LOG.error(e);
+            req.setAttribute("error", e);
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
-
 }
