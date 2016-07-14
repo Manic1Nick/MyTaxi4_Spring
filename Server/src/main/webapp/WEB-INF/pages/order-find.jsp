@@ -6,33 +6,30 @@
 </head>
 <body>
 
-    <!--get "links" from servlet "order/get"-->
-    <c:set var="receivedLinks" value="${links}"/>
+    <c:set var="orders" value="${orders}"/>
+    <c:set var="distances" value="${distancesKm}"/>
 
     <div class="container">
         <h1>Order Find page</h1>
+
         <table>
-
-            <!--take each link "order/get?id=..." to screen-->
-            <c:forEach items="${receivedLinks}" var="link">
-
-                <!--get textOrder from each link-->
-                <c:set var="textOrder" value="${link}"/>
+            <c:forEach items="${orders}" var="order">
                 <tr>
                     <td>
+                        <c:out value="
+                            id ${order.id},
+                            to ${order.to.country} ${order.to.city} ${order.to.street} ${order.to.houseNum},
+                            price ${order.price}uah,
+                            distance to you: ${distances[orders.indexOf(order)]}km
+                            " />
 
-                        <!--NOT WORK!!!!!!! no text on screen! only link-->
-                        <c:out value="${textOrder}" />
-
-                        <!--need "textOrder" on screen!!!-->
-                        <a href="${link}">
-                            <!--button is good, link works-->
+                        <a href="get?id=${order.id}">
                             <input type="button" value="SHOW ORDER INFO" name="order-info"/>
                         </a>
+
                     </td>
                 </tr>
             </c:forEach>
-
         </table>
 
         <p>

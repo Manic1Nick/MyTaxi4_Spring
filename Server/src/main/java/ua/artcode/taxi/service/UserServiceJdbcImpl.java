@@ -41,15 +41,24 @@ public class UserServiceJdbcImpl implements UserService {
 
             LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
 
-            throw new RegisterException("can not create exception");
+            throw new RegisterException("This phone using already");
         }
 
-        User newUser = new User(
+        Address newAddress = new Address(map.get("homeAddress"));
+
+        User newUser = new User();
+        newUser.setIdentifier(UserIdentifier.P);
+        newUser.setPhone(map.get("phone"));
+        newUser.setPass(map.get("pass"));
+        newUser.setName(map.get("name"));
+        newUser.setHomeAddress(newAddress);
+
+        /*User newUser = new User(
                 UserIdentifier.P,
                 map.get("phone"),
                 map.get("pass"),
                 map.get("name"),
-                new Address(map.get("homeAddress")));
+                new Address(map.get("homeAddress"));*/
 
         User createdUser = userDao.createUser(newUser);
 
@@ -65,15 +74,17 @@ public class UserServiceJdbcImpl implements UserService {
 
             LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
 
-            throw new RegisterException("can not create exception");
+            throw new RegisterException("This phone using already");
         }
+
+        Car newCar = new Car(map.get("carType"), map.get("carModel"), map.get("carNumber"));
 
         User newUser = new User(
                 UserIdentifier.D,
                 map.get("phone"),
                 map.get("pass"),
                 map.get("name"),
-                new Car(map.get("carType"), map.get("carModel"), map.get("carNumber")));
+                newCar);
 
         User createdUser = userDao.createUser(newUser);
 
@@ -288,7 +299,7 @@ public class UserServiceJdbcImpl implements UserService {
             LOG.error("OrderNotFoundException: failed attempt to get info about last order of user " +
                     accessKeys.get(accessToken).getPhone());
 
-            throw new OrderNotFoundException("User don't have any orders");
+            throw new OrderNotFoundException("User doesn't have any orders");
         }
 
         Order lastOrder = allUserOrders.get(allUserOrders.size() - 1);
@@ -438,17 +449,19 @@ public class UserServiceJdbcImpl implements UserService {
             throws InputDataWrongException {
 
         //find all orders with status
-        List<Order> ordersInProgress = getAllOrdersByStatus(Enum.valueOf(OrderStatus.class, orderStatus));
+        List<Order> orders = getAllOrdersByStatus(Enum.valueOf(OrderStatus.class, orderStatus));
 
-        LOG.info("Found " + ordersInProgress.size() + " orders with status " + orderStatus);
+        LOG.info("Found " + orders.size() + " orders with status " + orderStatus);
 
-        //create array of int distances
-        int[] distances = getArrayDistancesToDriver(ordersInProgress, new Address(lineAddressDriver));
+        //create list of int unique distances
+        List<Integer> distancesList = getArrayDistancesToDriver(orders, new Address(lineAddressDriver));
+        int[] distances = new int[distancesList.size()];
 
         //create map of distances
         Map<Integer, Order> mapDistances = new TreeMap<>();
-        for (int i = 0; i < distances.length; i++) {
-            mapDistances.put(distances[i], ordersInProgress.get(i));
+        for (int i = 0; i < distancesList.size(); i++) {
+            distances[i] = distancesList.get(i);
+            mapDistances.put(distances[i], orders.get(i));
         }
 
         //sorting map by distances
@@ -528,16 +541,17 @@ public class UserServiceJdbcImpl implements UserService {
         return deleteUser;
     }
 
-    public int[] getArrayDistancesToDriver(List<Order> orders, Address addressDriver)
+    public List<Integer> getArrayDistancesToDriver(List<Order> orders, Address addressDriver)
             throws InputDataWrongException {
 
         Location locationDriver = googleMapsAPI.findLocation
                 (addressDriver.getCountry(), addressDriver.getCity(),
                         addressDriver.getStreet(), addressDriver.getHouseNum());
 
-        int[] distances = new int[orders.size()];
+        //int[] distances = new int[orders.size()];
+        List<Integer> distances = new ArrayList<>();
 
-        for (int i = 0; i < orders.size(); i++) {
+        /*for (int i = 0; i < orders.size(); i++) {
             Location locationPassenger = googleMapsAPI.findLocation(
                     orders.get(i).getFrom().getCountry(),
                     orders.get(i).getFrom().getCity(),
@@ -545,6 +559,30 @@ public class UserServiceJdbcImpl implements UserService {
                     orders.get(i).getFrom().getHouseNum());
 
             distances[i] = new Distance(locationDriver, locationPassenger).calculateDistance();
+        }*/
+
+        //increasing distance by 1 or little more meters for unique distances to driver
+        int increaseDistance = 1;
+
+        for (Order order : orders) {
+            int i = orders.indexOf(order);
+
+            Location locationPassenger = googleMapsAPI.findLocation(
+                    orders.get(i).getFrom().getCountry(),
+                    orders.get(i).getFrom().getCity(),
+                    orders.get(i).getFrom().getStreet(),
+                    orders.get(i).getFrom().getHouseNum());
+
+            int distance = new Distance(locationDriver, locationPassenger).calculateDistance();
+
+
+            if (!distances.isEmpty() && distances.contains(distance)) {
+                distances.add(distance + increaseDistance);
+                increaseDistance++;
+
+            } else {
+                distances.add(distance);
+            }
         }
 
         return distances;

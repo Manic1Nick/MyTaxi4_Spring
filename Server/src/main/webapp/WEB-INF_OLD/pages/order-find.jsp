@@ -6,28 +6,22 @@
 </head>
 <body>
 
-    <!--get "links" from servlet "order/get"-->
-    <c:set var="links" value="${links}"/>
+    <!--get "ids" from servlet "order/all"-->
+    <c:set var="orderIds" value="${ids}"/>
 
     <div class="container">
         <h1>Order Find page</h1>
         <table>
 
-            <!--run for each link "order/get?id=..."-->
-            <c:forEach items="${links}" var="link">
+            <!--get each id-->
+            <c:forEach items="${orderIds}" var="id">
 
-                <!--get textOrder from each link-->
-                <c:set var="textOrder" value="${link}"/>
+                <!--get textOrder from each link ERROR !!!-->
+                <c:set var="textOrder" value="${id}"/>
                 <tr>
                     <td>
-
-                        <!--add each textOrder to table on screen-->
                         <c:out value="${textOrder}" />
-
-                        <!--name of servlet = link(?)-->
-                        <a href="link">
-
-                            <!--button to each link-->
+                        <a href="get?id=${id}">
                             <input type="button" value="SHOW ORDER INFO" name="order-info"/>
                         </a>
                     </td>
@@ -38,7 +32,8 @@
 
         <p>
             <a href="user-info">
-                <input type="button" value="RETURN TO MENU" name="user-info"/></a>
+                <input type="button" value="RETURN TO MENU" name="user-info"/>
+            </a>
         </p>
     </div>
 

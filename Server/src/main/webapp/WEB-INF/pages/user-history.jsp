@@ -6,16 +6,28 @@
 </head>
 <body>
 
-    <c:set var="transfered" value="${textOrders}"/>
+    <c:set var="list" value="${orders}"/>
 
     <div class="container">
         <h1>User History page</h1>
 
         <table>
-            <c:forEach items="${transfered}" var="order">
+            <c:forEach items="${list}" var="order">
                 <tr>
                     <td>
-                        <c:out value="${order}" />
+                        <c:out value="
+                            id ${order.id},
+                            status ${order.orderStatus},
+                            from ${order.from.country} ${order.from.city} ${order.from.street} ${order.from.houseNum},
+                            to ${order.to.country} ${order.to.city} ${order.to.street} ${order.to.houseNum},
+                            distance ${order.distance}km,
+                            price ${order.price}uah
+                            " />
+
+                        <a href="order/get?id=${order.id}">
+                            <input type="button" value="SHOW ORDER INFO" name="order-info"/>
+                        </a>
+
                     </td>
                 </tr>
             </c:forEach>

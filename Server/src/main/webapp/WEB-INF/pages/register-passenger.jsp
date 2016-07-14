@@ -33,9 +33,14 @@
                 <input name="houseNum" type="text">
             </li>
 
-            <li>Submit:
-                <input type="submit">
-            </li>
+            <p>
+                <a href="user-info">
+                    <input type="submit" value="REGISTER" name="user-info"/></a>
+            </p>
+            <p>
+                <a href="login">
+                    <input type="button" value="RETURN TO LOGIN" name="login"/></a>
+            </p>
         </ul>
     </form>
 

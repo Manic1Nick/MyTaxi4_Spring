@@ -55,11 +55,13 @@
 
                 <p>
                     <a href="order-make">
-                        <input type="button" value="FIND TAXI" name="order-make"/></a>
+                        <input type="button" value="FIND TAXI" name="order-make"/>
+                    </a>
                 </p>
                 <p>
                     <a href="register-passenger">
-                        <input type="button" value="CHANGE REGISTER DATA" name="register-passenger"/></a>
+                        <input type="button" value="CHANGE REGISTER DATA" name="register-passenger"/>
+                    </a>
                 </p>
             </c:if>
 
@@ -78,30 +80,36 @@
 
                 <p>
                     <a href="order/all">
-                        <input type="button" value="FIND PASSENGERS" name="order/all"/></a>
+                        <input type="button" value="FIND PASSENGERS" name="order/all"/>
+                    </a>
                 </p>
                 <p>
                     <a href="register-driver">
-                        <input type="button" value="CHANGE REGISTER DATA" name="register-driver"/></a>
+                        <input type="button" value="CHANGE REGISTER DATA" name="register-driver"/>
+                    </a>
                 </p>
             </c:if>
 
 
             <p>
-                <a href="order-last">
-                    <input type="button" value="SHOW LAST ORDER" name="order-last"/></a>
+                <a href="order/last">
+                    <input type="button" value="SHOW LAST ORDER" name="order/last"/>
+                </a>
             </p>
             <p>
                 <a href="user-history">
-                    <input type="button" value="SHOW MY HISTORY" name="user-history"/></a>
+                    <input type="button" value="SHOW MY HISTORY" name="user-history"/>
+                </a>
             </p>
             <p>
                 <a href="login">
-                    <input type="button" value="RETURN TO LOGIN" name="login"/></a>
+                    <input type="button" value="RETURN TO LOGIN" name="login"/>
+                </a>
             </p>
             <p>
-                <a href="delete">
-                    <input type="button" value="DELETE USER" name="delete"/></a>
+                <a href="user-delete">
+                    <input type="button" value="DELETE USER" name="user-delete"/>
+                </a>
             </p>
 
         </ul>

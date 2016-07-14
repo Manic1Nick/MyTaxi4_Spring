@@ -160,31 +160,34 @@ public class Order {
 
         if (obj instanceof Order) {
 
-            return  id == (((Order)obj).id) &&
-                    orderStatus.equals(((Order)obj).orderStatus) &&
-                    from.equals(((Order)obj).from) &&
-                    to.equals(((Order)obj).to) &&
-                    passenger.equals(((Order)obj).passenger) &&
-                    driver.equals(((Order)obj).driver) &&
-                    distance == (((Order)obj).distance) &&
-                    price == (((Order)obj).price) &&
-                    message.equals(((Order)obj).message);
-        }
+            if (((Order)obj).driver == null) {
+                return  id == (((Order)obj).id) &&
+                        orderStatus.equals(((Order)obj).orderStatus) &&
+                        from.equals(((Order)obj).from) &&
+                        to.equals(((Order)obj).to) &&
+                        passenger.equals(((Order)obj).passenger) &&
+                        distance == (((Order)obj).distance) &&
+                        price == (((Order)obj).price) &&
+                        message.equals(((Order)obj).message);
 
+            } else if (((Order)obj).driver != null) {
+                return  id == (((Order)obj).id) &&
+                        orderStatus.equals(((Order)obj).orderStatus) &&
+                        from.equals(((Order)obj).from) &&
+                        to.equals(((Order)obj).to) &&
+                        passenger.equals(((Order)obj).passenger) &&
+                        driver.equals(((Order)obj).driver) &&
+                        distance == (((Order)obj).distance) &&
+                        price == (((Order)obj).price) &&
+                        message.equals(((Order)obj).message);
+            }
+        }
         return false;
     }
 
     @Override
     public int hashCode() {
-        int result = orderStatus.hashCode();
-        result = 31 * result + from.hashCode();
-        result = 31 * result + to.hashCode();
-        result = 31 * result + passenger.hashCode();
-        result = 31 * result + driver.hashCode();
-        result = 31 * result + distance;
-        result = 31 * result + price;
-        result = 31 * result + message.hashCode();
-        return result;
+        return (int) (id ^ (id >>> 32));
     }
 }
 
