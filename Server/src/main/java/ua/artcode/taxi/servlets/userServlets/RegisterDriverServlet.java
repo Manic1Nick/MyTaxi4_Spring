@@ -1,6 +1,7 @@
-package ua.artcode.taxi.servlets;
+package ua.artcode.taxi.servlets.userServlets;
 
 import org.apache.log4j.Logger;
+import ua.artcode.taxi.exception.RegisterException;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
@@ -10,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,17 +48,27 @@ public class RegisterDriverServlet extends HttpServlet {
         registerData.put("carNumber", req.getParameter("carNumber"));
 
         try {
-            User user = userService.registerDriver(registerData);
+            User user = userService.registerPassenger(registerData);
+            String accessToken = userService.login(user.getPhone(), user.getPass());
+
+            HttpSession session = req.getSession(true);
+            session.setAttribute("inSystem", true);
+            session.setAttribute("accessToken", accessToken);
+            session.setAttribute("currentUserName", user.getName());
 
             req.setAttribute("user", user);
             req.getRequestDispatcher("/WEB-INF/pages/user-info.jsp").forward(req, resp);
 
+        } catch (RegisterException e) {
+            LOG.error(e);
+            req.setAttribute("error", "This phone using already");
+            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         } catch (Exception e) {
             LOG.error(e);
-            req.setAttribute("error", e);
+            req.setAttribute("errorTitle", "Login Error");
+            req.setAttribute("errorMessage", "invalid data");
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
-
     }
 }
 

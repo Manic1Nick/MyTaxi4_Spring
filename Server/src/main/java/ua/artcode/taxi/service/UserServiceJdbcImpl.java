@@ -9,7 +9,6 @@ import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 import ua.artcode.taxi.utils.geolocation.Location;
 
-import javax.security.auth.login.LoginException;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -438,17 +437,19 @@ public class UserServiceJdbcImpl implements UserService {
             throws InputDataWrongException {
 
         //find all orders with status
-        List<Order> ordersInProgress = getAllOrdersByStatus(Enum.valueOf(OrderStatus.class, orderStatus));
+        List<Order> orders = getAllOrdersByStatus(Enum.valueOf(OrderStatus.class, orderStatus));
 
-        LOG.info("Found " + ordersInProgress.size() + " orders with status " + orderStatus);
+        LOG.info("Found " + orders.size() + " orders with status " + orderStatus);
 
-        //create array of int distances
-        int[] distances = getArrayDistancesToDriver(ordersInProgress, new Address(lineAddressDriver));
+        //create list of int unique distances
+        List<Integer> distancesList = getArrayDistancesToDriver(orders, new Address(lineAddressDriver));
+        int[] distances = new int[distancesList.size()];
 
         //create map of distances
         Map<Integer, Order> mapDistances = new TreeMap<>();
-        for (int i = 0; i < distances.length; i++) {
-            mapDistances.put(distances[i], ordersInProgress.get(i));
+        for (int i = 0; i < distancesList.size(); i++) {
+            distances[i] = distancesList.get(i);
+            mapDistances.put(distances[i], orders.get(i));
         }
 
         //sorting map by distances
@@ -528,16 +529,17 @@ public class UserServiceJdbcImpl implements UserService {
         return deleteUser;
     }
 
-    public int[] getArrayDistancesToDriver(List<Order> orders, Address addressDriver)
+    public List<Integer> getArrayDistancesToDriver(List<Order> orders, Address addressDriver)
             throws InputDataWrongException {
 
         Location locationDriver = googleMapsAPI.findLocation
                 (addressDriver.getCountry(), addressDriver.getCity(),
                         addressDriver.getStreet(), addressDriver.getHouseNum());
 
-        int[] distances = new int[orders.size()];
+        //int[] distances = new int[orders.size()];
+        List<Integer> distances = new ArrayList<>();
 
-        for (int i = 0; i < orders.size(); i++) {
+        /*for (int i = 0; i < orders.size(); i++) {
             Location locationPassenger = googleMapsAPI.findLocation(
                     orders.get(i).getFrom().getCountry(),
                     orders.get(i).getFrom().getCity(),
@@ -545,6 +547,30 @@ public class UserServiceJdbcImpl implements UserService {
                     orders.get(i).getFrom().getHouseNum());
 
             distances[i] = new Distance(locationDriver, locationPassenger).calculateDistance();
+        }*/
+
+        //increasing distance by 1 or little more meters for unique distances to driver
+        int increaseDistance = 1;
+
+        for (Order order : orders) {
+            int i = orders.indexOf(order);
+
+            Location locationPassenger = googleMapsAPI.findLocation(
+                    orders.get(i).getFrom().getCountry(),
+                    orders.get(i).getFrom().getCity(),
+                    orders.get(i).getFrom().getStreet(),
+                    orders.get(i).getFrom().getHouseNum());
+
+            int distance = new ua.artcode.taxi.model.Distance(locationDriver, locationPassenger).calculateDistance();
+
+
+            if (!distances.isEmpty() && distances.contains(distance)) {
+                distances.add(distance + increaseDistance);
+                increaseDistance++;
+
+            } else {
+                distances.add(distance);
+            }
         }
 
         return distances;

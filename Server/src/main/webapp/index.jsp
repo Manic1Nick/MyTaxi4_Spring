@@ -30,19 +30,37 @@
     </ul>
 
     <c:if test="${!inSystem}">
-        <form action="login" method="post">
+        <form method="post" action="login">
             <ul>
-                <li>Input name:
+                <li>Input phone:
                     <input name="phone" type="text">
                 </li>
                 <li>Input password:
                     <input name="pass" type="password">
                 </li>
-                <li>Submit:
-                    <input type="submit">
-                </li>
+                <p>
+                    <a href="user-info">
+                        <input type="submit" value="LOGIN" name="user-info"/>
+                    </a>
+                </p>
+            </ul>
+
+            <ul>
+                <p>
+                    <a href="register-passenger">
+                        <input type="button" value="REGISTER PASSENGER" name="register-passenger"/>
+                    </a>
+                </p>
+
+                <p>
+                    <a href="register-driver">
+                        <input type="button" value="REGISTER DRIVER" name="register-driver"/>
+                    </a>
+                </p>
+
             </ul>
         </form>
+
     </c:if>
     <c:if test="${inSystem}">
         <ul>

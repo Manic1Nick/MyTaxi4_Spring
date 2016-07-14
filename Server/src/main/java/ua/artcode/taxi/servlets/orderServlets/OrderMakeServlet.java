@@ -1,7 +1,11 @@
-package ua.artcode.taxi.servlets;
+package ua.artcode.taxi.servlets.orderServlets;
 
 import org.apache.log4j.Logger;
+import ua.artcode.taxi.exception.InputDataWrongException;
+import ua.artcode.taxi.exception.OrderMakeException;
+import ua.artcode.taxi.exception.UserNotFoundException;
 import ua.artcode.taxi.model.Order;
+import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -34,28 +38,38 @@ public class OrderMakeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        /*String accessToken = String.valueOf(req.getAttribute("accessToken"));*/
         String lineFrom = req.getParameter("countryFrom") + " " +
-                        req.getParameter("cityFrom") + " " +
-                        req.getParameter("streetFrom") + " " +
-                        req.getParameter("houseNumFrom");
+                req.getParameter("cityFrom") + " " +
+                req.getParameter("streetFrom") + " " +
+                req.getParameter("houseNumFrom");
         String lineTo = req.getParameter("countryTo") + " " +
-                        req.getParameter("cityTo") + " " +
-                        req.getParameter("streetTo") + " " +
-                        req.getParameter("houseNumTo");
+                req.getParameter("cityTo") + " " +
+                req.getParameter("streetTo") + " " +
+                req.getParameter("houseNumTo");
         String message = req.getParameter("message");
 
         try {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
 
             Order order = userService.makeOrder(accessToken, lineFrom, lineTo, message);
+            User user = userService.getUser(accessToken);
 
             req.setAttribute("order", order);
+            req.setAttribute("user", user);
+
             req.getRequestDispatcher("/WEB-INF/pages/order-info.jsp").forward(req, resp);
 
-        } catch (Exception e) {
+        } catch (InputDataWrongException e) {
             LOG.error(e);
-            req.setAttribute("error", e);
+            req.setAttribute("errorTitle", "Wrong input data addresses. Can not make order");
+            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+        } catch (UserNotFoundException e) {
+            LOG.error(e);
+            req.setAttribute("errorTitle", "UserNotFoundException");
+            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+        } catch (OrderMakeException e) {
+            LOG.error(e);
+            req.setAttribute("errorTitle", "User has orders NEW or IN_PROGRESS already");
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
 

@@ -10,6 +10,7 @@
     <h1>Register Driver form</h1>
 
     <form method="post" action="register-driver">
+w
         <ul>
             <li>Input phone:
                 <input name="phone" type="text">
@@ -30,9 +31,15 @@
                 <input name="carNumber" type="text">
             </li>
 
-            <li>Submit:
-                <input type="submit">
-            </li>
+            <p>
+                <a href="user-info">
+                    <input type="submit" value="REGISTER" name="user-info"/></a>
+            </p>
+            <p>
+                <a href="login">
+                    <input type="button" value="RETURN TO LOGIN" name="login"/></a>
+            </p>
+
         </ul>
     </form>
 

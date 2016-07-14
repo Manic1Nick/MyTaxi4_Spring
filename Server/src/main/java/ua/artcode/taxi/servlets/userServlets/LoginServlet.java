@@ -1,4 +1,4 @@
-package ua.artcode.taxi.servlets;
+package ua.artcode.taxi.servlets.userServlets;
 
 import org.apache.log4j.Logger;
 import ua.artcode.taxi.model.User;
@@ -30,7 +30,9 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        //validation
+        //quit from current session
+        //HttpSession session = req.getSession(false);
+        //session.setAttribute("inSystem", false);
 
         req.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(req,resp);
     }

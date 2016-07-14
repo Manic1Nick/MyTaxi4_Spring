@@ -6,6 +6,7 @@
 </head>
 <body>
 
+
 <c:set var="transfered" value="${order}"/>
 
 <div class="container">
@@ -83,43 +84,55 @@
             </li>
         </c:if>
 
+        <c:set var="user" value="${user}"/>
 
 
-        <c:if test="${transfered.passenger != null}">
+        <c:if test="${user.identifier == 'P'}">
             <p>
-                <a href="order-cancel">
-                    <input type="button" value="CANCEL ORDER" name="order-cancel"/></a>
+                <a href="cancel?id=${transfered.id}">
+                    <input type="button" value="CANCEL ORDER" name="order-cancel"/>
+                </a>
             </p>
         </c:if>
-        <c:if test="${transfered.driver != null}">
+        <c:if test="${user.identifier == 'D'}">
             <p>
-                <a href="order-take">
-                    <input type="button" value="TAKE ORDER" name="order-take"/></a>
+                <a href="take?id=${transfered.id}">
+                    <input type="button" value="TAKE ORDER" name="order-take"/>
+                </a>
             </p>
         </c:if>
 
         <p>
-            <a href="order-done">
-                <input type="button" value="ORDER DONE" name="order-done"/></a>
+            <a href="done?id=${transfered.id}">
+                <input type="button" value="ORDER DONE" name="order-done"/>
+            </a>
         </p>
 
         <p>
             <a href="make-call">
-                <input type="button" value="MAKE CALL" name="make-call"/></a>
+                <input type="button" value="MAKE CALL" name="make-call"/>
+            </a>
         </p>
         <p>
             <a href="show-map">
-                <input type="button" value="SHOW MAP" name="show-map"/></a>
+                <input type="button" value="SHOW MAP" name="show-map"/>
+            </a>
         </p>
 
         <p>
             <a href="add-message">
-                <input type="button" value="ADD MESSAGE" name="add-message"/></a>
+                <input type="button" value="ADD MESSAGE" name="add-message"/>
+            </a>
         </p>
 
         <p>
             <a href="user-info">
-                <input type="button" value="RETURN TO MENU" name="user-info"/></a>
+
+                <form method="get" action="user-info">
+                    <input type="button" value="RETURN TO MENU" name="user-info"/>
+                </form>
+
+            </a>
         </p>
 
     </ul>
@@ -127,4 +140,3 @@
 
 </body>
 </html>
-

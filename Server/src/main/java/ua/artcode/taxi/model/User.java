@@ -204,12 +204,6 @@ public class User implements PassengerActive, DriverActive {
 
     @Override
     public int hashCode() {
-        int result = identifier.hashCode();
-        result = 31 * result + phone.hashCode();
-        result = 31 * result + pass.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + homeAddress.hashCode();
-        result = 31 * result + car.hashCode();
-        return result;
+        return id;
     }
 }

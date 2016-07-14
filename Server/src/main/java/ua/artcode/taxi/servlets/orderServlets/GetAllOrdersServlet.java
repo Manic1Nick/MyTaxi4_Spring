@@ -1,6 +1,7 @@
-package ua.artcode.taxi.servlets;
+package ua.artcode.taxi.servlets.orderServlets;
 
 import org.apache.log4j.Logger;
+import ua.artcode.taxi.exception.InputDataWrongException;
 import ua.artcode.taxi.model.Constants;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.OrderStatus;
@@ -16,8 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-// it more clear name all
-@WebServlet(urlPatterns = {"/order/all"})// do it get all orders  or just one?
+@WebServlet(urlPatterns = {"/order/all"})
 public class GetAllOrdersServlet extends HttpServlet {
 
     private UserService userService;
@@ -30,16 +30,7 @@ public class GetAllOrdersServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         try {
-
-            //get id from parameter
-            // show orders page
-            // who do call this servlet? driver
-            //driver get all orders with status NEW
-
-
-
             Map<Integer, Order> distanceMap = userService.getMapDistancesToDriver(
                     OrderStatus.NEW.toString(),
                     Constants.DRIVER_LOCATION_PATH);
@@ -51,27 +42,41 @@ public class GetAllOrdersServlet extends HttpServlet {
             }
             Arrays.sort(distances);
 
-            String[] linkOrders = new String[distances.length];
-            String[] textOrders = new String[distances.length];
+            Order[] orders = new Order[distances.length];
+            int[] distancesKm = new int[distances.length];
+
+            /*String[] ids = new String[distances.length];
+            String[] textOrders = new String[distances.length];*/
             for (int i = 0; i < distanceMap.size(); i++) {
-                Order order = distanceMap.get(distances[i]);
+                /*Order order = distanceMap.get(distances[i]);
                 textOrders[i] = order.toStringForViewShort() + ", distance to you: "  +
                         distances[i]/1000 + "km";
-                linkOrders[i] = "get?id=" + order.getId();
+                ids[i] = String.valueOf(order.getId());
 
                 //add each link to each order for "order-find.jsp" (1)
-                req.setAttribute(linkOrders[i], textOrders[i]);
-                // not good, wrap this values and send more structured data
+                req.setAttribute(ids[i], textOrders[i]);*/
+
+                orders[i] = distanceMap.get(distances[i]);
+                distancesKm[i] = distances[i]/1000;
             }
 
             //add array of all links to all orders for "order-find.jsp" (2)
-            req.setAttribute("links", linkOrders);
+            /*req.setAttribute("ids", ids);*/
+
+            /*Order[] orders = {new Order(new Address("UA KIEV"), new Address("UA UMAN")),
+                                new Order(new Address("UA UMAN"), new Address("UA KIEV"))};
+            orders[0].setId(3);
+            orders[1].setId(10);
+            int[] distancesKm = {100, 200};*/
+
+            req.setAttribute("orders", orders);
+            req.setAttribute("distances", distancesKm);
 
             req.getRequestDispatcher("/WEB-INF/pages/order-find.jsp").forward(req, resp);
 
-        } catch (Exception e) {
+        } catch (InputDataWrongException e) {
             LOG.error(e);
-            req.setAttribute("error", e);
+            req.setAttribute("error", "Wrong calculation in Google API");
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
