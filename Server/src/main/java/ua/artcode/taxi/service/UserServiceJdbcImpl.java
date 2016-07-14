@@ -40,15 +40,24 @@ public class UserServiceJdbcImpl implements UserService {
 
             LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
 
-            throw new RegisterException("can not create exception");
+            throw new RegisterException("This phone using already");
         }
 
-        User newUser = new User(
+        Address newAddress = new Address(map.get("homeAddress"));
+
+        User newUser = new User();
+        newUser.setIdentifier(UserIdentifier.P);
+        newUser.setPhone(map.get("phone"));
+        newUser.setPass(map.get("pass"));
+        newUser.setName(map.get("name"));
+        newUser.setHomeAddress(newAddress);
+
+        /*User newUser = new User(
                 UserIdentifier.P,
                 map.get("phone"),
                 map.get("pass"),
                 map.get("name"),
-                new Address(map.get("homeAddress")));
+                new Address(map.get("homeAddress"));*/
 
         User createdUser = userDao.createUser(newUser);
 
@@ -64,15 +73,17 @@ public class UserServiceJdbcImpl implements UserService {
 
             LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
 
-            throw new RegisterException("can not create exception");
+            throw new RegisterException("This phone using already");
         }
+
+        Car newCar = new Car(map.get("carType"), map.get("carModel"), map.get("carNumber"));
 
         User newUser = new User(
                 UserIdentifier.D,
                 map.get("phone"),
                 map.get("pass"),
                 map.get("name"),
-                new Car(map.get("carType"), map.get("carModel"), map.get("carNumber")));
+                newCar);
 
         User createdUser = userDao.createUser(newUser);
 
@@ -287,7 +298,7 @@ public class UserServiceJdbcImpl implements UserService {
             LOG.error("OrderNotFoundException: failed attempt to get info about last order of user " +
                     accessKeys.get(accessToken).getPhone());
 
-            throw new OrderNotFoundException("User don't have any orders");
+            throw new OrderNotFoundException("User doesn't have any orders");
         }
 
         Order lastOrder = allUserOrders.get(allUserOrders.size() - 1);
@@ -561,7 +572,7 @@ public class UserServiceJdbcImpl implements UserService {
                     orders.get(i).getFrom().getStreet(),
                     orders.get(i).getFrom().getHouseNum());
 
-            int distance = new ua.artcode.taxi.model.Distance(locationDriver, locationPassenger).calculateDistance();
+            int distance = new Distance(locationDriver, locationPassenger).calculateDistance();
 
 
             if (!distances.isEmpty() && distances.contains(distance)) {

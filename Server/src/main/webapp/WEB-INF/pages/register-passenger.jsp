@@ -41,7 +41,6 @@
                 <a href="login">
                     <input type="button" value="RETURN TO LOGIN" name="login"/></a>
             </p>
-
         </ul>
     </form>
 
