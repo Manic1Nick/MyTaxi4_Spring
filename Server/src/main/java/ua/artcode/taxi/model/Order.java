@@ -42,6 +42,9 @@ public class Order {
     @Transient
     private LocalDateTime makeOrderTime;
 
+    @Transient
+    private int distanceToDriver;
+
     public Order() {
     }
 
@@ -139,7 +142,13 @@ public class Order {
         this.makeOrderTime = makeOrderTime;
     }
 
+    public int getDistanceToDriver() {
+        return distanceToDriver;
+    }
 
+    public void setDistanceToDriver(int distanceToDriver) {
+        this.distanceToDriver = distanceToDriver;
+    }
 
     public String toStringForView() {
         return "id " + id +

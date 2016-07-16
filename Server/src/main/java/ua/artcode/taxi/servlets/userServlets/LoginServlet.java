@@ -1,6 +1,7 @@
 package ua.artcode.taxi.servlets.userServlets;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
@@ -18,12 +19,15 @@ public class LoginServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(LoginServlet.class);
 
+    ApplicationContext applicationContext;
+
     private UserService userService;
 
     @Override
     public void init() throws ServletException {
-        /*applicationContext =
-                (ApplicationContext) getServletContext().getAttribute("spring-context");*/
+        //applicationContext = (ApplicationContext) getServletContext().getAttribute("spring-context");
+        //applicationContext.getAutowireCapableBeanFactory().autowireBean(userService);
+
         userService = BeansFactory.createUserService();
     }
 
@@ -53,7 +57,6 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("currentUserName", found.getName());
 
             req.setAttribute("user", found);
-            //req.setAttribute("session", session);
 
             req.getRequestDispatcher("/WEB-INF/pages/user-info.jsp").forward(req, resp);
 

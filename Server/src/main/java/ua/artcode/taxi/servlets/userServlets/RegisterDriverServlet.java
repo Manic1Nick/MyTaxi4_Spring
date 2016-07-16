@@ -30,7 +30,12 @@ public class RegisterDriverServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        //validation
+        String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+
+        if (accessToken!= null) {
+            User user = userService.getUser(accessToken);
+            req.setAttribute("user", user);
+        }
 
         req.getRequestDispatcher("/WEB-INF/pages/register-driver.jsp").forward(req,resp);
     }
@@ -48,13 +53,21 @@ public class RegisterDriverServlet extends HttpServlet {
         registerData.put("carNumber", req.getParameter("carNumber"));
 
         try {
-            User user = userService.registerPassenger(registerData);
-            String accessToken = userService.login(user.getPhone(), user.getPass());
+            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+            User user = null;
 
-            HttpSession session = req.getSession(true);
-            session.setAttribute("inSystem", true);
-            session.setAttribute("accessToken", accessToken);
-            session.setAttribute("currentUserName", user.getName());
+            if (accessToken != null) {
+                user = userService.updateUser(registerData, accessToken);
+
+            } else {
+                user = userService.registerPassenger(registerData);
+                accessToken = userService.login(user.getPhone(), user.getPass());
+
+                HttpSession session = req.getSession(true);
+                session.setAttribute("inSystem", true);
+                session.setAttribute("accessToken", accessToken);
+                session.setAttribute("currentUserName", user.getName());
+            }
 
             req.setAttribute("user", user);
             req.getRequestDispatcher("/WEB-INF/pages/user-info.jsp").forward(req, resp);

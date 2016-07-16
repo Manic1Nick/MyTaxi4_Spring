@@ -35,7 +35,6 @@ public class ConnectionFactory {
     private static EntityManagerFactory entityManagerFactory =
             Persistence.createEntityManagerFactory("myunit");
 
-
     public static EntityManager createEntityManager() {
         long id = Thread.currentThread().getId();
 

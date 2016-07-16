@@ -45,32 +45,13 @@ public class GetAllOrdersServlet extends HttpServlet {
             Order[] orders = new Order[distances.length];
             int[] distancesKm = new int[distances.length];
 
-            /*String[] ids = new String[distances.length];
-            String[] textOrders = new String[distances.length];*/
             for (int i = 0; i < distanceMap.size(); i++) {
-                /*Order order = distanceMap.get(distances[i]);
-                textOrders[i] = order.toStringForViewShort() + ", distance to you: "  +
-                        distances[i]/1000 + "km";
-                ids[i] = String.valueOf(order.getId());
-
-                //add each link to each order for "order-find.jsp" (1)
-                req.setAttribute(ids[i], textOrders[i]);*/
-
                 orders[i] = distanceMap.get(distances[i]);
                 distancesKm[i] = distances[i]/1000;
+                orders[i].setDistanceToDriver(distancesKm[i]);
             }
 
-            //add array of all links to all orders for "order-find.jsp" (2)
-            /*req.setAttribute("ids", ids);*/
-
-            /*Order[] orders = {new Order(new Address("UA KIEV"), new Address("UA UMAN")),
-                                new Order(new Address("UA UMAN"), new Address("UA KIEV"))};
-            orders[0].setId(3);
-            orders[1].setId(10);
-            int[] distancesKm = {100, 200};*/
-
             req.setAttribute("orders", orders);
-            req.setAttribute("distances", distancesKm);
 
             req.getRequestDispatcher("/WEB-INF/pages/order-find.jsp").forward(req, resp);
 

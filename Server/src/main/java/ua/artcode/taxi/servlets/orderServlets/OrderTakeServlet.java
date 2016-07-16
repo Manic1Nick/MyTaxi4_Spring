@@ -41,7 +41,7 @@ public class OrderTakeServlet extends HttpServlet {
             req.setAttribute("order", order);
             req.setAttribute("user", user);
 
-            req.getRequestDispatcher("/WEB-INF/pages/order-info.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/pages/order-info.jsp").include(req, resp);
 
         } catch (DriverOrderActionException e) {
             LOG.error(e);

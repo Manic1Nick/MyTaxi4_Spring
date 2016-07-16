@@ -21,8 +21,8 @@
         <java.version>1.8</java.version>
         <compiler-plugin.version>3.5.1</compiler-plugin.version>
         <hibernate-version>5.0.3.Final</hibernate-version>
-        <spring.version>4.2.5.RELEASE</spring.version>
-        <aspectj.version>1.7.4</aspectj.version>
+        <spring.version>4.3.1.RELEASE</spring.version>
+        <aspectj.version>1.8.9</aspectj.version>
     </properties>
 
     <dependencies>
@@ -69,18 +69,23 @@
             <version>1.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>4.3.0.RELEASE</version>
-        </dependency>
-
 
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>${aspectj.version}</version>
-            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.5.4</version>
         </dependency>
 
         <dependency>
@@ -105,6 +110,32 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
     </dependencies>

@@ -25,41 +25,43 @@
 
 <div class="header">
 
-    <ul>
-        <li><a href="login">Login</a></li>
-    </ul>
+    <p align="center">
+        <img src="https://lh6.ggpht.com/UGBUfOqA2CZRly317V5U70F-YAY9bMPtFiWAw3JADOfErhIL9V8iNN4x3gR6JGZX51s=w300" alt="MyTaxi Logo">
+
+    </p>
 
     <c:if test="${!inSystem}">
         <form method="post" action="login">
             <ul>
-                <li>Input phone:
+                <p align="center">Input phone:
                     <input name="phone" type="text">
-                </li>
-                <li>Input password:
+                </p>
+                <p align="center">Input password:
                     <input name="pass" type="password">
-                </li>
-                <p>
+                </p>
+                <p align="center">
                     <a href="user-info">
                         <input type="submit" value="LOGIN" name="user-info"/>
                     </a>
                 </p>
             </ul>
+        </form>
 
             <ul>
-                <p>
+                <p align="center">
                     <a href="register-passenger">
                         <input type="button" value="REGISTER PASSENGER" name="register-passenger"/>
                     </a>
                 </p>
 
-                <p>
+                <p align="center">
                     <a href="register-driver">
                         <input type="button" value="REGISTER DRIVER" name="register-driver"/>
                     </a>
                 </p>
 
             </ul>
-        </form>
+
 
     </c:if>
     <c:if test="${inSystem}">

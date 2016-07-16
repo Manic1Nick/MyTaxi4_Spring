@@ -10,7 +10,6 @@ import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.service.UserServiceJdbcImpl;
-import ua.artcode.taxi.service.ValidatorJdbcImpl;
 import ua.artcode.taxi.to.Message;
 import ua.artcode.taxi.to.MessageBody;
 import ua.artcode.taxi.utils.ReflectionFormatter;
@@ -37,9 +36,8 @@ public class RunServer {
         //create test data
         UserDao userDao = new UserJpaDao();
         OrderDao orderDao = new OrderJpaDao(userDao);
-        ValidatorJdbcImpl validator = new ValidatorJdbcImpl(userDao);
 
-        UserService userService = new UserServiceJdbcImpl(userDao, orderDao, validator);
+        UserService userService = new UserServiceJdbcImpl(userDao, orderDao);
 /*
         User passenger1 = new User(UserIdentifier.P,
                 "1234", "test", "Vasya", new Address("Ukraine", "Kiev", "Khreschatik", "5"));

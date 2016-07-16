@@ -1,30 +1,39 @@
 package ua.artcode.taxi.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.OrderStatus;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.utils.ConnectionFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Component(value = "orderDao")
 public class OrderJpaDao implements OrderDao {
 
-    private EntityManager manager = ConnectionFactory.createEntityManager();
+    @PersistenceContext
+    private EntityManager manager;
 
+    @Autowired
     private UserDao userDao;
+
+    public OrderJpaDao() {
+    }
 
     public OrderJpaDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
     @Override
+    @Transactional
     public Order create(User user, Order order) {
-
-        manager.getTransaction().begin();
 
         order.setOrderStatus(OrderStatus.NEW);
         order.setPassenger(user);
@@ -33,26 +42,22 @@ public class OrderJpaDao implements OrderDao {
         user.getOrdersPassenger().add(order);
         manager.merge(user);
 
-        manager.getTransaction().commit();
-
         return order;
     }
 
     @Override
+    @Transactional
     public Collection<Order> getAllOrders() {
 
-        manager.getTransaction().begin();
         Query query = manager.createNamedQuery("getAllOrders");
         Collection<Order> orders = query.getResultList();
-        manager.getTransaction().commit();
 
         return orders;
     }
 
     @Override
+    @Transactional
     public Order update(Order newOrder) {
-
-        manager.getTransaction().begin();
 
         Order foundOrder = manager.find(Order.class, newOrder.getId());
 
@@ -68,28 +73,25 @@ public class OrderJpaDao implements OrderDao {
         foundOrder.setMessage(newOrder.getMessage());
 
         manager.merge(foundOrder);
-        manager.getTransaction().commit();
 
         return foundOrder;
     }
 
     @Override
+    @Transactional
     public Order delete(long id) {
 
-        manager.getTransaction().begin();
         Order delOrder = manager.find(Order.class, id);
         manager.remove(delOrder);
-        manager.getTransaction().commit();
 
         return delOrder;
     }
 
     @Override
+    @Transactional
     public Order findById(long id) {
 
-        manager.getTransaction().begin();
         Order order = manager.find(Order.class, id);
-        manager.getTransaction().commit();
 
         return order;
     }
@@ -138,5 +140,13 @@ public class OrderJpaDao implements OrderDao {
             }
         }
         return status;
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 }

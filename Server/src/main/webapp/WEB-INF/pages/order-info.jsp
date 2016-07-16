@@ -89,21 +89,21 @@
 
         <c:if test="${user.identifier == 'P'}">
             <p>
-                <a href="cancel?id=${transfered.id}">
+                <a href="order/cancel?id=${transfered.id}">
                     <input type="button" value="CANCEL ORDER" name="order-cancel"/>
                 </a>
             </p>
         </c:if>
         <c:if test="${user.identifier == 'D'}">
             <p>
-                <a href="take?id=${transfered.id}">
+                <a href="order/take?id=${transfered.id}">
                     <input type="button" value="TAKE ORDER" name="order-take"/>
                 </a>
             </p>
         </c:if>
 
         <p>
-            <a href="done?id=${transfered.id}">
+            <a href="order/done?id=${transfered.id}">
                 <input type="button" value="ORDER DONE" name="order-done"/>
             </a>
         </p>

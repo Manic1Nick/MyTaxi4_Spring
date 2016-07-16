@@ -1,6 +1,8 @@
 package ua.artcode.taxi.service;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ua.artcode.taxi.dao.OrderDao;
 import ua.artcode.taxi.dao.UserDao;
 import ua.artcode.taxi.exception.*;
@@ -13,21 +15,30 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Service(value = "service")
 public class UserServiceJdbcImpl implements UserService {
 
     private final static Logger LOG = Logger.getLogger(UserServiceJdbcImpl.class);
 
+    @Autowired
     private UserDao userDao;
+
+    @Autowired
     private OrderDao orderDao;
-    private Validator validator;
+
     private double pricePerKilometer;
     private GoogleMapsAPI googleMapsAPI;
     private Map<String, User> accessKeys;
 
-    public UserServiceJdbcImpl(UserDao userDao, OrderDao orderDao, Validator validator) {
+    public UserServiceJdbcImpl() {
+        pricePerKilometer = Constants.pricePerKilometer;
+        googleMapsAPI = new GoogleMapsAPIImpl();
+        accessKeys = new ConcurrentHashMap<>();
+    }
+
+    public UserServiceJdbcImpl(UserDao userDao, OrderDao orderDao) {
         this.userDao = userDao;
         this.orderDao = orderDao;
-        this.validator = validator;
         pricePerKilometer = Constants.pricePerKilometer;
         googleMapsAPI = new GoogleMapsAPIImpl();
         accessKeys = new ConcurrentHashMap<>();
@@ -36,6 +47,8 @@ public class UserServiceJdbcImpl implements UserService {
     @Override
     public User registerPassenger(Map<String, String> map) throws RegisterException {
 
+        Validator validator = new Validator();
+
         if (!validator.validateRegistration(map.get("phone"))) {
 
             LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
@@ -43,21 +56,12 @@ public class UserServiceJdbcImpl implements UserService {
             throw new RegisterException("This phone using already");
         }
 
-        Address newAddress = new Address(map.get("homeAddress"));
-
-        User newUser = new User();
-        newUser.setIdentifier(UserIdentifier.P);
-        newUser.setPhone(map.get("phone"));
-        newUser.setPass(map.get("pass"));
-        newUser.setName(map.get("name"));
-        newUser.setHomeAddress(newAddress);
-
-        /*User newUser = new User(
+        User newUser = new User(
                 UserIdentifier.P,
                 map.get("phone"),
                 map.get("pass"),
                 map.get("name"),
-                new Address(map.get("homeAddress"));*/
+                new Address(map.get("homeAddress")));
 
         User createdUser = userDao.createUser(newUser);
 
@@ -68,6 +72,8 @@ public class UserServiceJdbcImpl implements UserService {
 
     @Override
     public User registerDriver(Map<String, String> map) throws RegisterException {
+
+        Validator validator = new Validator();
 
         if (!validator.validateRegistration(map.get("phone"))) {
 
@@ -97,6 +103,8 @@ public class UserServiceJdbcImpl implements UserService {
 
         User found = null;
 
+        Validator validator = new Validator();
+
         boolean valid = validator.validateLogin(phone, pass);
 
         if (valid) {
@@ -125,6 +133,8 @@ public class UserServiceJdbcImpl implements UserService {
         Address from = new Address(lineFrom);
         Address to = new Address(lineTo);
         Order newOrder = null;
+
+        Validator validator = new Validator();
 
         if (!validator.validateAddress(from) && !validator.validateAddress(to)) {
 
@@ -180,6 +190,8 @@ public class UserServiceJdbcImpl implements UserService {
         Address to = new Address(lineTo);
         Order newOrder = null;
 
+        Validator validator = new Validator();
+
         if (!validator.validateAddress(from) && !validator.validateAddress(to)) {
 
             LOG.error("InputDataWrongException: wrong input data address");
@@ -232,6 +244,8 @@ public class UserServiceJdbcImpl implements UserService {
         Address from = new Address(lineFrom);
         Address to = new Address(lineTo);
         Map<String, Object> map = new HashMap<>();
+
+        Validator validator = new Validator();
 
         if (!validator.validateAddress(from) && !validator.validateAddress(to)) {
 
@@ -482,6 +496,8 @@ public class UserServiceJdbcImpl implements UserService {
         UserIdentifier typeUser = user.getIdentifier();
         int idUser = user.getId();
 
+        Validator validator = new Validator();
+
         if (!validator.validateChangeRegistration(typeUser, idUser, map.get("phone"))) {
 
             LOG.error("RegisterException: failed attempt to update user " +
@@ -540,6 +556,46 @@ public class UserServiceJdbcImpl implements UserService {
         return deleteUser;
     }
 
+    public UserDao getUserDao() {
+        return userDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public OrderDao getOrderDao() {
+        return orderDao;
+    }
+
+    public void setOrderDao(OrderDao orderDao) {
+        this.orderDao = orderDao;
+    }
+
+    public double getPricePerKilometer() {
+        return pricePerKilometer;
+    }
+
+    public void setPricePerKilometer(double pricePerKilometer) {
+        this.pricePerKilometer = pricePerKilometer;
+    }
+
+    public GoogleMapsAPI getGoogleMapsAPI() {
+        return googleMapsAPI;
+    }
+
+    public void setGoogleMapsAPI(GoogleMapsAPI googleMapsAPI) {
+        this.googleMapsAPI = googleMapsAPI;
+    }
+
+    public Map<String, User> getAccessKeys() {
+        return accessKeys;
+    }
+
+    public void setAccessKeys(Map<String, User> accessKeys) {
+        this.accessKeys = accessKeys;
+    }
+
     public List<Integer> getArrayDistancesToDriver(List<Order> orders, Address addressDriver)
             throws InputDataWrongException {
 
@@ -549,16 +605,6 @@ public class UserServiceJdbcImpl implements UserService {
 
         //int[] distances = new int[orders.size()];
         List<Integer> distances = new ArrayList<>();
-
-        /*for (int i = 0; i < orders.size(); i++) {
-            Location locationPassenger = googleMapsAPI.findLocation(
-                    orders.get(i).getFrom().getCountry(),
-                    orders.get(i).getFrom().getCity(),
-                    orders.get(i).getFrom().getStreet(),
-                    orders.get(i).getFrom().getHouseNum());
-
-            distances[i] = new Distance(locationDriver, locationPassenger).calculateDistance();
-        }*/
 
         //increasing distance by 1 or little more meters for unique distances to driver
         int increaseDistance = 1;
@@ -661,6 +707,77 @@ public class UserServiceJdbcImpl implements UserService {
                 e.printStackTrace();
             }
             return 0;
+        }
+    }
+
+
+    class Validator {
+
+        boolean validateLogin(String phone, String password) {
+            boolean result = false;
+
+            List<String> phones = userDao.getAllRegisteredPhones();
+
+            for (String s : phones) {
+                if (phone.equals(s)) {
+                    String foundPass = userDao.findByPhone(phone).getPass();
+
+                    if(password.equals(foundPass)){
+                        result = true;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        boolean validateRegistration(String phone) throws RegisterException {
+
+            List<String> phones = userDao.getAllRegisteredPhones();
+
+            for (String s : phones) {
+                if (phone.equals(s)) {
+                    throw new RegisterException("This phone using already");
+                }
+            }
+
+            return true;
+        }
+
+        boolean validateAddress(Address address) throws InputDataWrongException {
+
+            if (address.getCountry().equals("")) {
+                throw new InputDataWrongException("Wrong data: country");
+                //result = false;
+            } else if (address.getCity().equals("")) {
+                throw new InputDataWrongException("Wrong data: city");
+                //result = false;
+            } else if (address.getStreet().equals("")) {
+                throw new InputDataWrongException("Wrong data: street");
+                //result = false;
+            } else if (address.getHouseNum().equals("")) {
+                throw new InputDataWrongException("Wrong data: houseNum");
+                //result = false;
+            }
+
+            return true;
+        }
+
+        boolean validateChangeRegistration(UserIdentifier identifier, int id, String phone)
+                throws RegisterException {
+
+            List<String> phones = userDao.getAllRegisteredPhones();
+
+            for (String s : phones) {
+                if (phone.equals(s)) {
+                    User foundUser = userDao.findByPhone(phone);
+                    if (id != foundUser.getId() && !identifier.equals(foundUser.getIdentifier())) {
+                        throw new RegisterException("This phone using already");
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

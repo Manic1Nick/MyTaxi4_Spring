@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/order-make"})
+@WebServlet(urlPatterns = {"/order/make"})
 public class OrderMakeServlet extends HttpServlet {
 
     private UserService userService;
@@ -29,8 +29,6 @@ public class OrderMakeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        //validation
 
         req.getRequestDispatcher("/WEB-INF/pages/order-make.jsp").forward(req,resp);
     }
@@ -47,6 +45,14 @@ public class OrderMakeServlet extends HttpServlet {
                 req.getParameter("streetTo") + " " +
                 req.getParameter("houseNumTo");
         String message = req.getParameter("message");
+
+        if (req.getMethod().equals("order-calculate")) {
+            req.setAttribute("addressFrom", lineFrom);
+            req.setAttribute("addressTo", lineTo);
+            req.setAttribute("message", message);
+
+            req.getRequestDispatcher("/WEB-INF/pages/order-calculate.jsp");
+        }
 
         try {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));

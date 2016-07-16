@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/user-info"})
-public class PassengerMenuServlet extends HttpServlet {
+public class UserInfoMenuServlet extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(PassengerMenuServlet.class);
+    private static final Logger LOG = Logger.getLogger(UserInfoMenuServlet.class);
 
     private UserService userService;
 
@@ -34,7 +34,7 @@ public class PassengerMenuServlet extends HttpServlet {
 
             req.setAttribute("user", found);
 
-            req.getRequestDispatcher("/WEB-INF/pages/user-info.jsp").forward(req, resp);
+            req.getServletContext().getRequestDispatcher("/WEB-INF/pages/user-info.jsp").include(req, resp);
 
         } catch (Exception e) {
             req.setAttribute("errorTitle", "Login Error");

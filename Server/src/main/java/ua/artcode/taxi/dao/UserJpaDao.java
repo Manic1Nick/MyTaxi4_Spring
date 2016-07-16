@@ -1,48 +1,51 @@
 package ua.artcode.taxi.dao;
 
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.model.UserIdentifier;
 import ua.artcode.taxi.utils.ConnectionFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Component(value = "userDao")
 public class UserJpaDao implements UserDao {
 
-    private EntityManager manager = ConnectionFactory.createEntityManager();
+    @PersistenceContext
+    private EntityManager manager;
 
     public UserJpaDao() {
     }
 
     @Override
+    @Transactional
     public User createUser(User user) {
 
-        manager.getTransaction().begin();
         manager.persist(user);
-        manager.getTransaction().commit();
 
         return user;
     }
 
     @Override
+    @Transactional
     public Collection<User> getAllUsers() {
 
-        manager.getTransaction().begin();
         Query query = manager.createNamedQuery("getAllUsers");
         Collection<User> users = query.getResultList();
-        manager.getTransaction().commit();
 
         return users;
     }
 
     @Override
+    @Transactional
     public User updateUser(User newUser) {
 
-        manager.getTransaction().begin();
         User foundUser = manager.find(User.class, newUser.getId());
 
         UserIdentifier identifier = newUser.getIdentifier();
@@ -61,19 +64,16 @@ public class UserJpaDao implements UserDao {
         foundUser.setOrdersPassenger(newUser.getOrdersPassenger());
 
         manager.merge(foundUser);
-        manager.getTransaction().commit();
 
         return foundUser;
     }
 
     @Override
+    @Transactional
     public User deleteUser(int id) {
 
         User delUser = findById(id);
-
-        manager.getTransaction().begin();
         manager.remove(delUser);
-        manager.getTransaction().commit();
 
         return delUser;
     }
@@ -105,11 +105,10 @@ public class UserJpaDao implements UserDao {
     }
 
     @Override
+    @Transactional
     public User findById(int id) {
 
-        manager.getTransaction().begin();
         User user = manager.find(User.class, id);
-        manager.getTransaction().commit();
 
         return user;
     }
@@ -141,5 +140,7 @@ public class UserJpaDao implements UserDao {
         }
         return orders;
     }
+
+
 }
 

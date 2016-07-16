@@ -7,7 +7,6 @@
 <body>
 
     <c:set var="orders" value="${orders}"/>
-    <c:set var="distances" value="${distancesKm}"/>
 
     <div class="container">
         <h1>Order Find page</h1>
@@ -21,10 +20,10 @@
                             status ${order.orderStatus},
                             to ${order.to.country} ${order.to.city} ${order.to.street} ${order.to.houseNum},
                             price ${order.price}uah,
-                            distance to you: ${distances[orders.indexOf(order)]}km
+                            distance to you: ${order.distanceToDriver}km
                             " />
 
-                        <a href="get?id=${order.id}">
+                        <a href="order/get?id=${order.id}">
                             <input type="button" value="SHOW ORDER INFO" name="order-info"/>
                         </a>
 

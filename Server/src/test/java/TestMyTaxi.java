@@ -8,7 +8,6 @@ import ua.artcode.taxi.dao.UserJpaDao;
 import ua.artcode.taxi.model.*;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.service.UserServiceJdbcImpl;
-import ua.artcode.taxi.service.ValidatorJdbcImpl;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 
@@ -21,7 +20,6 @@ public class TestMyTaxi {
 
     private static UserJpaDao userDao;
     private static OrderJpaDao orderDao;
-    private static ValidatorJdbcImpl validator;
     private static double pricePerKilometer = 5;
     private static GoogleMapsAPI googleMapsAPI = new GoogleMapsAPIImpl();
     private static Map<String, User> accessKeys = new HashMap<>();
@@ -44,8 +42,7 @@ public class TestMyTaxi {
     public static void beforeClass() {
         userDao = new UserJpaDao();
         orderDao = new OrderJpaDao(userDao);
-        validator = new ValidatorJdbcImpl(userDao);
-        userService = new UserServiceJdbcImpl(userDao, orderDao, validator);
+        userService = new UserServiceJdbcImpl(userDao, orderDao);
 
         //delete after sharing to methods below
         address1 = new Address("Ukraine", "Kiev", "Khreschatik", "5");

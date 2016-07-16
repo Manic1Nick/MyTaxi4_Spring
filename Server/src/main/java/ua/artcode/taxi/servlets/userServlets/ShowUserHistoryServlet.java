@@ -33,6 +33,6 @@ public class ShowUserHistoryServlet extends HttpServlet {
 
         req.setAttribute("orders", orders);
 
-        req.getRequestDispatcher("/WEB-INF/pages/user-history.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/user-history.jsp").include(req, resp);
     }
 }

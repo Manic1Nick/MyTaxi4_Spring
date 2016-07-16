@@ -13,7 +13,7 @@
 
     <c:if test="${testOrder == null}">
 
-        <form method="post" action="order/make">
+        <form method="post" action="order-make">
 
             <ul>
                 <li>Input country from:
@@ -89,8 +89,8 @@
 
             <ul>
                 <p>
-                    <a href="order/make">
-                        <input type="submit" value="MAKE ORDER" name="order/make"/>
+                    <a href="order-make">
+                        <input type="submit" value="MAKE ORDER" name="order-make"/>
                     </a>
                 </p>
 
