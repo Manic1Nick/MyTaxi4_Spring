@@ -19,21 +19,20 @@ public class LogginAspect {
     public void publicMethodsPointCut() {}
 
     @Around(value = "publicMethodsPointCut()")
-    public Object aroundAdvice(ProceedingJoinPoint proceedingJoinPoint) {
+    public Object aroundAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String methodName = proceedingJoinPoint.getSignature().getName();
         System.out.printf("before method %s", methodName);
 
         Object value = null;
 
         try{
-            return proceedingJoinPoint.proceed();
+            Object proceed = proceedingJoinPoint.proceed();
+            System.out.printf("after method %s", methodName);
+            return proceed;
         } catch (Throwable throwable) {
             throwable.printStackTrace();
+            throw throwable;
         }
-
-        System.out.printf("after method %s", methodName);
-
-        return value;
     }
 
 }

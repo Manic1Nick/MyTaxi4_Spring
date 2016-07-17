@@ -3,10 +3,10 @@ package ua.artcode.taxi.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ua.artcode.taxi.model.Address;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.OrderStatus;
 import ua.artcode.taxi.model.User;
-import ua.artcode.taxi.utils.ConnectionFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -64,10 +64,15 @@ public class OrderJpaDao implements OrderDao {
         OrderStatus status = newOrder.getOrderStatus();
 
         foundOrder.setOrderStatus(status);
-        foundOrder.setFrom(newOrder.getFrom());
-        foundOrder.setTo(newOrder.getTo());
-        foundOrder.setPassenger(newOrder.getPassenger());
-        foundOrder.setDriver(newOrder.getDriver());
+
+        foundOrder = updateAddressFrom(foundOrder, newOrder.getFrom());
+        foundOrder = updateAddressTo(foundOrder, newOrder.getTo());
+
+        foundOrder = updatePassenger(foundOrder, newOrder.getPassenger());
+        if (newOrder.getDriver() != null) {
+            foundOrder = updateDriver(foundOrder, newOrder.getDriver());
+        }
+
         foundOrder.setDistance(newOrder.getDistance());
         foundOrder.setPrice(newOrder.getPrice());
         foundOrder.setMessage(newOrder.getMessage());
@@ -148,5 +153,72 @@ public class OrderJpaDao implements OrderDao {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    private Order updateAddressFrom(Order foundOrder, Address address) {
+
+        foundOrder.getFrom().setCountry(address.getCountry());
+        foundOrder.getFrom().setCity(address.getCity());
+        foundOrder.getFrom().setStreet(address.getStreet());
+        foundOrder.getFrom().setHouseNum(address.getHouseNum());
+
+        return foundOrder;
+    }
+
+    private Order updateAddressTo(Order foundOrder, Address address) {
+
+        foundOrder.getTo().setCountry(address.getCountry());
+        foundOrder.getTo().setCity(address.getCity());
+        foundOrder.getTo().setStreet(address.getStreet());
+        foundOrder.getTo().setHouseNum(address.getHouseNum());
+
+        return foundOrder;
+    }
+
+    private Order updatePassenger(Order foundOrder, User passenger) {
+
+        foundOrder.getPassenger().setId(passenger.getId());
+        foundOrder.getPassenger().setIdentifier(passenger.getIdentifier());
+        foundOrder.getPassenger().setPhone(passenger.getPhone());
+        foundOrder.getPassenger().setPass(passenger.getPass());
+        foundOrder.getPassenger().setName(passenger.getName());
+
+        foundOrder.getPassenger().getHomeAddress().setCountry(passenger.getHomeAddress().getCountry());
+        foundOrder.getPassenger().getHomeAddress().setCity(passenger.getHomeAddress().getCity());
+        foundOrder.getPassenger().getHomeAddress().setStreet(passenger.getHomeAddress().getStreet());
+        foundOrder.getPassenger().getHomeAddress().setHouseNum(passenger.getHomeAddress().getHouseNum());
+
+        for (Order order : passenger.getOrdersPassenger()) {
+            if (foundOrder.getId() == order.getId()) {
+                passenger.getOrdersPassenger().remove(order);
+                passenger.getOrdersPassenger().add(foundOrder);
+            }
+        }
+        //foundOrder.getPassenger().setOrdersPassenger(passenger.getOrdersPassenger());
+
+        return foundOrder;
+    }
+
+    private Order updateDriver(Order foundOrder, User driver) {
+
+        foundOrder.getDriver().setId(driver.getId());
+        foundOrder.getDriver().setIdentifier(driver.getIdentifier());
+        foundOrder.getDriver().setPhone(driver.getPhone());
+        foundOrder.getDriver().setPass(driver.getPass());
+        foundOrder.getDriver().setName(driver.getName());
+
+        foundOrder.getDriver().getCar().setType(driver.getCar().getType());
+        foundOrder.getDriver().getCar().setModel(driver.getCar().getModel());
+        foundOrder.getDriver().getCar().setNumber(driver.getCar().getNumber());
+
+        for (Order order : driver.getOrdersPassenger()) {
+            if (foundOrder.getId() == order.getId()) {
+                driver.getOrdersPassenger().remove(order);
+                driver.getOrdersPassenger().add(foundOrder);
+            }
+        }
+        //foundOrder.getDriver().setOrdersDriver(driver.getOrdersDriver());
+
+        return foundOrder;
     }
 }

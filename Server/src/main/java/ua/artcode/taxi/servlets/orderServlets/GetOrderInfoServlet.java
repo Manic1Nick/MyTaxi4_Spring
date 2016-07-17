@@ -38,10 +38,7 @@ public class GetOrderInfoServlet extends HttpServlet {
             Order order = userService.getOrderInfo(Integer.parseInt(orderId));
             User user = userService.getUser(accessToken);
 
-            /*req.getSession().setAttribute("order", order);
-            resp.sendRedirect("order-info");*/
-
-            ///forward to order-info.jsp
+            //forward to order-info.jsp
             req.setAttribute("order", order);
             req.setAttribute("user", user);
 

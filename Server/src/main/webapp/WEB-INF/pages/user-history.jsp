@@ -24,7 +24,7 @@
                             price ${order.price}uah
                             " />
 
-                        <a href="order/get?id=${order.id}">
+                        <a href="/${APP_NAME}/order/get?id=${order.id}">
                             <input type="button" value="SHOW ORDER INFO" name="order-info"/>
                         </a>
 
@@ -34,7 +34,7 @@
         </table>
 
         <p>
-            <a href="user-info">
+            <a href="/${APP_NAME}/user-info">
                 <input type="button" value="RETURN TO MENU" name="user-info"/></a>
         </p>
     </div>

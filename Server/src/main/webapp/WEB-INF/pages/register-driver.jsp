@@ -34,11 +34,11 @@
             </ul>
             <ul>
                 <p>
-                    <a href="user-info">
+                    <a href="/${APP_NAME}/user-info">
                         <input type="submit" value="REGISTER" name="user-info"/></a>
                 </p>
                 <p>
-                    <a href="login">
+                    <a href="/${APP_NAME}/login">
                         <input type="button" value="RETURN TO LOGIN" name="login"/></a>
                 </p>
             </ul>
@@ -70,11 +70,11 @@
             </ul>
             <ul>
                 <p>
-                    <a href="user-info">
+                    <a href="/${APP_NAME}/user-info">
                         <input type="submit" value="REGISTER" name="user-info"/></a>
                 </p>
                 <p>
-                    <a href="login">
+                    <a href="/${APP_NAME}/login">
                         <input type="button" value="RETURN TO LOGIN" name="login"/></a>
                 </p>
             </ul>

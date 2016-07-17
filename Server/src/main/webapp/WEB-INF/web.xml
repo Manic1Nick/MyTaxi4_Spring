@@ -13,7 +13,7 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <filter>
+    <!--<filter>
         <filter-name>UrlRewriteFilter</filter-name>
         <filter-class>ua.artcode.taxi.filter.UrlRewriteFilter</filter-class>
     </filter>
@@ -21,6 +21,6 @@
         <filter-name>UrlRewriteFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
+-->
 
 </web-app>

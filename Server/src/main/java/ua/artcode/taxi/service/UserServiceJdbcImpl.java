@@ -338,11 +338,11 @@ public class UserServiceJdbcImpl implements UserService {
         }
 
         cancelled.setOrderStatus(OrderStatus.CANCELLED);
-        orderDao.update(cancelled);
+        Order orderRes = orderDao.update(cancelled);
 
-        LOG.info("Order " + cancelled.getId() + " was cancelled by user");
+        LOG.info("Order " + orderRes.getId() + " was cancelled by user");
 
-        return cancelled;
+        return orderRes;
     }
 
     @Override
@@ -384,11 +384,11 @@ public class UserServiceJdbcImpl implements UserService {
         }
 
         closed.setOrderStatus(OrderStatus.DONE);
-        orderDao.update(closed);
+        Order orderRes = orderDao.update(closed);
 
-        LOG.info("User " + user.getPhone() + " closed his order " + orderId);
+        LOG.info("User " + user.getPhone() + " closed his order " + orderRes.getId());
 
-        return closed;
+        return orderRes;
     }
 
     @Override

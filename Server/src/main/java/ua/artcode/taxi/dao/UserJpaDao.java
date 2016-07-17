@@ -56,10 +56,17 @@ public class UserJpaDao implements UserDao {
         foundUser.setName(newUser.getName());
 
         if (identifier.equals(UserIdentifier.P)) {
-            foundUser.setHomeAddress(newUser.getHomeAddress());
+            foundUser.getHomeAddress().setCountry(newUser.getHomeAddress().getCountry());
+            foundUser.getHomeAddress().setCity(newUser.getHomeAddress().getCity());
+            foundUser.getHomeAddress().setStreet(newUser.getHomeAddress().getStreet());
+            foundUser.getHomeAddress().setHouseNum(newUser.getHomeAddress().getHouseNum());
+
         } else if (identifier.equals(UserIdentifier.D)) {
-            foundUser.setCar(newUser.getCar());
+            foundUser.getCar().setType(newUser.getCar().getType());
+            foundUser.getCar().setModel(newUser.getCar().getModel());
+            foundUser.getCar().setNumber(newUser.getCar().getNumber());
         }
+
         foundUser.setOrdersDriver(newUser.getOrdersDriver());
         foundUser.setOrdersPassenger(newUser.getOrdersPassenger());
 
@@ -130,6 +137,19 @@ public class UserJpaDao implements UserDao {
     public List<Order> getAllOrdersOfUser(User user) {
 
         List<Order> orders = new ArrayList<>();
+
+        /*if (user.getIdentifier().equals(UserIdentifier.P)) {
+            orders = manager.createQuery("SELECT c FROM orders c WHERE c.passenger_id=:id")
+                    .setParameter("id",user.getId()).getResultList();
+
+        } else if (user.getIdentifier().equals(UserIdentifier.D)) {
+            orders = manager.createQuery("SELECT c FROM orders c WHERE c.driver_id=:id")
+                    .setParameter("id",user.getId()).getResultList();
+        }
+
+        for (Order order : orders) {
+            System.out.println(order);
+        }*/
 
         if (user.getIdentifier().equals(UserIdentifier.P)) {
             orders = user.getOrdersPassenger();

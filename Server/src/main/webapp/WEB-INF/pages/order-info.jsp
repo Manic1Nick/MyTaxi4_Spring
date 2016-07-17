@@ -89,44 +89,44 @@
 
         <c:if test="${user.identifier == 'P'}">
             <p>
-                <a href="order/cancel?id=${transfered.id}">
+                <a href="/${APP_NAME}/order/cancel?id=${transfered.id}">
                     <input type="button" value="CANCEL ORDER" name="order-cancel"/>
                 </a>
             </p>
         </c:if>
         <c:if test="${user.identifier == 'D'}">
             <p>
-                <a href="order/take?id=${transfered.id}">
+                <a href="/${APP_NAME}/order/take?id=${transfered.id}">
                     <input type="button" value="TAKE ORDER" name="order-take"/>
                 </a>
             </p>
         </c:if>
 
         <p>
-            <a href="order/done?id=${transfered.id}">
+            <a href="/${APP_NAME}/order/done?id=${transfered.id}">
                 <input type="button" value="ORDER DONE" name="order-done"/>
             </a>
         </p>
 
         <p>
-            <a href="make-call">
+            <a href="/${APP_NAME}/make-call">
                 <input type="button" value="MAKE CALL" name="make-call"/>
             </a>
         </p>
         <p>
-            <a href="show-map">
+            <a href="/${APP_NAME}/show-map">
                 <input type="button" value="SHOW MAP" name="show-map"/>
             </a>
         </p>
 
         <p>
-            <a href="add-message">
+            <a href="/${APP_NAME}/add-message">
                 <input type="button" value="ADD MESSAGE" name="add-message"/>
             </a>
         </p>
 
         <p>
-            <a href="user-info">
+            <a href="/${APP_NAME}/user-info">
 
                 <form method="get" action="user-info">
                     <input type="button" value="RETURN TO MENU" name="user-info"/>

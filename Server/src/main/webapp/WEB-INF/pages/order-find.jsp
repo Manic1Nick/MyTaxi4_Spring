@@ -23,7 +23,7 @@
                             distance to you: ${order.distanceToDriver}km
                             " />
 
-                        <a href="order/get?id=${order.id}">
+                        <a href="/${APP_NAME}/order/get?id=${order.id}">
                             <input type="button" value="SHOW ORDER INFO" name="order-info"/>
                         </a>
 

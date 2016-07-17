@@ -89,7 +89,7 @@
 
             <ul>
                 <p>
-                    <a href="order-make">
+                    <a href="/${APP_NAME}/order-make">
                         <input type="submit" value="MAKE ORDER" name="order-make"/>
                     </a>
                 </p>
@@ -100,22 +100,22 @@
 
     <ul>
         <p>
-            <a href="order-calculate">
+            <a href="/${APP_NAME}/order-calculate">
                 <input type="submit" value="CALCULATE ORDER" name="order-calculate"/>
             </a>
         </p>
         <p>
-            <a href="order-make">
+            <a href="/${APP_NAME}/order-make">
                 <input type="button" value="USE YOUR LOCATION" name="order-make"/>
             </a>
         </p>
         <p>
-            <a href="order-make">
+            <a href="/${APP_NAME}/order-make">
                 <input type="button" value="USE YOUR HOME ADDRESS" name="order-make"/>
             </a>
         </p>
         <p>
-            <a href="user-info">
+            <a href="/${APP_NAME}/user-info">
                 <input type="button" value="RETURN TO MENU" name="user-info"/>
             </a>
         </p>

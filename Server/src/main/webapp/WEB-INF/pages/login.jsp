@@ -18,7 +18,7 @@
             </li>
 
             <p>
-                <a href="user-info">
+                <a href="/${APP_NAME}/user-info">
                     <input type="submit" value="LOGIN" name="user-info"/>
                 </a>
             </p>

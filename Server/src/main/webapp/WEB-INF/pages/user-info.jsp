@@ -53,12 +53,12 @@
                 </li>
 
                 <p>
-                    <a href="order-make">
+                    <a href="/${APP_NAME}/order-make">
                         <input type="button" value="FIND TAXI" name="order-make"/>
                     </a>
                 </p>
                 <p>
-                    <a href="register-passenger">
+                    <a href="/${APP_NAME}/register-passenger">
                         <input type="button" value="CHANGE REGISTER DATA" name="register-passenger"/>
                     </a>
                 </p>
@@ -78,12 +78,12 @@
                 </li>
 
                 <p>
-                    <a href="order/all">
+                    <a href="/${APP_NAME}/order/all">
                         <input type="button" value="FIND PASSENGERS" name="order/all"/>
                     </a>
                 </p>
                 <p>
-                    <a href="register-driver">
+                    <a href="/${APP_NAME}/register-driver">
                         <input type="button" value="CHANGE REGISTER DATA" name="register-driver"/>
                     </a>
                 </p>
@@ -91,22 +91,22 @@
 
 
             <p>
-                <a href="order/last">
+                <a href="/${APP_NAME}/order/last">
                     <input type="button" value="SHOW LAST ORDER" name="order/last"/>
                 </a>
             </p>
             <p>
-                <a href="user-history">
+                <a href="/${APP_NAME}/user-history">
                     <input type="button" value="SHOW MY HISTORY" name="user-history"/>
                 </a>
             </p>
             <p>
-                <a href="login">
+                <a href="/${APP_NAME}/login">
                     <input type="button" value="RETURN TO LOGIN" name="login"/>
                 </a>
             </p>
             <p>
-                <a href="user-delete">
+                <a href="/${APP_NAME}/user-delete">
                     <input type="button" value="DELETE USER" name="user-delete"/>
                 </a>
             </p>

@@ -1,7 +1,6 @@
 package ua.artcode.taxi.servlets.userServlets;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
@@ -18,8 +17,6 @@ import java.io.IOException;
 public class LoginServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(LoginServlet.class);
-
-    ApplicationContext applicationContext;
 
     private UserService userService;
 
