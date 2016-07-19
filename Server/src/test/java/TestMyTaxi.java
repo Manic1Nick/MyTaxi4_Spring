@@ -191,7 +191,7 @@ public class TestMyTaxi {
     @Test()
     public void _10makeOrderAnonymousNegative() {
 
-        Order testOrder = orderDao.create(anonymousUser, order1);
+        Order testOrder = orderDao.create(order1);
         if (testOrder != null) {
             order1.setId(testOrder.getId());
         }
@@ -211,7 +211,7 @@ public class TestMyTaxi {
     public void _12getOrderInfoNegative() {
 
         passenger2 = userDao.createUser(passenger2);
-        Order testOrder = orderDao.create(passenger2, order2);
+        Order testOrder = orderDao.create(order2);
 
         Assert.assertNotEquals(order1, testOrder);
     }
@@ -229,7 +229,7 @@ public class TestMyTaxi {
     @Test()
     public void _14getLastOrderInfoNegative() {
 
-        Order testOrder = orderDao.create(passenger1, order2);
+        Order testOrder = orderDao.create(order2);
         if (testOrder != null) {
             order2.setId(testOrder.getId());
         }
@@ -288,8 +288,6 @@ public class TestMyTaxi {
 
         testOrder.setDriver(driver1);
         testOrder.setOrderStatus(OrderStatus.IN_PROGRESS);
-
-        orderDao.addToDriver(driver1, testOrder);
         orderDao.update(testOrder);
 
         Assert.assertEquals(OrderStatus.IN_PROGRESS, testOrder.getOrderStatus());

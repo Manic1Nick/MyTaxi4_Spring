@@ -16,11 +16,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(urlPatterns = {"/register-passenger"})
-public class RegisterPassengerServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/ajax/register-passenger"})
+public class AjaxRegisterPassengerServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(RegisterPassengerServlet.class);
+    private static final Logger LOG = Logger.getLogger(AjaxRegisterPassengerServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -39,7 +39,7 @@ public class RegisterPassengerServlet extends HttpServlet {
             req.setAttribute("user", user);
         }
 
-        req.getRequestDispatcher("/WEB-INF/pages/register-passenger.jsp").forward(req,resp);
+        req.getRequestDispatcher("/WEB-INF/pages/ajax-register-passenger.jsp").forward(req,resp);
     }
 
     @Override
@@ -75,20 +75,16 @@ public class RegisterPassengerServlet extends HttpServlet {
                 session.setAttribute("currentUserName", user.getName());
             }
 
-            req.setAttribute("user", user);
-            req.getRequestDispatcher("/WEB-INF/pages/user-info.jsp").forward(req, resp);
+            resp.getWriter().write("SUCCESS");
 
         } catch (RegisterException e) {
             LOG.error(e);
-            req.setAttribute("error", "This phone using already");
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            resp.getWriter().write("This phone using already");
+
         } catch (Exception e) {
             LOG.error(e);
-            req.setAttribute("errorTitle", "Login Error");
-            req.setAttribute("errorMessage", "invalid data");
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            resp.getWriter().write("Incorrect registration data");
         }
-
     }
 }
 

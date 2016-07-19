@@ -32,7 +32,7 @@ public class GetAllOrdersServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Map<Integer, Order> distanceMap = userService.getMapDistancesToDriver(
-                    OrderStatus.NEW.toString(),
+                    OrderStatus.IN_PROGRESS.toString(),
                     Constants.DRIVER_LOCATION_PATH);
 
             Object[] objArray = distanceMap.keySet().toArray();

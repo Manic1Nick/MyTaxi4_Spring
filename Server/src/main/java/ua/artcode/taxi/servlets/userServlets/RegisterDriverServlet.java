@@ -30,10 +30,10 @@ public class RegisterDriverServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+        Object accessTokenObj = req.getSession().getAttribute("accessToken");
 
-        if (accessToken!= null) {
-            User user = userService.getUser(accessToken);
+        if (accessTokenObj != null) {
+            User user = userService.getUser(String.valueOf(accessTokenObj));
             req.setAttribute("user", user);
         }
 
@@ -53,14 +53,16 @@ public class RegisterDriverServlet extends HttpServlet {
         registerData.put("carNumber", req.getParameter("carNumber"));
 
         try {
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+            Object accessTokenObj = req.getSession().getAttribute("accessToken");
             User user = null;
+            String accessToken = "";
 
-            if (accessToken != null) {
+            if (accessTokenObj != null) {
+                accessToken = String.valueOf(accessTokenObj);
                 user = userService.updateUser(registerData, accessToken);
 
             } else {
-                user = userService.registerPassenger(registerData);
+                user = userService.registerDriver(registerData);
                 accessToken = userService.login(user.getPhone(), user.getPass());
 
                 HttpSession session = req.getSession(true);

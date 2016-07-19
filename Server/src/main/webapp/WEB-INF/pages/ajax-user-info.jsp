@@ -3,8 +3,31 @@
 <html>
 <head>
     <title>User Info page</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <%--<script>
+        $.get("ajax/user-info",
+                function(responseJson) {
+                    printUser(responseJson);
+                })
+                .fail(function() {
+                    alert("Request failed")
+                });
+    </script>
+    <script>
+        function printUser(json) {
+            $("#user-info").empty()
+                    .append("<h3>User Info</h3>");
+            $.each(json, function(i, name){
+               $("#user-info").append(i + 1, " : " + name + " </br>");
+            });
+        }
+    </script>--%>
+
 </head>
 <body>
+
+    <div id="user-info"></div>
 
     <c:set var="transfered" value="${user}"/>
 
@@ -54,7 +77,7 @@
 
                 <p>
                     <a href="/${APP_NAME}/order-make">
-                        <input type="button" value="FIND TAXI" name="order-make"/>
+                        <input type="button" value="FIND TAXI" name="order-make" style="background-color:lightgreen"/>
                     </a>
                 </p>
                 <p>
@@ -79,7 +102,7 @@
 
                 <p>
                     <a href="/${APP_NAME}/order/all">
-                        <input type="button" value="FIND PASSENGERS" name="order/all"/>
+                        <input type="button" value="FIND PASSENGERS" name="order/all"  style="background-color:lightgreen"/>
                     </a>
                 </p>
                 <p>
@@ -90,7 +113,7 @@
             </c:if>
 
 
-            <p>
+            <p >
                 <a href="/${APP_NAME}/order/last">
                     <input type="button" value="SHOW LAST ORDER" name="order/last"/>
                 </a>
@@ -102,12 +125,12 @@
             </p>
             <p>
                 <a href="/${APP_NAME}/login">
-                    <input type="button" value="EXIT TO LOGIN" name="login"/>
+                    <input type="button" value="EXIT TO LOGIN" name="ajax-login"  style="background-color:lightgrey"/>
                 </a>
             </p>
             <p>
                 <a href="/${APP_NAME}/user-delete">
-                    <input type="button" value="DELETE USER" name="user-delete"/>
+                    <input type="button" value="DELETE USER" name="user-delete"  style="background-color:lightgrey"/>
                 </a>
             </p>
 

@@ -1,8 +1,11 @@
 package ua.artcode.taxi.utils;
 
 import com.google.gson.Gson;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
+import ua.artcode.taxi.model.UserIdentifier;
 import ua.artcode.taxi.to.Message;
 import ua.artcode.taxi.to.MessageBody;
 
@@ -58,5 +61,45 @@ public class ReflectionFormatter {
         map.put("message", order.getMessage() + "");
 
         return map;
+    }
+
+    public static String userToJSON (User user) {
+
+        JSONObject jobj = new JSONObject();
+        jobj.put("id", String.valueOf(user.getId()));
+        jobj.put("ifentifier", user.getIdentifier().toString());
+        jobj.put("phone", user.getPhone());
+        jobj.put("name", user.getName());
+
+        if (user.getIdentifier() == UserIdentifier.P) {
+            JSONArray homeAddress = new JSONArray();
+
+            homeAddress.add("country:" + user.getHomeAddress().getCountry());
+            homeAddress.add("city:" + user.getHomeAddress().getCity());
+            homeAddress.add("street:" + user.getHomeAddress().getStreet());
+            homeAddress.add("houseNum:" + user.getHomeAddress().getHouseNum());
+
+            jobj.put("homeAddress", homeAddress);
+
+        }
+
+        if (user.getIdentifier() == UserIdentifier.D) {
+            JSONArray car = new JSONArray();
+
+            car.add("type:" + user.getCar().getType());
+            car.add("model:" + user.getCar().getModel());
+            car.add("number:" + user.getCar().getNumber());
+
+            jobj.put("car", car);
+        }
+
+        return jobj.toJSONString();
+    }
+
+    public static User userFromJSON (String userJson) {
+
+
+
+        return null;
     }
 }

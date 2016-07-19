@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebListener;
 public class InitSpringContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        sce.getServletContext().setAttribute("APP_NAME", "app");
+        sce.getServletContext().setAttribute("APP_NAME", "app/ajax");
         /*String springLocation = sce.getServletContext().getInitParameter("springLocation");
         ApplicationContext applicationContext =
                 new ClassPathXmlApplicationContext(springLocation);

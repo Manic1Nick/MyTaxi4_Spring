@@ -356,6 +356,9 @@ class ClientThreadLogic implements Runnable {
                 } catch (OrderNotFoundException e) {
                     pw.println(e);
                     pw.flush();
+                } catch (WrongStatusOrderException e) {
+                    pw.println(e);
+                    pw.flush();
                 }
             }
 

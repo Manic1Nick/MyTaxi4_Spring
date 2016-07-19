@@ -29,7 +29,7 @@ public interface UserService {
                                             InputDataWrongException, UnknownHostException;
     Order getOrderInfo(long orderId) throws OrderNotFoundException;
     Order getLastOrderInfo(String accessToken) throws UserNotFoundException, OrderNotFoundException;
-    Order cancelOrder(long orderId) throws OrderNotFoundException;
+    Order cancelOrder(long orderId) throws OrderNotFoundException, WrongStatusOrderException;
     Order closeOrder(String accessToken, long orderId) throws OrderNotFoundException,
                                     WrongStatusOrderException, DriverOrderActionException;
 

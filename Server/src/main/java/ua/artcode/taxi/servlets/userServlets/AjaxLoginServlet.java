@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/ajax/login"})
+public class AjaxLoginServlet extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(LoginServlet.class);
+    private static final Logger LOG = Logger.getLogger(AjaxLoginServlet.class);
 
     private UserService userService;
 
@@ -28,22 +28,18 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        //quit from current session
         HttpSession session = req.getSession();
-        session.setAttribute("inSystem", false);
         session.setAttribute("accessToken", null);
+        session.invalidate();
 
-        /*HttpSession session = req.getSession();
-        session.invalidate();*/
-
-        req.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(req,resp);
+        req.getRequestDispatcher("/WEB-INF/pages/ajax-login.jsp").forward(req,resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String phone = req.getParameter("phone");
-        String pass = req.getParameter("pass");
+        String pass = req.getParameter("password");
 
         try {
             String accessToken = userService.login(phone, pass);
@@ -54,16 +50,12 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("accessToken", accessToken);
             session.setAttribute("currentUserName", found.getName());
 
-            req.setAttribute("user", found);
-
-            req.getRequestDispatcher("/WEB-INF/pages/user-info.jsp").forward(req, resp);
+            resp.getWriter().write("SUCCESS");
 
         } catch (Exception e) {
-            req.setAttribute("errorTitle", "Login Error");
-            req.setAttribute("errorMessage", "invalid name");
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            LOG.error(e);
+            resp.getWriter().write("Incorrect name or password");
         }
-        // redirect
     }
 }
 

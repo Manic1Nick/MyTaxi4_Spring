@@ -16,11 +16,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(urlPatterns = {"/register-passenger"})
-public class RegisterPassengerServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/ajax/register-driver"})
+public class AjaxRegisterDriverServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(RegisterPassengerServlet.class);
+    private static final Logger LOG = Logger.getLogger(AjaxRegisterDriverServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -30,16 +30,14 @@ public class RegisterPassengerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-
         Object accessTokenObj = req.getSession().getAttribute("accessToken");
 
         if (accessTokenObj != null) {
-            String accessToken = String.valueOf(accessTokenObj);
-            User user = userService.getUser(accessToken);
+            User user = userService.getUser(String.valueOf(accessTokenObj));
             req.setAttribute("user", user);
         }
 
-        req.getRequestDispatcher("/WEB-INF/pages/register-passenger.jsp").forward(req,resp);
+        req.getRequestDispatcher("/WEB-INF/pages/ajax-register-driver.jsp").forward(req,resp);
     }
 
     @Override
@@ -50,11 +48,9 @@ public class RegisterPassengerServlet extends HttpServlet {
         registerData.put("phone", req.getParameter("phone"));
         registerData.put("pass", req.getParameter("pass"));
         registerData.put("name", req.getParameter("name"));
-        registerData.put("homeAddress",
-                req.getParameter("country") + " "
-                + req.getParameter("city") + " "
-                + req.getParameter("street") + " "
-                + req.getParameter("houseNum"));
+        registerData.put("carType", req.getParameter("carType"));
+        registerData.put("carModel", req.getParameter("carModel"));
+        registerData.put("carNumber", req.getParameter("carNumber"));
 
         try {
             Object accessTokenObj = req.getSession().getAttribute("accessToken");
@@ -66,7 +62,7 @@ public class RegisterPassengerServlet extends HttpServlet {
                 user = userService.updateUser(registerData, accessToken);
 
             } else {
-                user = userService.registerPassenger(registerData);
+                user = userService.registerDriver(registerData);
                 accessToken = userService.login(user.getPhone(), user.getPass());
 
                 HttpSession session = req.getSession(true);
@@ -75,20 +71,16 @@ public class RegisterPassengerServlet extends HttpServlet {
                 session.setAttribute("currentUserName", user.getName());
             }
 
-            req.setAttribute("user", user);
-            req.getRequestDispatcher("/WEB-INF/pages/user-info.jsp").forward(req, resp);
+            resp.getWriter().write("SUCCESS");
 
         } catch (RegisterException e) {
             LOG.error(e);
-            req.setAttribute("error", "This phone using already");
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            resp.getWriter().write("This phone using already");
+
         } catch (Exception e) {
             LOG.error(e);
-            req.setAttribute("errorTitle", "Login Error");
-            req.setAttribute("errorMessage", "invalid data");
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            resp.getWriter().write("Incorrect registration data");
         }
-
     }
 }
 

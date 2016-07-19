@@ -12,7 +12,7 @@ public class LogginAspect {
 
     @Before(value = "publicMethodsPointCut()")
     public void logginPublicMethodsAdvice() {
-        System.out.println(" -----------------public method was called");
+        System.out.println("public method was called");
     }
 
     @Pointcut(value = "execution(public * ua.artcode.taxi..*(..))")
@@ -21,18 +21,16 @@ public class LogginAspect {
     @Around(value = "publicMethodsPointCut()")
     public Object aroundAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String methodName = proceedingJoinPoint.getSignature().getName();
-        System.out.printf("before method %s", methodName);
-
-        Object value = null;
+        System.out.printf("before method %s\n", methodName);
 
         try{
             Object proceed = proceedingJoinPoint.proceed();
-            System.out.printf("after method %s", methodName);
+            System.out.printf("after method %s\n", methodName);
             return proceed;
+
         } catch (Throwable throwable) {
             throwable.printStackTrace();
             throw throwable;
         }
     }
-
 }

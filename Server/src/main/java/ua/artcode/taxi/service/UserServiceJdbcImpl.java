@@ -47,9 +47,9 @@ public class UserServiceJdbcImpl implements UserService {
     @Override
     public User registerPassenger(Map<String, String> map) throws RegisterException {
 
-        Validator validator = new Validator();
+        User found = userDao.findByPhone(map.get("phone"));
 
-        if (!validator.validateRegistration(map.get("phone"))) {
+        if (found != null) {
 
             LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
 
@@ -73,9 +73,9 @@ public class UserServiceJdbcImpl implements UserService {
     @Override
     public User registerDriver(Map<String, String> map) throws RegisterException {
 
-        Validator validator = new Validator();
+        User found = userDao.findByPhone(map.get("phone"));
 
-        if (!validator.validateRegistration(map.get("phone"))) {
+        if (found != null) {
 
             LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
 
@@ -101,17 +101,9 @@ public class UserServiceJdbcImpl implements UserService {
     @Override
     public String login(String phone, String pass) throws Exception {
 
-        User found = null;
+        User found = userDao.findByPhone(phone);
 
-        Validator validator = new Validator();
-
-        boolean valid = validator.validateLogin(phone, pass);
-
-        if (valid) {
-
-            found = userDao.findByPhone(phone);
-
-        } else {
+        if (found == null) {
 
             LOG.error("LoginException: failed attempt to log in with phone " + phone);
 
@@ -132,11 +124,9 @@ public class UserServiceJdbcImpl implements UserService {
 
         Address from = new Address(lineFrom);
         Address to = new Address(lineTo);
-        Order newOrder = null;
+        Order createdOrder = null;
 
-        Validator validator = new Validator();
-
-        if (!validator.validateAddress(from) && !validator.validateAddress(to)) {
+        if (!validateAddress(from) && !validateAddress(to)) {
 
             LOG.error("InputDataWrongException: wrong input data address");
 
@@ -168,9 +158,11 @@ public class UserServiceJdbcImpl implements UserService {
 
                 message = message == null || message.equals("") ? "" : user.getName() + ": " + message;
 
-                newOrder = orderDao.create(user, new Order(from, to, user, distance, price, message));
+                Order newOrder = new Order(from, to, user, distance, price, message);
+                newOrder.setOrderStatus(OrderStatus.NEW);
+                createdOrder = orderDao.create(newOrder);
 
-                LOG.info("User " + user.getPhone() + " makes new order " + newOrder.getId());
+                LOG.info("User " + user.getPhone() + " makes new order " + createdOrder.getId());
 
             } catch (InputDataWrongException | IndexOutOfBoundsException e) {
 
@@ -179,7 +171,7 @@ public class UserServiceJdbcImpl implements UserService {
                 throw new InputDataWrongException("Wrong calculation in Google API");
             }
         }
-        return newOrder;
+        return createdOrder;
     }
 
     @Override
@@ -190,9 +182,7 @@ public class UserServiceJdbcImpl implements UserService {
         Address to = new Address(lineTo);
         Order newOrder = null;
 
-        Validator validator = new Validator();
-
-        if (!validator.validateAddress(from) && !validator.validateAddress(to)) {
+        if (!validateAddress(from) && !validateAddress(to)) {
 
             LOG.error("InputDataWrongException: wrong input data address");
 
@@ -223,7 +213,7 @@ public class UserServiceJdbcImpl implements UserService {
 
             User anonymousUser = userDao.createUser(new User(UserIdentifier.A, phone, name));
             newOrder = new Order(from, to, anonymousUser, distance, price, message);
-            orderDao.create(anonymousUser, newOrder);
+            orderDao.create(newOrder);
 
         } catch (InputDataWrongException | IndexOutOfBoundsException e) {
 
@@ -245,9 +235,7 @@ public class UserServiceJdbcImpl implements UserService {
         Address to = new Address(lineTo);
         Map<String, Object> map = new HashMap<>();
 
-        Validator validator = new Validator();
-
-        if (!validator.validateAddress(from) && !validator.validateAddress(to)) {
+        if (!validateAddress(from) && !validateAddress(to)) {
 
             LOG.error("InputDataWrongException: wrong input data address");
 
@@ -324,25 +312,32 @@ public class UserServiceJdbcImpl implements UserService {
     }
 
     @Override
-    public Order cancelOrder(long orderId) throws OrderNotFoundException {
+    public Order cancelOrder(long orderId) throws OrderNotFoundException, WrongStatusOrderException {
 
-        Order cancelled = orderDao.findById(orderId);
+        Order foundOrder = orderDao.findById(orderId);
 
-        if (cancelled == null) {
+        if (foundOrder == null) {
 
             LOG.error("OrderNotFoundException: failed attempt to cancel order with ID " +
                     orderId + " (not found in data base)");
 
             throw new OrderNotFoundException("Order not found in data base");
 
+        } else if (foundOrder.getOrderStatus().equals(OrderStatus.CLOSED) ||
+                    foundOrder.getOrderStatus().equals(OrderStatus.CANCELLED)) {
+
+            LOG.error("WrongStatusOrderException: failed attempt to close order with ID " +
+                    orderId);
+
+            throw new WrongStatusOrderException("This order has been CLOSED or CANCELLED already");
         }
 
-        cancelled.setOrderStatus(OrderStatus.CANCELLED);
-        Order orderRes = orderDao.update(cancelled);
+        foundOrder.setOrderStatus(OrderStatus.CANCELLED);
+        Order cancelledOrder = orderDao.update(foundOrder);
 
-        LOG.info("Order " + orderRes.getId() + " was cancelled by user");
+        LOG.info("Order " + cancelledOrder.getId() + " was cancelled by user");
 
-        return orderRes;
+        return cancelledOrder;
     }
 
     @Override
@@ -350,31 +345,31 @@ public class UserServiceJdbcImpl implements UserService {
             WrongStatusOrderException, DriverOrderActionException {
 
         User user = accessKeys.get(accessToken);
-        Order closed = orderDao.findById(orderId);
+        Order foundOrder = orderDao.findById(orderId);
         List<Order> ordersUser = orderDao.getOrdersOfUser(user);
-        Order result = null;
+        Order orderInDriverList = null;
 
         for (Order order : ordersUser) {
-            if (order.getId() == closed.getId()) {
-                result = order;
+            if (order.getId() == foundOrder.getId()) {
+                orderInDriverList = order;
             }
         }
 
-        if (closed == null) {
+        if (foundOrder == null) {
 
             LOG.error("OrderNotFoundException: failed attempt to close order with ID " +
                     orderId + " by user " + user.getPhone());
 
             throw new OrderNotFoundException("Order not found in data base");
 
-        } else if (result == null) {
+        } else if (orderInDriverList == null) {
 
             LOG.error("DriverOrderActionException: failed attempt to close order with ID " +
                     orderId + " by user " + user.getPhone());
 
             throw new DriverOrderActionException("Order not found in driver orders list");
 
-        } else if (!result.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
+        } else if (!orderInDriverList.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
 
             LOG.error("WrongStatusOrderException: failed attempt to close order with ID " +
                     orderId + " by user " + user.getPhone());
@@ -383,12 +378,12 @@ public class UserServiceJdbcImpl implements UserService {
 
         }
 
-        closed.setOrderStatus(OrderStatus.DONE);
-        Order orderRes = orderDao.update(closed);
+        foundOrder.setOrderStatus(OrderStatus.CLOSED);
+        Order closedOrder = orderDao.update(foundOrder);
 
-        LOG.info("User " + user.getPhone() + " closed his order " + orderRes.getId());
+        LOG.info("User " + user.getPhone() + " closed his order " + closedOrder.getId());
 
-        return orderRes;
+        return closedOrder;
     }
 
     @Override
@@ -426,8 +421,6 @@ public class UserServiceJdbcImpl implements UserService {
 
         inProgress.setDriver(user);
         inProgress.setOrderStatus(OrderStatus.IN_PROGRESS);
-        orderDao.addToDriver(user, inProgress);
-
         Order takenOrder = orderDao.update(inProgress);
 
         LOG.info("User " + user.getPhone() + " was take order " + takenOrder.getId() + " for execution");
@@ -496,9 +489,10 @@ public class UserServiceJdbcImpl implements UserService {
         UserIdentifier typeUser = user.getIdentifier();
         int idUser = user.getId();
 
-        Validator validator = new Validator();
+        User found = userDao.findByPhone(map.get("phone"));
 
-        if (!validator.validateChangeRegistration(typeUser, idUser, map.get("phone"))) {
+        if (found != null &&
+                user.getId() != found.getId()) {
 
             LOG.error("RegisterException: failed attempt to update user " +
                     user.getPhone() + " (phone " + map.get("phone") + " already in use by another user)");
@@ -544,12 +538,8 @@ public class UserServiceJdbcImpl implements UserService {
             }
         }
 
-        //delete orders of user from jdbc
-        for (Order order : orders) {
-            orderDao.delete(order.getId());
-        }
-
         User deleteUser = userDao.deleteUser(user.getId());
+        accessKeys.remove(accessToken);
 
         LOG.info("User " + user.getPhone() + " was deleted");
 
@@ -710,74 +700,22 @@ public class UserServiceJdbcImpl implements UserService {
         }
     }
 
+    private boolean validateAddress(Address address) throws InputDataWrongException {
 
-    class Validator {
-
-        boolean validateLogin(String phone, String password) {
-            boolean result = false;
-
-            List<String> phones = userDao.getAllRegisteredPhones();
-
-            for (String s : phones) {
-                if (phone.equals(s)) {
-                    String foundPass = userDao.findByPhone(phone).getPass();
-
-                    if(password.equals(foundPass)){
-                        result = true;
-                    }
-                }
-            }
-
-            return result;
+        if (address.getCountry().equals("")) {
+            throw new InputDataWrongException("Wrong data: country");
+            //result = false;
+        } else if (address.getCity().equals("")) {
+            throw new InputDataWrongException("Wrong data: city");
+            //result = false;
+        } else if (address.getStreet().equals("")) {
+            throw new InputDataWrongException("Wrong data: street");
+            //result = false;
+        } else if (address.getHouseNum().equals("")) {
+            throw new InputDataWrongException("Wrong data: houseNum");
+            //result = false;
         }
 
-        boolean validateRegistration(String phone) throws RegisterException {
-
-            List<String> phones = userDao.getAllRegisteredPhones();
-
-            for (String s : phones) {
-                if (phone.equals(s)) {
-                    throw new RegisterException("This phone using already");
-                }
-            }
-
-            return true;
-        }
-
-        boolean validateAddress(Address address) throws InputDataWrongException {
-
-            if (address.getCountry().equals("")) {
-                throw new InputDataWrongException("Wrong data: country");
-                //result = false;
-            } else if (address.getCity().equals("")) {
-                throw new InputDataWrongException("Wrong data: city");
-                //result = false;
-            } else if (address.getStreet().equals("")) {
-                throw new InputDataWrongException("Wrong data: street");
-                //result = false;
-            } else if (address.getHouseNum().equals("")) {
-                throw new InputDataWrongException("Wrong data: houseNum");
-                //result = false;
-            }
-
-            return true;
-        }
-
-        boolean validateChangeRegistration(UserIdentifier identifier, int id, String phone)
-                throws RegisterException {
-
-            List<String> phones = userDao.getAllRegisteredPhones();
-
-            for (String s : phones) {
-                if (phone.equals(s)) {
-                    User foundUser = userDao.findByPhone(phone);
-                    if (id != foundUser.getId() && !identifier.equals(foundUser.getIdentifier())) {
-                        throw new RegisterException("This phone using already");
-                    }
-                }
-            }
-
-            return true;
-        }
+        return true;
     }
 }

@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/order-make"})
-public class OrderMakeServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/ajax/order-make"})
+public class AjaxOrderMakeServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(OrderMakeServlet.class);
+    private static final Logger LOG = Logger.getLogger(AjaxOrderMakeServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -30,7 +30,7 @@ public class OrderMakeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        req.getRequestDispatcher("/WEB-INF/pages/order-make.jsp").forward(req,resp);
+        req.getRequestDispatcher("/WEB-INF/pages/ajax-order-make.jsp").forward(req,resp);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class OrderMakeServlet extends HttpServlet {
             req.setAttribute("order", order);
             req.setAttribute("user", user);
 
-            req.getRequestDispatcher("/WEB-INF/pages/order-info.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/pages/ajax-order-info.jsp").forward(req, resp);
 
         } catch (InputDataWrongException e) {
             LOG.error(e);

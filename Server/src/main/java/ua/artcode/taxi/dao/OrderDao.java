@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OrderDao {
 
-    Order create(User user, Order order);
+    Order create(Order order);
     Collection<Order> getAllOrders();
     Order update(Order newOrder);
     Order delete(long id);
@@ -17,7 +17,6 @@ public interface OrderDao {
     Order findById(long id);
     List<Order> getOrdersByStatus(OrderStatus status);
     List<Order> getOrdersOfUser(User user);
-    Order addToDriver(User user, Order order);
 
     OrderStatus getOrderStatusById(long id);
 

@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/order/cancel"})
-public class OrderCancelServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/ajax/order/cancel"})
+public class AjaxOrderCancelServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(OrderCancelServlet.class);
+    private static final Logger LOG = Logger.getLogger(AjaxOrderCancelServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -27,7 +27,7 @@ public class OrderCancelServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String orderId = req.getParameter("id");
 
@@ -38,19 +38,15 @@ public class OrderCancelServlet extends HttpServlet {
             User user = userService.getUser(accessToken);
 
             req.setAttribute("order", order);
-            req.setAttribute("user", user);
-            req.getRequestDispatcher("/WEB-INF/pages/order-info.jsp").forward(req, resp);
+            resp.getWriter().print("CANCELLED");
 
         } catch (OrderNotFoundException e) {
             LOG.error(e);
-            req.setAttribute("errorTitle", "Order not found in data base");
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            resp.getWriter().print("Order not found");
 
         } catch (WrongStatusOrderException e) {
             LOG.error(e);
-            req.setAttribute("errorTitle", "This order has already been CLOSED or CANCELLED");
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            resp.getWriter().print("This order has been CLOSED or CANCELLED already");
         }
     }
-
 }

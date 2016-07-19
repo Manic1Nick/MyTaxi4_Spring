@@ -36,17 +36,14 @@ public class UserJpaDao implements UserDao {
     @Transactional
     public Collection<User> getAllUsers() {
 
-        Query query = manager.createNamedQuery("getAllUsers");
-        Collection<User> users = query.getResultList();
-
-        return users;
+        return manager.createNamedQuery("getAllUsers").getResultList();
     }
 
     @Override
     @Transactional
     public User updateUser(User newUser) {
 
-        User foundUser = manager.find(User.class, newUser.getId());
+        User foundUser = findById(newUser.getId());
 
         UserIdentifier identifier = newUser.getIdentifier();
 
@@ -67,9 +64,6 @@ public class UserJpaDao implements UserDao {
             foundUser.getCar().setNumber(newUser.getCar().getNumber());
         }
 
-        foundUser.setOrdersDriver(newUser.getOrdersDriver());
-        foundUser.setOrdersPassenger(newUser.getOrdersPassenger());
-
         manager.merge(foundUser);
 
         return foundUser;
@@ -86,78 +80,37 @@ public class UserJpaDao implements UserDao {
     }
 
     @Override
-    public User findByPhone(String phone) {
+    @Transactional
+    public User findByPhone(String checkPhone) {
 
-        Collection<User> users = getAllUsers();
-        for (User user : users) {
-            if(user.getPhone().equals(phone)) {
-                return user;
-            }
+        User user = null;
+
+        List<User> users = manager.createQuery(
+                "SELECT c FROM User c WHERE c.phone=:phone")
+                .setParameter("phone", checkPhone).getResultList();
+
+        if (users.size() != 0) {
+            user = users.get(0);
         }
-        return null;
-    }
 
-    @Override
-    public List<User> getAllUsersByIdentifier(UserIdentifier identifier) {
-
-        List<User> usersRes = new ArrayList<>();
-
-        Collection<User> users = getAllUsers();
-        for (User user : users) {
-            if(user.getIdentifier().equals(identifier)) {
-                usersRes.add(user);
-            }
-        }
-        return usersRes;
+        return user;
     }
 
     @Override
     @Transactional
     public User findById(int id) {
 
-        User user = manager.find(User.class, id);
-
-        return user;
+        return manager.find(User.class, id);
     }
 
     @Override
-    public List<String> getAllRegisteredPhones() {
-
-        List<String> phones = new ArrayList<>();
-
-        Collection<User> users = getAllUsers();
-        for (User user : users) {
-            phones.add(user.getPhone());
-        }
-
-        return phones;
-    }
-
-    @Override
+    @Transactional
     public List<Order> getAllOrdersOfUser(User user) {
 
-        List<Order> orders = new ArrayList<>();
+        List<Order> orders = manager.createQuery(
+                "SELECT c FROM Order c WHERE c.passenger=:user OR c.driver=:user")
+                .setParameter("user",user).getResultList();
 
-        /*if (user.getIdentifier().equals(UserIdentifier.P)) {
-            orders = manager.createQuery("SELECT c FROM orders c WHERE c.passenger_id=:id")
-                    .setParameter("id",user.getId()).getResultList();
-
-        } else if (user.getIdentifier().equals(UserIdentifier.D)) {
-            orders = manager.createQuery("SELECT c FROM orders c WHERE c.driver_id=:id")
-                    .setParameter("id",user.getId()).getResultList();
-        }
-
-        for (Order order : orders) {
-            System.out.println(order);
-        }*/
-
-        if (user.getIdentifier().equals(UserIdentifier.P)) {
-            orders = user.getOrdersPassenger();
-        }
-
-        else if (user.getIdentifier().equals(UserIdentifier.D)) {
-            orders = user.getOrdersDriver();
-        }
         return orders;
     }
 

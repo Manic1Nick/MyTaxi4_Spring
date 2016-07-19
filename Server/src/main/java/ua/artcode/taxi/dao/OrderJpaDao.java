@@ -33,14 +33,11 @@ public class OrderJpaDao implements OrderDao {
 
     @Override
     @Transactional
-    public Order create(User user, Order order) {
+    public Order create(Order order) {
 
-        order.setOrderStatus(OrderStatus.NEW);
-        order.setPassenger(user);
+        User passUser = manager.find(User.class,order.getPassenger().getId());
+        order.setPassenger(passUser);
         manager.persist(order);
-
-        user.getOrdersPassenger().add(order);
-        manager.merge(user);
 
         return order;
     }
@@ -68,9 +65,12 @@ public class OrderJpaDao implements OrderDao {
         foundOrder = updateAddressFrom(foundOrder, newOrder.getFrom());
         foundOrder = updateAddressTo(foundOrder, newOrder.getTo());
 
-        foundOrder = updatePassenger(foundOrder, newOrder.getPassenger());
+        User passenger = manager.find(User.class, newOrder.getPassenger().getId());
+        foundOrder.setPassenger(passenger);
+
         if (newOrder.getDriver() != null) {
-            foundOrder = updateDriver(foundOrder, newOrder.getDriver());
+            User driver = manager.find(User.class, newOrder.getDriver().getId());
+            foundOrder.setDriver(driver);
         }
 
         foundOrder.setDistance(newOrder.getDistance());
@@ -86,7 +86,7 @@ public class OrderJpaDao implements OrderDao {
     @Transactional
     public Order delete(long id) {
 
-        Order delOrder = manager.find(Order.class, id);
+        Order delOrder = findById(id);
         manager.remove(delOrder);
 
         return delOrder;
@@ -96,23 +96,18 @@ public class OrderJpaDao implements OrderDao {
     @Transactional
     public Order findById(long id) {
 
-        Order order = manager.find(Order.class, id);
-
-        return order;
+        return manager.find(Order.class, id);
     }
 
     @Override
+    @Transactional
     public List<Order> getOrdersByStatus(OrderStatus status) {
 
-        List<Order> ordersRes = new ArrayList<>();
+        List<Order> orders = manager.createQuery(
+                "SELECT c FROM Order c WHERE c.orderStatus=:orderStatus")
+                .setParameter("orderStatus", status).getResultList();
 
-        Collection<Order> orders = getAllOrders();
-        for (Order order : orders) {
-            if(order.getOrderStatus().equals(status)) {
-                ordersRes.add(order);
-            }
-        }
-        return ordersRes;
+        return orders;
     }
 
     @Override
@@ -122,29 +117,11 @@ public class OrderJpaDao implements OrderDao {
     }
 
     @Override
-    public Order addToDriver(User user, Order order) {
-
-        order.setDriver(user);
-        update(order);
-
-        user.getOrdersDriver().add(order);
-        userDao.updateUser(user);
-
-        return order;
-    }
-
-    @Override
     public OrderStatus getOrderStatusById(long id) {
 
-        OrderStatus status = null;
+        Order foundOrder = findById(id);
 
-        Collection<Order> orders = getAllOrders();
-        for (Order order : orders) {
-            if(order.getId() == id) {
-                status = order.getOrderStatus();
-            }
-        }
-        return status;
+        return foundOrder.getOrderStatus();
     }
 
     public UserDao getUserDao() {
@@ -171,53 +148,6 @@ public class OrderJpaDao implements OrderDao {
         foundOrder.getTo().setCity(address.getCity());
         foundOrder.getTo().setStreet(address.getStreet());
         foundOrder.getTo().setHouseNum(address.getHouseNum());
-
-        return foundOrder;
-    }
-
-    private Order updatePassenger(Order foundOrder, User passenger) {
-
-        foundOrder.getPassenger().setId(passenger.getId());
-        foundOrder.getPassenger().setIdentifier(passenger.getIdentifier());
-        foundOrder.getPassenger().setPhone(passenger.getPhone());
-        foundOrder.getPassenger().setPass(passenger.getPass());
-        foundOrder.getPassenger().setName(passenger.getName());
-
-        foundOrder.getPassenger().getHomeAddress().setCountry(passenger.getHomeAddress().getCountry());
-        foundOrder.getPassenger().getHomeAddress().setCity(passenger.getHomeAddress().getCity());
-        foundOrder.getPassenger().getHomeAddress().setStreet(passenger.getHomeAddress().getStreet());
-        foundOrder.getPassenger().getHomeAddress().setHouseNum(passenger.getHomeAddress().getHouseNum());
-
-        for (Order order : passenger.getOrdersPassenger()) {
-            if (foundOrder.getId() == order.getId()) {
-                passenger.getOrdersPassenger().remove(order);
-                passenger.getOrdersPassenger().add(foundOrder);
-            }
-        }
-        //foundOrder.getPassenger().setOrdersPassenger(passenger.getOrdersPassenger());
-
-        return foundOrder;
-    }
-
-    private Order updateDriver(Order foundOrder, User driver) {
-
-        foundOrder.getDriver().setId(driver.getId());
-        foundOrder.getDriver().setIdentifier(driver.getIdentifier());
-        foundOrder.getDriver().setPhone(driver.getPhone());
-        foundOrder.getDriver().setPass(driver.getPass());
-        foundOrder.getDriver().setName(driver.getName());
-
-        foundOrder.getDriver().getCar().setType(driver.getCar().getType());
-        foundOrder.getDriver().getCar().setModel(driver.getCar().getModel());
-        foundOrder.getDriver().getCar().setNumber(driver.getCar().getNumber());
-
-        for (Order order : driver.getOrdersPassenger()) {
-            if (foundOrder.getId() == order.getId()) {
-                driver.getOrdersPassenger().remove(order);
-                driver.getOrdersPassenger().add(foundOrder);
-            }
-        }
-        //foundOrder.getDriver().setOrdersDriver(driver.getOrdersDriver());
 
         return foundOrder;
     }

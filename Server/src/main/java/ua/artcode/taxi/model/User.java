@@ -12,10 +12,10 @@ import java.util.List;
 public class User implements PassengerActive, DriverActive {
 
     @OneToMany(mappedBy = "passenger", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Order> ordersPassenger = new ArrayList<>();
+    List<Order> ordersPassenger;
 
     @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Order> ordersDriver = new ArrayList<>();
+    List<Order> ordersDriver;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -59,6 +59,7 @@ public class User implements PassengerActive, DriverActive {
         this.pass = pass;
         this.name = name;
         this.homeAddress = homeAddress;
+        ordersPassenger = new ArrayList<>();
     }
 
     //for driver
@@ -68,6 +69,7 @@ public class User implements PassengerActive, DriverActive {
         this.pass = pass;
         this.name = name;
         this.car = car;
+        ordersDriver = new ArrayList<>();
     }
 
     //for anonymous
