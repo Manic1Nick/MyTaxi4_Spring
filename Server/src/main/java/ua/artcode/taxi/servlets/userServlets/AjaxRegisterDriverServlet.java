@@ -46,7 +46,7 @@ public class AjaxRegisterDriverServlet extends HttpServlet {
         Map<String, String> registerData = new HashMap<>();
 
         registerData.put("phone", req.getParameter("phone"));
-        registerData.put("pass", req.getParameter("pass"));
+        registerData.put("pass", req.getParameter("password"));
         registerData.put("name", req.getParameter("name"));
         registerData.put("carType", req.getParameter("carType"));
         registerData.put("carModel", req.getParameter("carModel"));

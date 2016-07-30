@@ -1,6 +1,6 @@
 package ua.artcode.taxi.model;
 
-import com.google.gson.annotations.Expose;
+import ua.artcode.taxi.utils.geolocation.Location;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -40,6 +40,9 @@ public class User implements PassengerActive, DriverActive {
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
     private Car car;
+
+    @Transient
+    private String userCurrentLocation;
 
     /*@ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
@@ -163,6 +166,16 @@ public class User implements PassengerActive, DriverActive {
 
     public void setOrdersDriver(List<Order> ordersDriver) {
         this.ordersDriver = ordersDriver;
+    }
+
+    //todo get current user location
+    public String getUserCurrentLocation() {
+
+        return Constants.USER_LOCATION_PATH;
+    }
+
+    public void setUserCurrentLocation(String userCurrentLocation) {
+        this.userCurrentLocation = userCurrentLocation;
     }
 
     @Override

@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.OrderNotFoundException;
 import ua.artcode.taxi.exception.UserNotFoundException;
 import ua.artcode.taxi.model.Order;
-import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -15,11 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/ajax/order/last"})
-public class AjaxOrderShowLastServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/ajax/order/last-addresses"})
+public class AjaxGetAddressesFromLastOrderServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxOrderShowLastServlet.class);
+    private static final Logger LOG = Logger.getLogger(AjaxGetAddressesFromLastOrderServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -33,12 +32,18 @@ public class AjaxOrderShowLastServlet extends HttpServlet {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
 
             Order order = userService.getLastOrderInfo(accessToken);
-            User user = userService.getUser(accessToken);
 
-            req.setAttribute("order", order);
-            req.setAttribute("user", user);
+            String addressFrom = order.getFrom().getCountry() + "," +
+                    order.getFrom().getCity() + "," +
+                    order.getFrom().getStreet() + "," +
+                    order.getFrom().getHouseNum();
 
-            req.getRequestDispatcher("/WEB-INF/pages/ajax-order-info.jsp").include(req, resp);
+            String addressTo = order.getTo().getCountry() + "," +
+                    order.getTo().getCity() + "," +
+                    order.getTo().getStreet() + "," +
+                    order.getTo().getHouseNum();
+
+            resp.getWriter().print(addressFrom + ";" + addressTo);
 
         } catch (UserNotFoundException e) {
             LOG.error(e);

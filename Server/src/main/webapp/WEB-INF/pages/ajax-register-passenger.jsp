@@ -30,7 +30,8 @@
                 },
                 success: function(resp){
                     if (resp == "SUCCESS") {
-                        redirectUserInfo();
+                        alert("Welcome to MyTaxi!");
+                        window.location = "/${APP_NAME}/user-info";
                     } else {
                         alert(resp);
                     }
@@ -45,7 +46,7 @@
 
     <script>
         function sendChangedRegData() {
-            var phone = ${transfered.id}
+            var phone = $("#user_phone").val();
             var password = $("#user_pass").val();
             var name = $("#user_name").val();
             var country = $("#user_country").val();
@@ -66,8 +67,9 @@
                     houseNum : houseNum
                 },
                 success: function(resp){
-                    if (resp == "success") {
-                        redirectUserInfo();
+                    if (resp == "SUCCESS") {
+                        alert("Your register data was changed");
+                        window.location = "/${APP_NAME}/user-info";
                     } else {
                         alert(resp);
                     }
@@ -91,13 +93,30 @@
         }
     </script>
 
+    <script>
+        function colorBackground(x) {
+            x.style.background = "lemonchiffon";
+        }
+    </script>
+
+    <style>
+        h1 {
+            font-family: arial, sans-serif;
+            color: darkslateblue;
+        }
+
+        body {
+            font-family: arial, sans-serif;
+        }
+    </style>
+
 </head>
 <body>
 
 <c:set var="user" value="${user}"/>
 
 <div class="container">
-    <h1>Register Passenger form</h1>
+    <h1>REGISTER PASSENGER</h1>
 
     <!-- for CHANGE registration -->
     <c:if test="${user != null}">
@@ -109,25 +128,25 @@
         </ul>
         <ul>
             <li>Input phone:
-                <input id="user_phone" type="text" value="${user.phone}">
+                <input id="user_phone" type="text" value="${user.phone}" onfocus="colorBackground(this)">
             </li>
             <li>Input password:
-                <input id="user_pass" type="password" value="${user.pass}">
+                <input id="user_pass" type="password" value="${user.pass}" onfocus="colorBackground(this)">
             </li>
             <li>Input name:
-                <input id="user_name" type="text" value="${user.name}">
+                <input id="user_name" type="text" value="${user.name}" onfocus="colorBackground(this)">
             </li>
             <li>Input country:
-                <input id="user_country" type="text" value="${user.homeAddress.country}">
+                <input id="user_country" type="text" value="${user.homeAddress.country}" onfocus="colorBackground(this)">
             </li>
             <li>Input city:
-                <input id="user_city" type="text" value="${user.homeAddress.city}">
+                <input id="user_city" type="text" value="${user.homeAddress.city}" onfocus="colorBackground(this)">
             </li>
             <li>Input street:
-                <input id="user_street" type="text" value="${user.homeAddress.street}">
+                <input id="user_street" type="text" value="${user.homeAddress.street}" onfocus="colorBackground(this)">
             </li>
             <li>Input house number:
-                <input id="user_houseNum" type="text" value="${user.homeAddress.houseNum}">
+                <input id="user_houseNum" type="text" value="${user.homeAddress.houseNum}" onfocus="colorBackground(this)">
             </li>
         </ul>
 
@@ -144,25 +163,25 @@
     <c:if test="${user == null}">
         <ul>
             <li>Input phone:
-                <input id="new_phone" type="text">
+                <input id="new_phone" type="text" onfocus="colorBackground(this)">
             </li>
             <li>Input password:
-                <input id="new_pass" type="password">
+                <input id="new_pass" type="password" onfocus="colorBackground(this)">
             </li>
             <li>Input name:
-                <input id="new_name" type="text">
+                <input id="new_name" type="text" onfocus="colorBackground(this)">
             </li>
             <li>Input country:
-                <input id="new_country" type="text">
+                <input id="new_country" type="text" onfocus="colorBackground(this)">
             </li>
             <li>Input city:
-                <input id="new_city" type="text">
+                <input id="new_city" type="text" onfocus="colorBackground(this)">
             </li>
             <li>Input street:
-                <input id="new_street" type="text">
+                <input id="new_street" type="text" onfocus="colorBackground(this)">
             </li>
             <li>Input house number:
-                <input id="new_houseNum" type="text">
+                <input id="new_houseNum" type="text" onfocus="colorBackground(this)">
             </li>
         </ul>
         <ul>

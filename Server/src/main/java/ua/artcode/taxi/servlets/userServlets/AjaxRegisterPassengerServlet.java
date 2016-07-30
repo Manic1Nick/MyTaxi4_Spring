@@ -30,7 +30,6 @@ public class AjaxRegisterPassengerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-
         Object accessTokenObj = req.getSession().getAttribute("accessToken");
 
         if (accessTokenObj != null) {
@@ -48,7 +47,7 @@ public class AjaxRegisterPassengerServlet extends HttpServlet {
         Map<String, String> registerData = new HashMap<>();
 
         registerData.put("phone", req.getParameter("phone"));
-        registerData.put("pass", req.getParameter("pass"));
+        registerData.put("pass", req.getParameter("password"));
         registerData.put("name", req.getParameter("name"));
         registerData.put("homeAddress",
                 req.getParameter("country") + " "

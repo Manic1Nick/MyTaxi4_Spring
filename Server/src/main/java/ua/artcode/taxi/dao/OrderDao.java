@@ -2,7 +2,6 @@ package ua.artcode.taxi.dao;
 
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.OrderStatus;
-import ua.artcode.taxi.model.User;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,8 +15,5 @@ public interface OrderDao {
 
     Order findById(long id);
     List<Order> getOrdersByStatus(OrderStatus status);
-    List<Order> getOrdersOfUser(User user);
-
-    OrderStatus getOrderStatusById(long id);
-
+    Order getLastOrderOfUser(int userId);
 }

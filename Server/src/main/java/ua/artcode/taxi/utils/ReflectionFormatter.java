@@ -3,9 +3,7 @@ package ua.artcode.taxi.utils;
 import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import ua.artcode.taxi.model.Order;
-import ua.artcode.taxi.model.User;
-import ua.artcode.taxi.model.UserIdentifier;
+import ua.artcode.taxi.model.*;
 import ua.artcode.taxi.to.Message;
 import ua.artcode.taxi.to.MessageBody;
 
@@ -33,35 +31,93 @@ public class ReflectionFormatter {
     }
 
     public static Map<String, Object> orderToJsonMap(Order order) {
+        Gson gson = new Gson();
 
         Map<String, Object> map = new HashMap<>();
 
-        map.put("id", order.getId() + "");
+        map.put("id", String.valueOf(order.getId()));
 
         if (order.getOrderStatus() != null) {
             map.put("orderStatus", order.getOrderStatus().toString());
         }
 
-        map.put("addressFrom", new Gson().toJson(order.getFrom()));
-        map.put("addressTo", new Gson().toJson(order.getTo()));
+        map.put("addressFrom", gson.toJson(order.getFrom()));
+        map.put("addressTo", gson.toJson(order.getTo()));
 
         Message messagePassenger = new Message();
         messagePassenger.setMessageBody(new MessageBody(userToJsonMap(order.getPassenger())));
-        map.put("passenger", new Gson().toJson(messagePassenger));
+        map.put("passenger", gson.toJson(messagePassenger));
 
         if (order.getDriver() != null) {
             Message messageDriver = new Message();
 
             messageDriver.setMessageBody(new MessageBody(userToJsonMap(order.getDriver())));
-            map.put("driver", new Gson().toJson(messageDriver));
+            map.put("driver", gson.toJson(messageDriver));
         }
 
-        map.put("distance", order.getDistance() + "");
-        map.put("price", order.getPrice() + "");
-        map.put("message", order.getMessage() + "");
+        map.put("distance", String.valueOf(order.getDistance()));
+        map.put("price", String.valueOf(order.getPrice()));
+        map.put("message", String.valueOf(order.getMessage()));
+
+        map.put("distanceToDriver", String.valueOf(order.getDistanceToDriver()));
 
         return map;
     }
+
+    public static User getUserFromJsonMap(Map<String, Object> map) {
+        Gson gson = new Gson();
+
+        //create User
+        User user = new User(
+                Enum.valueOf(UserIdentifier.class, map.get("identifier").toString()),
+                map.get("phone").toString(),
+                map.get("name").toString()
+        );
+
+        user.setId(Integer.parseInt(map.get("id").toString()));
+
+        if (map.get("pass") != null) {
+            user.setPass(map.get("pass").toString());
+        }
+
+        if (map.get("homeAddress") != null) {
+            user.setHomeAddress(gson.fromJson(map.get("homeAddress").toString(), Address.class));
+        }
+
+        if (map.get("car") != null) {
+            user.setCar(gson.fromJson(map.get("car").toString(), Car.class));
+        }
+
+        return user;
+    }
+
+    public static Order getOrderFromJsonMap(Map<String, Object> map) {
+        Gson gson = new Gson();
+
+        Order order = new Order();
+
+        order.setId(Long.parseLong(map.get("id").toString()));
+        order.setOrderStatus(Enum.valueOf(OrderStatus.class, map.get("orderStatus").toString()));
+        order.setFrom(gson.fromJson(map.get("addressFrom").toString(), Address.class));
+        order.setTo(gson.fromJson(map.get("addressTo").toString(), Address.class));
+
+        Message messagePassenger = gson.fromJson(map.get("passenger").toString(), Message.class);
+        order.setPassenger(getUserFromJsonMap(messagePassenger.getMessageBody().getMap()));
+
+        if (map.get("driver") != null) {
+            Message messageDriver = gson.fromJson(map.get("driver").toString(), Message.class);
+            order.setDriver(getUserFromJsonMap(messageDriver.getMessageBody().getMap()));
+        }
+
+        order.setDistance(Integer.parseInt(map.get("distance").toString()));
+        order.setPrice(Integer.parseInt(map.get("price").toString()));
+        order.setMessage(map.get("message").toString());
+
+        order.setDistanceToDriver(Integer.parseInt(map.get("distanceToDriver").toString()));
+
+        return order;
+    }
+
 
     public static String userToJSON (User user) {
 

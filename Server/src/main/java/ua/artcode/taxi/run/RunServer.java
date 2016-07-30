@@ -434,7 +434,8 @@ class ClientThreadLogic implements Runnable {
 
                     Map<String, Object> mapForMessage = new HashMap<>();
                     for (Integer key : ordersMap.keySet()) {
-                        Map<String, Object> concreteOrder = ReflectionFormatter.orderToJsonMap(ordersMap.get(key));
+                        Map<String, Object> concreteOrder =
+                                ReflectionFormatter.orderToJsonMap(ordersMap.get(key));
                         Message concreteMessage = new Message();
                         MessageBody concreteMessageBody = new MessageBody(concreteOrder);
                         concreteMessage.setMessageBody(concreteMessageBody);
@@ -464,31 +465,6 @@ class ClientThreadLogic implements Runnable {
 
                 Message responseMessage = new Message();
                 MessageBody messageBody = new MessageBody(ReflectionFormatter.userToJsonMap(foundUser));
-                responseMessage.setMessageBody(messageBody);
-
-                pw.println(gson.toJson(responseMessage));
-                pw.flush();
-            }
-
-            //getAllOrdersUser
-            if ("getAllOrdersUser".equals(message.getMethodName())) {
-                Map<String, Object> map = message.getMessageBody().getMap();
-                Object accessToken = map.get("accessToken");
-
-                List<Order> orders = userService.getAllOrdersUser(accessToken.toString());
-
-                Map<String, Object> mapForMessage = new HashMap<>();
-                for (int i = 0; i < orders.size(); i++) {
-                    Map<String, Object> concreteOrder = ReflectionFormatter.orderToJsonMap(orders.get(i));
-                    Message concreteMessage = new Message();
-                    MessageBody concreteMessageBody = new MessageBody(concreteOrder);
-                    concreteMessage.setMessageBody(concreteMessageBody);
-
-                    mapForMessage.put(orders.get(i).getId() + "", gson.toJson(concreteMessage));
-                }
-
-                Message responseMessage = new Message();
-                MessageBody messageBody = new MessageBody(mapForMessage);
                 responseMessage.setMessageBody(messageBody);
 
                 pw.println(gson.toJson(responseMessage));

@@ -5,7 +5,6 @@ import ua.artcode.taxi.exception.DriverOrderActionException;
 import ua.artcode.taxi.exception.OrderNotFoundException;
 import ua.artcode.taxi.exception.WrongStatusOrderException;
 import ua.artcode.taxi.model.Order;
-import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -14,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/ajax/order/close"})
@@ -36,9 +36,10 @@ public class AjaxOrderCloseServlet extends HttpServlet {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
 
             Order order = userService.closeOrder(accessToken, Integer.parseInt(orderId));
-            User user = userService.getUser(accessToken);
 
-            req.setAttribute("order", order);
+            HttpSession session = req.getSession(true);
+            session.setAttribute("order", order);
+
             resp.getWriter().print("CLOSED");
 
         } catch (OrderNotFoundException e) {
@@ -47,11 +48,11 @@ public class AjaxOrderCloseServlet extends HttpServlet {
 
         } catch (WrongStatusOrderException e) {
             LOG.error(e);
-            resp.getWriter().print("This order has wrong status (not IN_PROGRESS)");
+            resp.getWriter().print("Order must have status IN_PROGRESS to close");
 
         } catch (DriverOrderActionException e) {
             LOG.error(e);
-            resp.getWriter().print("Order not found in driver orders list");
+            resp.getWriter().print("This order is not your order");
         }
     }
 

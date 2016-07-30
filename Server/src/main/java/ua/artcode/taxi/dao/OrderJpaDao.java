@@ -61,6 +61,10 @@ public class OrderJpaDao implements OrderDao {
         OrderStatus status = newOrder.getOrderStatus();
 
         foundOrder.setOrderStatus(status);
+        foundOrder.setTimeCreate(newOrder.getTimeCreate());
+        foundOrder.setTimeCancelled(newOrder.getTimeCancelled());
+        foundOrder.setTimeTaken(newOrder.getTimeTaken());
+        foundOrder.setTimeClosed(newOrder.getTimeClosed());
 
         foundOrder = updateAddressFrom(foundOrder, newOrder.getFrom());
         foundOrder = updateAddressTo(foundOrder, newOrder.getTo());
@@ -111,17 +115,15 @@ public class OrderJpaDao implements OrderDao {
     }
 
     @Override
-    public List<Order> getOrdersOfUser(User user) {
+    @Transactional
+    public Order getLastOrderOfUser(int userId) {
 
-        return userDao.getAllOrdersOfUser(user);
-    }
+        List<Long> orderIds = manager.createQuery(
+                "SELECT MAX(c.id) FROM Order c WHERE c.passenger.id=:userId OR c.driver.id=:userId")
+                .setParameter("userId", userId).setMaxResults(1).getResultList();
+        Long orderId = orderIds.get(0);
 
-    @Override
-    public OrderStatus getOrderStatusById(long id) {
-
-        Order foundOrder = findById(id);
-
-        return foundOrder.getOrderStatus();
+        return findById(orderIds.get(0));
     }
 
     public UserDao getUserDao() {

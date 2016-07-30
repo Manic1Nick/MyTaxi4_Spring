@@ -1,10 +1,10 @@
 package ua.artcode.taxi.servlets.orderServlets;
 
 import org.apache.log4j.Logger;
+import ua.artcode.taxi.exception.DriverOrderActionException;
 import ua.artcode.taxi.exception.OrderNotFoundException;
 import ua.artcode.taxi.exception.WrongStatusOrderException;
 import ua.artcode.taxi.model.Order;
-import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -13,13 +13,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/order/cancel"})
-public class OrderCancelServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/ajax/order/take"})
+public class AjaxOrderTakeServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(OrderCancelServlet.class);
+    private static final Logger LOG = Logger.getLogger(AjaxOrderTakeServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -34,22 +35,24 @@ public class OrderCancelServlet extends HttpServlet {
         try {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
 
-            Order order = userService.cancelOrder(Integer.parseInt(orderId));
-            User user = userService.getUser(accessToken);
+            Order order = userService.takeOrder(accessToken, Long.parseLong(orderId));
 
-            req.setAttribute("order", order);
-            req.setAttribute("user", user);
-            req.getRequestDispatcher("/WEB-INF/pages/order-info.jsp").forward(req, resp);
+            HttpSession session = req.getSession(true);
+            session.setAttribute("order", order);
 
-        } catch (OrderNotFoundException e) {
+            resp.getWriter().print("TAKEN");
+
+        } catch (DriverOrderActionException e) {
             LOG.error(e);
-            req.setAttribute("errorTitle", "Order not found in data base");
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            resp.getWriter().print("Driver has orders IN_PROGRESS already");
 
         } catch (WrongStatusOrderException e) {
             LOG.error(e);
-            req.setAttribute("errorTitle", "This order has already been CLOSED or CANCELLED");
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            resp.getWriter().print("This order has wrong status (not NEW)");
+
+        } catch (OrderNotFoundException e) {
+            LOG.error(e);
+            resp.getWriter().print("Order not found in data base");
         }
     }
 

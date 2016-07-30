@@ -12,7 +12,6 @@ import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -226,7 +225,7 @@ public class TestMyTaxi {
         Assert.assertEquals(order1, testOrder);
     }*/
 
-    @Test()
+    /*@Test()
     public void _14getLastOrderInfoNegative() {
 
         Order testOrder = orderDao.create(order2);
@@ -239,7 +238,7 @@ public class TestMyTaxi {
         testOrder = allUserOrders.get(allUserOrders.size() - 1);;
 
         Assert.assertNotEquals(order1, testOrder);
-    }
+    }*/
 
     /*@Test()
     public void _15cancelOrderPositive() {

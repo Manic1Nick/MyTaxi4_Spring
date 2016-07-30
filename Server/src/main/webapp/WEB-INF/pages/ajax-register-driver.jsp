@@ -28,7 +28,8 @@
                 },
                 success: function(resp){
                     if (resp == "SUCCESS") {
-                        redirectUserInfo();
+                        alert("Welcome to MyTaxi!");
+                        window.location = "/${APP_NAME}/user-info";
                     } else {
                         alert(resp);
                     }
@@ -62,8 +63,9 @@
                     carNumber : carNumber
                 },
                 success: function(resp){
-                    if (resp == "success") {
-                        redirectUserInfo();
+                    if (resp == "SUCCESS") {
+                        alert("Your register data was changed");
+                        window.location = "/${APP_NAME}/user-info";
                     } else {
                         alert(resp);
                     }
@@ -86,11 +88,29 @@
             window.location = "/${APP_NAME}/login";
         }
     </script>
+
+    <script>
+        function colorBackground(x) {
+            x.style.background = "lemonchiffon";
+        }
+    </script>
+
+    <style>
+        h1 {
+            font-family: arial, sans-serif;
+            color: darkslateblue;
+        }
+
+        body {
+            font-family: arial, sans-serif;
+        }
+    </style>
+
 </head>
 <body>
 
 <div class="container">
-    <h1>Register Driver form</h1>
+    <h1>REGISTER DRIVER</h1>
 
     <!-- for CHANGE registration -->
     <c:if test="${user != null}">
@@ -102,22 +122,22 @@
         </ul>
         <ul>
             <li>Input phone:
-                <input id="user_phone" type="text" value="${user.phone}">
+                <input id="user_phone" type="text" value="${user.phone}" onfocus="colorBackground(this)">
             </li>
             <li>Input password:
-                <input id="user_pass" type="password" value="${user.pass}">
+                <input id="user_pass" type="password" value="${user.pass}" onfocus="colorBackground(this)">
             </li>
             <li>Input name:
-                <input id="user_user_name" type="text" value="${user.name}">
+                <input id="user_name" type="text" value="${user.name}" onfocus="colorBackground(this)">
             </li>
             <li>Input car type:
-                <input id="user_carType" type="text" value="${user.car.type}">
+                <input id="user_carType" type="text" value="${user.car.type}" onfocus="colorBackground(this)">
             </li>
             <li>Input car model:
-                <input id="user_carModel" type="text" value="${user.car.model}">
+                <input id="user_carModel" type="text" value="${user.car.model}" onfocus="colorBackground(this)">
             </li>
             <li>Input car number:
-                <input id="user_carNumber" type="text" value="${user.car.number}">
+                <input id="user_carNumber" type="text" value="${user.car.number}" onfocus="colorBackground(this)">
             </li>
         </ul>
 
@@ -133,22 +153,22 @@
     <c:if test="${user == null}">
         <ul>
             <li>Input phone:
-                <input id="new_phone" type="text">
+                <input id="new_phone" type="text" onfocus="colorBackground(this)">
             </li>
             <li>Input password:
-                <input id="new_pass" type="password">
+                <input id="new_pass" type="password" onfocus="colorBackground(this)">
             </li>
             <li>Input name:
-                <input id="new_name" type="text">
+                <input id="new_name" type="text" onfocus="colorBackground(this)">
             </li>
             <li>Input car type:
-                <input id="new_carType" type="text">
+                <input id="new_carType" type="text" onfocus="colorBackground(this)">
             </li>
             <li>Input car model:
-                <input id="new_carModel" type="text">
+                <input id="new_carModel" type="text" onfocus="colorBackground(this)">
             </li>
             <li>Input car number:
-                <input id="new_carNumber" type="text">
+                <input id="new_carNumber" type="text" onfocus="colorBackground(this)">
             </li>
         </ul>
         <ul>

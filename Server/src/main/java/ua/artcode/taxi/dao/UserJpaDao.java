@@ -2,15 +2,10 @@ package ua.artcode.taxi.dao;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ua.artcode.taxi.model.Order;
-import ua.artcode.taxi.model.User;
-import ua.artcode.taxi.model.UserIdentifier;
-import ua.artcode.taxi.utils.ConnectionFactory;
+import ua.artcode.taxi.model.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -105,15 +100,24 @@ public class UserJpaDao implements UserDao {
 
     @Override
     @Transactional
-    public List<Order> getAllOrdersOfUser(User user) {
+    public List<Order> getOrdersOfUser(User user, int from, int to) {
 
         List<Order> orders = manager.createQuery(
                 "SELECT c FROM Order c WHERE c.passenger=:user OR c.driver=:user")
-                .setParameter("user",user).getResultList();
+                .setParameter("user",user).getResultList().subList(from, to);
 
         return orders;
     }
 
+    @Override
+    @Transactional
+    public int getQuantityOrdersOfUser(int userId) {
 
+        List<Long> orderIds = manager.createQuery(
+                "SELECT c.id FROM Order c WHERE c.passenger.id=:userId OR c.driver.id=:userId")
+                .setParameter("userId", userId).getResultList();
+
+        return orderIds.size();
+    }
 }
 

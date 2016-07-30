@@ -2,6 +2,7 @@ package ua.artcode.taxi.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "orders")
@@ -11,6 +12,18 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @Column(name = "time", nullable = false)
+    private Date timeCreate;
+
+    @Transient
+    private Date timeTaken;
+
+    @Transient
+    private Date timeCancelled;
+
+    @Transient
+    private Date timeClosed;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -40,9 +53,6 @@ public class Order {
     private String message;
 
     @Transient
-    private LocalDateTime makeOrderTime;
-
-    @Transient
     private int distanceToDriver;
 
     public Order() {
@@ -68,6 +78,38 @@ public class Order {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Date getTimeCreate() {
+        return timeCreate;
+    }
+
+    public void setTimeCreate(Date timeCreate) {
+        this.timeCreate = timeCreate;
+    }
+
+    public Date getTimeTaken() {
+        return timeTaken;
+    }
+
+    public void setTimeTaken(Date timeTaken) {
+        this.timeTaken = timeTaken;
+    }
+
+    public Date getTimeCancelled() {
+        return timeCancelled;
+    }
+
+    public void setTimeCancelled(Date timeCancelled) {
+        this.timeCancelled = timeCancelled;
+    }
+
+    public Date getTimeClosed() {
+        return timeClosed;
+    }
+
+    public void setTimeClosed(Date timeClosed) {
+        this.timeClosed = timeClosed;
     }
 
     public OrderStatus getOrderStatus() {
@@ -134,14 +176,6 @@ public class Order {
         this.message = message;
     }
 
-    public LocalDateTime getMakeOrderTime() {
-        return makeOrderTime;
-    }
-
-    public void setMakeOrderTime(LocalDateTime makeOrderTime) {
-        this.makeOrderTime = makeOrderTime;
-    }
-
     public int getDistanceToDriver() {
         return distanceToDriver;
     }
@@ -171,6 +205,7 @@ public class Order {
 
             if (((Order)obj).driver == null) {
                 return  id == (((Order)obj).id) &&
+                        timeCreate == (((Order)obj).timeCreate) &&
                         orderStatus.equals(((Order)obj).orderStatus) &&
                         from.equals(((Order)obj).from) &&
                         to.equals(((Order)obj).to) &&
@@ -181,6 +216,7 @@ public class Order {
 
             } else if (((Order)obj).driver != null) {
                 return  id == (((Order)obj).id) &&
+                        timeCreate == (((Order)obj).timeCreate) &&
                         orderStatus.equals(((Order)obj).orderStatus) &&
                         from.equals(((Order)obj).from) &&
                         to.equals(((Order)obj).to) &&

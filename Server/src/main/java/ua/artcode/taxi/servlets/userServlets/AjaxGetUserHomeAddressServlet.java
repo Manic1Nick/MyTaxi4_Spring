@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/ajax/user-info"})
-public class AjaxUserInfoMenuServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/ajax/user/get-address"})
+public class AjaxGetUserHomeAddressServlet extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(AjaxUserInfoMenuServlet.class);
+    private static final Logger LOG = Logger.getLogger(AjaxGetUserHomeAddressServlet.class);
 
     private UserService userService;
 
@@ -34,17 +34,16 @@ public class AjaxUserInfoMenuServlet extends HttpServlet {
 
             req.setAttribute("user", found);
 
-            /*String userToJSON = ReflectionFormatter.userToJSON(found);
+            String homeAddress = found.getHomeAddress().getCountry() + "," +
+                    found.getHomeAddress().getCity() + "," +
+                    found.getHomeAddress().getStreet() + "," +
+                    found.getHomeAddress().getHouseNum();
 
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().write(userToJSON);*/
-
-            req.getServletContext().getRequestDispatcher("/WEB-INF/pages/ajax-user-info.jsp").include(req, resp);
+            resp.getWriter().write(homeAddress);
 
         } catch (Exception e) {
             LOG.error(e);
-            resp.getWriter().write("Incorrect data");
+            resp.getWriter().write("User not found");
         }
     }
 

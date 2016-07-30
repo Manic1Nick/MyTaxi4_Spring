@@ -2,9 +2,9 @@ package ua.artcode.taxi.servlets.orderServlets;
 
 import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.InputDataWrongException;
-import ua.artcode.taxi.model.Constants;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.OrderStatus;
+import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -31,9 +31,13 @@ public class GetAllOrdersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+
+            User found = userService.getUser(accessToken);
+
             Map<Integer, Order> distanceMap = userService.getMapDistancesToDriver(
                     OrderStatus.IN_PROGRESS.toString(),
-                    Constants.DRIVER_LOCATION_PATH);
+                    found.getUserCurrentLocation());
 
             Object[] objArray = distanceMap.keySet().toArray();
             int[] distances = new int[objArray.length];

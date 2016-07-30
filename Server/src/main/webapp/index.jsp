@@ -44,6 +44,18 @@
         }
     </script>
 
+    <script>
+        function colorBackground(x) {
+            x.style.background = "lemonchiffon";
+        }
+    </script>
+
+    <style>
+        div {
+            font-family: arial, sans-serif;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -58,11 +70,11 @@
     <div align="center" id="login">
         <p>
             <label>Input phone</label>
-            <input id="phoneInput" type="text">
+            <input id="phoneInput" type="text" onfocus="colorBackground(this)">
         </p>
         <p>
             <label>Input password</label>
-            <input id="passInput" type="password"><br>
+            <input id="passInput" type="password" onfocus="colorBackground(this)"><br>
         </p>
         <p>
             <button onclick="sendLogin()" style="background-color:lightgreen">

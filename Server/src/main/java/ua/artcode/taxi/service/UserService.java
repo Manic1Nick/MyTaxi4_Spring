@@ -1,7 +1,9 @@
 package ua.artcode.taxi.service;
 
 import ua.artcode.taxi.exception.*;
+import ua.artcode.taxi.model.Address;
 import ua.artcode.taxi.model.Order;
+import ua.artcode.taxi.model.OrderStatus;
 import ua.artcode.taxi.model.User;
 
 import java.net.UnknownHostException;
@@ -38,10 +40,15 @@ public interface UserService {
             throws OrderNotFoundException, WrongStatusOrderException, DriverOrderActionException;
     Map<Integer, Order> getMapDistancesToDriver(String orderStatus, String lineAddressDriver)
                                                                             throws InputDataWrongException;
+    Order[] createArrayOrdersForDriver(OrderStatus orderStatus, User driver)
+            throws InputDataWrongException;
 
     //actions for all
     User getUser(String accessToken);
-    List<Order> getAllOrdersUser(String accessToken);
     User updateUser(Map<String, String> map, String accessToken) throws RegisterException;
     User deleteUser(String accessToken) throws WrongStatusOrderException;
+    Address getUserLocation();
+    Order updateOrder(Order order);
+    List<Order> getOrdersOfUser (User user, int from, int to);
+    int getQuantityOrdersOfUser (int userId);
 }

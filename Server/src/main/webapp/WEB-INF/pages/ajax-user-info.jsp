@@ -5,24 +5,163 @@
     <title>User Info page</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <%--<script>
-        $.get("ajax/user-info",
-                function(responseJson) {
-                    printUser(responseJson);
-                })
-                .fail(function() {
-                    alert("Request failed")
-                });
-    </script>
+
     <script>
-        function printUser(json) {
-            $("#user-info").empty()
-                    .append("<h3>User Info</h3>");
-            $.each(json, function(i, name){
-               $("#user-info").append(i + 1, " : " + name + " </br>");
+        function redirectRegPassenger() {
+            window.location = "/${APP_NAME}/register-passenger";
+        }
+    </script>
+
+    <script>
+        function redirectRegDriver() {
+            window.location = "/${APP_NAME}/register-driver";
+        }
+    </script>
+
+    <script>
+        function redirectMakeOrder() {
+            window.location = "/${APP_NAME}/order/make";
+        }
+    </script>
+
+    <script>
+        function redirectFindNewOrders() {
+            $.ajax({
+                type: "POST",
+                url: "/${APP_NAME}/order/get/all-new",
+                success: function(resp) {
+                    if (resp.includes("SUCCESS")) {
+                        window.location = "/${APP_NAME}/order/get/all-new";
+                    } else if (resp.includes("NOTHING")) {
+                        alert("There are no open orders with status NEW");
+                    } else {
+                        alert(resp);
+                    }
+                },
+                error: function(resp){
+                    alert(resp);
+                }
             });
         }
-    </script>--%>
+    </script>
+
+    <script>
+        function redirectGetLastOrder() {
+            var confObj = {
+                type:"GET",
+                url: "/${APP_NAME}/order/get/last",
+                success: function(resp){
+                    if (resp.includes("id:")) {
+                        var arrayResp = resp.split(":", 2);
+                        window.location = "/${APP_NAME}/order/get?id=" + arrayResp[1];
+                    } else {
+                        alert(resp);
+                    }
+                },
+                error: function(resp){
+                    alert(resp);
+                }
+            };
+            $.ajax(confObj);
+        }
+    </script>
+
+    <script>
+        function getAllUserOrders() {
+            $.ajax({
+                type: "POST",
+                url: "/${APP_NAME}/user/get/orders",
+                success: function(resp) {
+                    if (resp.includes("SUCCESS")) {
+                        window.location = "/${APP_NAME}/user-history";
+                    } else if (resp.includes("NOTHING")) {
+                        alert("You don't have any orders");
+                    } else {
+                        alert(resp);
+                    }
+                },
+                error: function(resp){
+                    alert(resp);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function redirectLogin() {
+            var r = confirm("Are you sure to exit?");
+            if (r == true) {
+                window.location = "/${APP_NAME}/login";
+            }
+        }
+    </script>
+
+    <script>
+        function beforeDeleteUser() {
+            $.ajax({
+                type:"GET",
+                url: "/${APP_NAME}/user/delete",
+                success: function(resp){
+                    if (resp.includes("id:")) {
+                        var arrayResp = resp.split(":", 2);
+                        var r = confirm("Are you sure to delete user ID=" + arrayResp[1] + " ?");
+                        if (r == true) {
+                            deleteUser();
+                        }
+                    } else {
+                        alert(resp);
+                    }
+                },
+                error: function(resp){
+                    alert(resp);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function deleteUser() {
+            $.ajax({
+                type:"POST",
+                url: "/${APP_NAME}/user/delete",
+                success: function(resp){
+                    if (resp.includes("id:")) {
+                        var arrayResp = resp.split(":", 2);
+                        alert("User ID=" + arrayResp[1] + " will be deleted");
+                        redirectLogin();
+                    } else {
+                        alert(resp);
+                    }
+                },
+                error: function(resp){
+                    alert(resp);
+                }
+            });
+        }
+    </script>
+
+    <style>
+        h1 {
+            font-family: arial, sans-serif;
+            color: darkslateblue;
+        }
+
+        div {
+            font-family: arial, sans-serif;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 50%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
 
 </head>
 <body>
@@ -32,108 +171,100 @@
     <c:set var="transfered" value="${user}"/>
 
     <div class="container">
-        <h1>User Info page</h1>
+        <h1>USER INFO</h1>
 
-        <ul>
-            <li>
-                <div class="column">
-                    id : ${transfered.id}
-                </div>
-            </li>
-
-            <li>
-                <div class="column">
-                    identifier : ${transfered.identifier}
-                </div>
-            </li>
-
-            <li>
-                <div class="column">
-                    phone : ${transfered.phone}
-                </div>
-            </li>
-
-            <li>
-                <div class="column">
-                    name : ${transfered.name}
-                </div>
-            </li>
+        <table>
+            <tr>
+                <td>id</td>
+                <td>${transfered.id}</td>
+            </tr>
+            <tr>
+                <td>identifier</td>
+                <td>${transfered.identifier}</td>
+            </tr>
+            <tr>
+                <td>phone</td>
+                <td>${transfered.phone}</td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>${transfered.name}</td>
+            </tr>
 
             <c:if test="${transfered.identifier == 'P'}">
-                <li>
-                    <div class="column">
-                        address country : ${transfered.homeAddress.country}
-                    </div>
-                    <div class="column">
-                        address city : ${transfered.homeAddress.city}
-                    </div>
-                    <div class="column">
-                        address street : ${transfered.homeAddress.street}
-                    </div>
-                    <div class="column">
-                        address home number : ${transfered.homeAddress.houseNum}
-                    </div>
-                </li>
+                <tr>
+                    <td>address country</td>
+                    <td>${transfered.homeAddress.country}</td>
+                </tr>
+                <tr>
+                    <td>address city</td>
+                    <td>${transfered.homeAddress.city}</td>
+                </tr>
+                <tr>
+                    <td>address street</td>
+                    <td>${transfered.homeAddress.street}</td>
+                </tr>
+                <tr>
+                    <td>address home number</td>
+                    <td>${transfered.homeAddress.houseNum}</td>
+                </tr>
+            </c:if>
+            <c:if test="${transfered.identifier == 'D'}">
+                <tr>
+                    <td>car type</td>
+                    <td>${transfered.car.type}</td>
+                </tr>
+                <tr>
+                    <td>car model</td>
+                    <td>${transfered.car.model}</td>
+                </tr>
+                <tr>
+                    <td>car number</td>
+                    <td>${transfered.car.number}</td>
+                </tr>
+            </c:if>
 
+        </table>
+
+        <ul>
+            <c:if test="${transfered.identifier == 'P'}">
                 <p>
-                    <a href="/${APP_NAME}/order-make">
-                        <input type="button" value="FIND TAXI" name="order-make" style="background-color:lightgreen"/>
-                    </a>
+                    <button onclick="redirectMakeOrder()" style="background-color:lightgreen">
+                        FIND TAXI</button>
                 </p>
                 <p>
-                    <a href="/${APP_NAME}/register-passenger">
-                        <input type="button" value="CHANGE REGISTER DATA" name="register-passenger"/>
-                    </a>
+                    <button onclick="redirectRegPassenger()">
+                        CHANGE REGISTER DATA</button>
                 </p>
             </c:if>
 
             <c:if test="${transfered.identifier == 'D'}">
-                <li>
-                    <div class="column">
-                        car type : ${transfered.car.type}
-                    </div>
-                    <div class="column">
-                        car model : ${transfered.car.model}
-                    </div>
-                    <div class="column">
-                        car number : ${transfered.car.number}
-                    </div>
-                </li>
-
                 <p>
-                    <a href="/${APP_NAME}/order/all">
-                        <input type="button" value="FIND PASSENGERS" name="order/all"  style="background-color:lightgreen"/>
-                    </a>
+                    <button onclick="redirectFindNewOrders()" style="background-color:lightgreen">
+                        FIND PASSENGERS</button>
                 </p>
                 <p>
-                    <a href="/${APP_NAME}/register-driver">
-                        <input type="button" value="CHANGE REGISTER DATA" name="register-driver"/>
-                    </a>
+                    <button onclick="redirectRegDriver()">
+                        CHANGE REGISTER DATA</button>
                 </p>
             </c:if>
 
-
-            <p >
-                <a href="/${APP_NAME}/order/last">
-                    <input type="button" value="SHOW LAST ORDER" name="order/last"/>
-                </a>
+            <p>
+                <button onclick="redirectGetLastOrder()">
+                    SHOW LAST ORDER</button>
             </p>
             <p>
-                <a href="/${APP_NAME}/user-history">
-                    <input type="button" value="SHOW MY HISTORY" name="user-history"/>
-                </a>
+                <button onclick="getAllUserOrders()">
+                    SHOW MY HISTORY</button>
             </p>
             <p>
-                <a href="/${APP_NAME}/login">
-                    <input type="button" value="EXIT TO LOGIN" name="ajax-login"  style="background-color:lightgrey"/>
-                </a>
+                <button onclick="redirectLogin()" style="background-color:lightgrey">
+                    EXIT TO LOGIN</button>
             </p>
             <p>
-                <a href="/${APP_NAME}/user-delete">
-                    <input type="button" value="DELETE USER" name="user-delete"  style="background-color:lightgrey"/>
-                </a>
+                <button onclick="beforeDeleteUser()" style="background-color:lightgrey">
+                    DELETE USER</button>
             </p>
-
         </ul>
     </div>
 

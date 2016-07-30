@@ -138,13 +138,24 @@ public class UserServiceJdbcImpl implements UserService {
 
         if (user != null) {
 
-            for (Order order : user.getOrdersPassenger()) {
-                if (order.getOrderStatus().equals(OrderStatus.NEW) ||
-                        order.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
+            List<Order> ordersNew = orderDao.getOrdersByStatus(OrderStatus.NEW);
+            List<Order> ordersInProgress = orderDao.getOrdersByStatus(OrderStatus.IN_PROGRESS);
+
+            for (Order order : ordersNew) {
+                if (order.getPassenger().getId() == user.getId()) {
 
                     LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
 
-                    throw new OrderMakeException("User has orders NEW or IN_PROGRESS already");
+                    throw new OrderMakeException("User has orders NEW already");
+                }
+            }
+
+            for (Order order : ordersInProgress) {
+                if (order.getPassenger().getId() == user.getId()) {
+
+                    LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
+
+                    throw new OrderMakeException("User has orders IN_PROGRESS already");
                 }
             }
 
@@ -160,6 +171,7 @@ public class UserServiceJdbcImpl implements UserService {
 
                 Order newOrder = new Order(from, to, user, distance, price, message);
                 newOrder.setOrderStatus(OrderStatus.NEW);
+                newOrder.setTimeCreate(new Date());
                 createdOrder = orderDao.create(newOrder);
 
                 LOG.info("User " + user.getPhone() + " makes new order " + createdOrder.getId());
@@ -213,6 +225,7 @@ public class UserServiceJdbcImpl implements UserService {
 
             User anonymousUser = userDao.createUser(new User(UserIdentifier.A, phone, name));
             newOrder = new Order(from, to, anonymousUser, distance, price, message);
+            newOrder.setTimeCreate(new Date());
             orderDao.create(newOrder);
 
         } catch (InputDataWrongException | IndexOutOfBoundsException e) {
@@ -293,19 +306,18 @@ public class UserServiceJdbcImpl implements UserService {
             throw new UserNotFoundException("wrong data user");
         }
 
-        List<Order> allUserOrders = getAllOrdersUser(accessToken);
+        User user = accessKeys.get(accessToken);
+        Order lastOrder = orderDao.getLastOrderOfUser(user.getId());
 
-        if (allUserOrders.size() == 0) {
+        if (lastOrder == null) {
 
             LOG.error("OrderNotFoundException: failed attempt to get info about last order of user " +
-                    accessKeys.get(accessToken).getPhone());
+                    user.getPhone());
 
             throw new OrderNotFoundException("User doesn't have any orders");
         }
 
-        Order lastOrder = allUserOrders.get(allUserOrders.size() - 1);
-
-        LOG.info("User " + accessKeys.get(accessToken).getPhone() +
+        LOG.info("User " + user.getPhone() +
                 " get information for his last order " + lastOrder.getId());
 
         return lastOrder;
@@ -333,6 +345,7 @@ public class UserServiceJdbcImpl implements UserService {
         }
 
         foundOrder.setOrderStatus(OrderStatus.CANCELLED);
+        foundOrder.setTimeCancelled(new Date());
         Order cancelledOrder = orderDao.update(foundOrder);
 
         LOG.info("Order " + cancelledOrder.getId() + " was cancelled by user");
@@ -346,14 +359,6 @@ public class UserServiceJdbcImpl implements UserService {
 
         User user = accessKeys.get(accessToken);
         Order foundOrder = orderDao.findById(orderId);
-        List<Order> ordersUser = orderDao.getOrdersOfUser(user);
-        Order orderInDriverList = null;
-
-        for (Order order : ordersUser) {
-            if (order.getId() == foundOrder.getId()) {
-                orderInDriverList = order;
-            }
-        }
 
         if (foundOrder == null) {
 
@@ -362,14 +367,14 @@ public class UserServiceJdbcImpl implements UserService {
 
             throw new OrderNotFoundException("Order not found in data base");
 
-        } else if (orderInDriverList == null) {
+        } else if (foundOrder.getDriver() == null) {
 
             LOG.error("DriverOrderActionException: failed attempt to close order with ID " +
                     orderId + " by user " + user.getPhone());
 
             throw new DriverOrderActionException("Order not found in driver orders list");
 
-        } else if (!orderInDriverList.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
+        } else if (!foundOrder.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
 
             LOG.error("WrongStatusOrderException: failed attempt to close order with ID " +
                     orderId + " by user " + user.getPhone());
@@ -379,6 +384,7 @@ public class UserServiceJdbcImpl implements UserService {
         }
 
         foundOrder.setOrderStatus(OrderStatus.CLOSED);
+        foundOrder.setTimeClosed(new Date());
         Order closedOrder = orderDao.update(foundOrder);
 
         LOG.info("User " + user.getPhone() + " closed his order " + closedOrder.getId());
@@ -421,6 +427,7 @@ public class UserServiceJdbcImpl implements UserService {
 
         inProgress.setDriver(user);
         inProgress.setOrderStatus(OrderStatus.IN_PROGRESS);
+        inProgress.setTimeTaken(new Date());
         Order takenOrder = orderDao.update(inProgress);
 
         LOG.info("User " + user.getPhone() + " was take order " + takenOrder.getId() + " for execution");
@@ -438,18 +445,7 @@ public class UserServiceJdbcImpl implements UserService {
         return foundUser;
     }
 
-    @Override
-    public List<Order> getAllOrdersUser(String accessToken) {
-
-        User user = accessKeys.get(accessToken);
-
-        List<Order> ordersOfUser = userDao.getAllOrdersOfUser(user);
-
-        LOG.info("Get all orders of user " + user.getPhone());
-
-        return ordersOfUser;
-    }
-
+    //todo delete ?
     @Override
     public Map<Integer, Order> getMapDistancesToDriver(String orderStatus, String lineAddressDriver)
             throws InputDataWrongException {
@@ -460,7 +456,7 @@ public class UserServiceJdbcImpl implements UserService {
         LOG.info("Found " + orders.size() + " orders with status " + orderStatus);
 
         //create list of int unique distances
-        List<Integer> distancesList = getArrayDistancesToDriver(orders, new Address(lineAddressDriver));
+        List<Integer> distancesList = getListDistancesToDriver(orders, new Address(lineAddressDriver));
         int[] distances = new int[distancesList.size()];
 
         //create map of distances
@@ -483,6 +479,50 @@ public class UserServiceJdbcImpl implements UserService {
     }
 
     @Override
+    public Order[] createArrayOrdersForDriver(OrderStatus orderStatus, User driver)
+            throws InputDataWrongException {
+
+        //find all orders with status
+        List<Order> ordersByStatus = getAllOrdersByStatus(orderStatus);
+
+        LOG.info("Found " + ordersByStatus.size() + " orders with status " + orderStatus);
+
+        Address addressDriver = new Address(driver.getUserCurrentLocation());
+        Location locationDriver = googleMapsAPI.findLocation(
+                addressDriver.getCountry(),
+                addressDriver.getCity(),
+                addressDriver.getStreet(),
+                addressDriver.getHouseNum());
+
+        Map <Integer, Order> mapOfDistances = new HashMap<>();
+        int[] distances = new int[ordersByStatus.size()];
+
+        for (Order order : ordersByStatus) {
+            int distance = calculateDistanceFromPassengerToDriver(order.getFrom(), locationDriver);
+
+            order.setDistanceToDriver(distance/1000);
+            mapOfDistances.put(distance, order);
+            distances[ordersByStatus.indexOf(order)] = distance;
+        }
+
+        LOG.info("Create array orders with status " + orderStatus.toString() +
+                                    " with distance to " + addressDriver.toLine());
+
+        //create array orders and sorting by distance to driver
+        Order[] sortingOrders = new Order[ordersByStatus.size()];
+        Arrays.sort(distances);
+
+        for (int i = 0; i < distances.length; i++) {
+            sortingOrders[i] = mapOfDistances.get(distances[i]);
+        }
+
+        LOG.info("Add new array orders with status " + orderStatus.toString() +
+                                                " for driver ID " + driver.getId());
+
+        return sortingOrders;
+    }
+
+    @Override
     public User updateUser(Map<String, String> map, String accessToken) throws RegisterException {
 
         User user = accessKeys.get(accessToken);
@@ -491,8 +531,7 @@ public class UserServiceJdbcImpl implements UserService {
 
         User found = userDao.findByPhone(map.get("phone"));
 
-        if (found != null &&
-                user.getId() != found.getId()) {
+        if (found != null && user.getId() != found.getId()) {
 
             LOG.error("RegisterException: failed attempt to update user " +
                     user.getPhone() + " (phone " + map.get("phone") + " already in use by another user)");
@@ -526,15 +565,28 @@ public class UserServiceJdbcImpl implements UserService {
         User user = accessKeys.get(accessToken);
 
         //check open orders of user (NEW or IN_PROGRESS)
-        List<Order> orders = getAllOrdersUser(accessToken);
-        for (Order order : orders) {
-            if (order.getOrderStatus().equals(OrderStatus.NEW) ||
-                    order.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
+        List<Order> ordersNew = orderDao.getOrdersByStatus(OrderStatus.NEW);
+        List<Order> ordersInProgress = orderDao.getOrdersByStatus(OrderStatus.IN_PROGRESS);
+
+        for (Order order : ordersNew) {
+            if (user.getId() == order.getPassenger().getId() ||
+                                    user.getId() == order.getDriver().getId()) {
 
                 LOG.error("WrongStatusOrderException: failed attempt to delete user " + user.getPhone());
 
                 throw new WrongStatusOrderException
-                        ("Can't delete user. User can't has orders with status NEW or IN_PROGRESS");
+                        ("Can't delete user. User can't has orders with status NEW");
+            }
+        }
+
+        for (Order order : ordersInProgress) {
+            if (user.getId() == order.getPassenger().getId() ||
+                                    user.getId() == order.getDriver().getId()) {
+
+                LOG.error("WrongStatusOrderException: failed attempt to delete user " + user.getPhone());
+
+                throw new WrongStatusOrderException
+                        ("Can't delete user. User can't has orders with status IN_PROGRESS");
             }
         }
 
@@ -544,6 +596,30 @@ public class UserServiceJdbcImpl implements UserService {
         LOG.info("User " + user.getPhone() + " was deleted");
 
         return deleteUser;
+    }
+
+    @Override
+    public Address getUserLocation() {
+
+        return new Address(Constants.USER_LOCATION_PATH);
+    }
+
+    @Override
+    public Order updateOrder(Order order) {
+
+        return orderDao.update(order);
+    }
+
+    @Override
+    public List<Order> getOrdersOfUser(User user, int from, int to) {
+
+        return userDao.getOrdersOfUser(user, from, to);
+    }
+
+    @Override
+    public int getQuantityOrdersOfUser(int userId) {
+
+        return userDao.getQuantityOrdersOfUser(userId);
     }
 
     public UserDao getUserDao() {
@@ -586,7 +662,20 @@ public class UserServiceJdbcImpl implements UserService {
         this.accessKeys = accessKeys;
     }
 
-    public List<Integer> getArrayDistancesToDriver(List<Order> orders, Address addressDriver)
+    public int calculateDistanceFromPassengerToDriver(Address addressPassenger, Location locationDriver)
+            throws InputDataWrongException {
+
+        Location locationPassenger = googleMapsAPI.findLocation(
+                addressPassenger.getCountry(),
+                addressPassenger.getCity(),
+                addressPassenger.getStreet(),
+                addressPassenger.getHouseNum());
+
+        return new Distance(locationDriver, locationPassenger).calculateDistance();
+    }
+
+    //todo delete ?
+    public List<Integer> getListDistancesToDriver(List<Order> orders, Address addressDriver)
             throws InputDataWrongException {
 
         Location locationDriver = googleMapsAPI.findLocation
@@ -602,11 +691,13 @@ public class UserServiceJdbcImpl implements UserService {
         for (Order order : orders) {
             int i = orders.indexOf(order);
 
+            Address address = order.getFrom();
+
             Location locationPassenger = googleMapsAPI.findLocation(
-                    orders.get(i).getFrom().getCountry(),
-                    orders.get(i).getFrom().getCity(),
-                    orders.get(i).getFrom().getStreet(),
-                    orders.get(i).getFrom().getHouseNum());
+                    address.getCountry(),
+                    address.getCity(),
+                    address.getStreet(),
+                    address.getHouseNum());
 
             int distance = new Distance(locationDriver, locationPassenger).calculateDistance();
 
