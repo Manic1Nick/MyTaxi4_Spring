@@ -42,7 +42,7 @@ public class AjaxUserHistoryServlet extends HttpServlet {
         int to = quantityOrders - (quantityOrdersOnPage * (pageMax - page));
         int from = page == 1 ? 0 : to - quantityOrdersOnPage;
 
-        List<Order> orders = userService.getOrdersOfUser(user, from, to);
+        List<Order> orders = userService.getOrdersOfUser(user.getId(), from, to);
 
         req.setAttribute("orders", orders);
         req.setAttribute("ordersOnPage", quantityOrdersOnPage);

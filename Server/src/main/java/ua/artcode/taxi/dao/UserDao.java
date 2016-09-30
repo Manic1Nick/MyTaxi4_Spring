@@ -16,6 +16,6 @@ public interface UserDao {
 
     User findByPhone(String phone);
     User findById(int id);
-    List<Order> getOrdersOfUser(User user, int from, int to);
+    List<Order> getOrdersOfUser(int userId, int from, int to);
     int getQuantityOrdersOfUser(int userId);
 }

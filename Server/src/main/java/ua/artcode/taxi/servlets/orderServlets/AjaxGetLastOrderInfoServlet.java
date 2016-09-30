@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.OrderNotFoundException;
 import ua.artcode.taxi.exception.UserNotFoundException;
 import ua.artcode.taxi.model.Order;
+import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -33,9 +34,16 @@ public class AjaxGetLastOrderInfoServlet extends HttpServlet {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
 
             Order order = userService.getLastOrderInfo(accessToken);
+            User passenger = userService.findById(order.getIdPassenger());
 
             HttpSession session = req.getSession(true);
             session.setAttribute("order", order);
+            session.setAttribute("passenger", passenger);
+
+            if (order.getIdDriver() > 0) {
+                User driver = userService.findById(order.getIdDriver());
+                session.setAttribute("driver", driver);
+            }
 
             resp.getWriter().write("id:" + order.getId());
 

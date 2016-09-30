@@ -8,12 +8,6 @@ import java.util.List;
 @NamedQueries({@NamedQuery(name = "getAllUsers", query = "SELECT c FROM User c")})
 public class User implements PassengerActive, DriverActive {
 
-    @OneToMany(mappedBy = "passenger", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-    List<Order> ordersPassenger;
-
-    @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-    List<Order>  ordersDriver;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -40,14 +34,6 @@ public class User implements PassengerActive, DriverActive {
 
     @Transient
     private String userCurrentLocation;
-
-    /*@ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
-    private Address homeAddress;
-
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
-    private Car car;*/
 
     public User() {
     }
@@ -147,22 +133,6 @@ public class User implements PassengerActive, DriverActive {
     @Override
     public void setCar(Car car) {
         this.car = car;
-    }
-
-    public List<Order> getOrdersPassenger() {
-        return ordersPassenger;
-    }
-
-    public void setOrdersPassenger(List<Order> ordersPassenger) {
-        this.ordersPassenger = ordersPassenger;
-    }
-
-    public List<Order> getOrdersDriver() {
-        return ordersDriver;
-    }
-
-    public void setOrdersDriver(List<Order> ordersDriver) {
-        this.ordersDriver = ordersDriver;
     }
 
     //todo get current user location

@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import ua.artcode.taxi.model.*;
-import ua.artcode.taxi.to.Message;
-import ua.artcode.taxi.to.MessageBody;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,15 +42,10 @@ public class ReflectionFormatter {
         map.put("addressFrom", gson.toJson(order.getFrom()));
         map.put("addressTo", gson.toJson(order.getTo()));
 
-        Message messagePassenger = new Message();
-        messagePassenger.setMessageBody(new MessageBody(userToJsonMap(order.getPassenger())));
-        map.put("passenger", gson.toJson(messagePassenger));
+        map.put("passenger", order.getIdPassenger());
 
-        if (order.getDriver() != null) {
-            Message messageDriver = new Message();
-
-            messageDriver.setMessageBody(new MessageBody(userToJsonMap(order.getDriver())));
-            map.put("driver", gson.toJson(messageDriver));
+        if (order.getIdDriver() >= 0) {
+            map.put("driver", order.getIdDriver());
         }
 
         map.put("distance", String.valueOf(order.getDistance()));
@@ -101,12 +94,10 @@ public class ReflectionFormatter {
         order.setFrom(gson.fromJson(map.get("addressFrom").toString(), Address.class));
         order.setTo(gson.fromJson(map.get("addressTo").toString(), Address.class));
 
-        Message messagePassenger = gson.fromJson(map.get("passenger").toString(), Message.class);
-        order.setPassenger(getUserFromJsonMap(messagePassenger.getMessageBody().getMap()));
+        order.setIdPassenger((int) map.get("passenger"));
 
         if (map.get("driver") != null) {
-            Message messageDriver = gson.fromJson(map.get("driver").toString(), Message.class);
-            order.setDriver(getUserFromJsonMap(messageDriver.getMessageBody().getMap()));
+            order.setIdDriver((int) map.get("driver"));
         }
 
         order.setDistance(Integer.parseInt(map.get("distance").toString()));

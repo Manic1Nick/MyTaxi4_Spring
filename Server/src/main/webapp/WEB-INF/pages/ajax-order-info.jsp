@@ -142,6 +142,8 @@
 <body>
 
     <c:set var="transfered" value="${order}"/>
+    <c:set var="passenger" value="${passenger}"/>
+    <c:set var="driver" value="${driver}"/>
 
 <div class="container">
     <h1>ORDER INFO</h1>
@@ -202,17 +204,17 @@
         </tr>
         <tr>
             <td>passenger</td>
-            <td>${transfered.passenger.name}, ${transfered.passenger.phone}</td>
+            <td>${passenger.name}, ${passenger.phone}</td>
         </tr>
 
-        <c:if test="${transfered.driver != null}">
+        <c:if test="${driver != null}">
             <tr>
                 <td>driver</td>
-                <td>${transfered.driver.name}, ${transfered.driver.phone}</td>
+                <td>${driver.name}, ${driver.phone}</td>
             </tr>
             <tr>
                 <td>car</td>
-                <td>${transfered.driver.car.model}, ${transfered.driver.car.number}</td>
+                <td>${driver.car.model}, ${driver.car.number}</td>
             </tr>
         </c:if>
 

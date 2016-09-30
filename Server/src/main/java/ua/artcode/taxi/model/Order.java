@@ -36,13 +36,11 @@ public class Order {
     @JoinColumn(referencedColumnName = "id")
     private Address to;
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
-    private User passenger;
+    @Column(name = "passenger_id", nullable = false)
+    private int idPassenger;
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
-    private User driver;
+    @Column(name = "driver_id", nullable = false)
+    private int idDriver;
 
     @Column(name = "distance", nullable = false)
     private int distance;
@@ -58,10 +56,10 @@ public class Order {
     public Order() {
     }
 
-    public Order(Address from, Address to, User passenger, int distance, int price, String message) {
+    public Order(Address from, Address to, int idPassenger, int distance, int price, String message) {
         this.from = from;
         this.to = to;
-        this.passenger = passenger;
+        this.idPassenger = idPassenger;
         this.distance = distance;
         this.price = price;
         this.message = message;
@@ -136,20 +134,20 @@ public class Order {
         this.to = to;
     }
 
-    public User getPassenger() {
-        return passenger;
+    public int getIdPassenger() {
+        return idPassenger;
     }
 
-    public void setPassenger(User passenger) {
-        this.passenger = passenger;
+    public void setIdPassenger(int idPassenger) {
+        this.idPassenger = idPassenger;
     }
 
-    public User getDriver() {
-        return driver;
+    public int getIdDriver() {
+        return idDriver;
     }
 
-    public void setDriver(User driver) {
-        this.driver = driver;
+    public void setIdDriver(int idDriver) {
+        this.idDriver = idDriver;
     }
 
     public int getDistance() {
@@ -203,25 +201,25 @@ public class Order {
 
         if (obj instanceof Order) {
 
-            if (((Order)obj).driver == null) {
+            if (((Order)obj).idDriver <= 0) {
                 return  id == (((Order)obj).id) &&
                         timeCreate == (((Order)obj).timeCreate) &&
                         orderStatus.equals(((Order)obj).orderStatus) &&
                         from.equals(((Order)obj).from) &&
                         to.equals(((Order)obj).to) &&
-                        passenger.equals(((Order)obj).passenger) &&
+                        idPassenger == (((Order)obj).idPassenger) &&
                         distance == (((Order)obj).distance) &&
                         price == (((Order)obj).price) &&
                         message.equals(((Order)obj).message);
 
-            } else if (((Order)obj).driver != null) {
+            } else if (((Order)obj).idDriver > 0) {
                 return  id == (((Order)obj).id) &&
                         timeCreate == (((Order)obj).timeCreate) &&
                         orderStatus.equals(((Order)obj).orderStatus) &&
                         from.equals(((Order)obj).from) &&
                         to.equals(((Order)obj).to) &&
-                        passenger.equals(((Order)obj).passenger) &&
-                        driver.equals(((Order)obj).driver) &&
+                        idPassenger == (((Order)obj).idPassenger) &&
+                        idDriver == (((Order)obj).idDriver) &&
                         distance == (((Order)obj).distance) &&
                         price == (((Order)obj).price) &&
                         message.equals(((Order)obj).message);

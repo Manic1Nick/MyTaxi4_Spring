@@ -50,9 +50,16 @@ public class AjaxGetOrderInfoServlet extends HttpServlet {
 
         try {
             Order order = userService.getOrderInfo(Integer.parseInt(orderId));
+            User passenger = userService.findById(order.getIdPassenger());
 
             HttpSession session = req.getSession(true);
             session.setAttribute("order", order);
+            session.setAttribute("passenger", passenger);
+
+            if (order.getIdDriver() > 0) {
+                User driver = userService.findById(order.getIdDriver());
+                session.setAttribute("driver", driver);
+            }
 
             resp.getWriter().print("SUCCESS");
 

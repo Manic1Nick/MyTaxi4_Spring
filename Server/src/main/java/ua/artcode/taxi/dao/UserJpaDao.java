@@ -89,11 +89,11 @@ public class UserJpaDao implements UserDao {
 
     @Override
     @Transactional
-    public List<Order> getOrdersOfUser(User user, int from, int to) {
+    public List<Order> getOrdersOfUser(int userId, int from, int to) {
 
         List<Order> orders = manager.createQuery(
-                "SELECT c FROM Order c WHERE c.passenger=:user OR c.driver=:user")
-                .setParameter("user",user).getResultList().subList(from, to);
+                "SELECT c FROM Order c WHERE c.idPassenger=:userId OR c.idDriver=:userId")
+                .setParameter("userId",userId).getResultList().subList(from, to);
 
         return orders;
     }
@@ -103,7 +103,7 @@ public class UserJpaDao implements UserDao {
     public int getQuantityOrdersOfUser(int userId) {
 
         List<Long> orderIds = manager.createQuery(
-                "SELECT c.id FROM Order c WHERE c.passenger.id=:userId OR c.driver.id=:userId")
+                "SELECT c.id FROM Order c WHERE c.idPassenger=:userId OR c.idDriver=:userId")
                 .setParameter("userId", userId).getResultList();
 
         return orderIds.size();

@@ -58,8 +58,8 @@ public class TestMyTaxi {
         anonymousUser = new User(UserIdentifier.A, "0000", "Anonym");
 
         //test current orders for driver
-        order1 = new Order (address1, address2, passenger1, 10, 100, "I have a dog!:)");
-        order2 = new Order (address2, address1, passenger2, 10, 100, "I have a cat!:)");
+        order1 = new Order (address1, address2, passenger1.getId(), 10, 100, "I have a dog!:)");
+        order2 = new Order (address2, address1, passenger2.getId(), 10, 100, "I have a cat!:)");
     }
 
     @Test()
@@ -285,12 +285,12 @@ public class TestMyTaxi {
 
         Order testOrder = orderDao.findById(order1.getId());
 
-        testOrder.setDriver(driver1);
+        testOrder.setIdDriver(driver1.getId());
         testOrder.setOrderStatus(OrderStatus.IN_PROGRESS);
         orderDao.update(testOrder);
 
         Assert.assertEquals(OrderStatus.IN_PROGRESS, testOrder.getOrderStatus());
-        Assert.assertEquals(true, testOrder.getDriver().equals(driver1));
+        Assert.assertEquals(true, testOrder.getIdDriver() == (driver1.getId()));
     }
 
     /*@Test()

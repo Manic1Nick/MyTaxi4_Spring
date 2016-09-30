@@ -46,6 +46,7 @@ public interface UserService {
     User deleteUser(String accessToken) throws WrongStatusOrderException;
     Address getUserLocation();
     Order updateOrder(Order order);
-    List<Order> getOrdersOfUser (User user, int from, int to);
+    List<Order> getOrdersOfUser (int userId, int from, int to);
     int getQuantityOrdersOfUser (int userId);
+    User findById(int id);
 }

@@ -137,7 +137,7 @@ public class UserServiceJdbcImpl implements UserService {
             List<Order> ordersInProgress = orderDao.getOrdersByStatus(OrderStatus.IN_PROGRESS);
 
             for (Order order : ordersNew) {
-                if (user.getId() == order.getPassenger().getId()) {
+                if (user.getId() == order.getIdPassenger()) {
 
                     LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
 
@@ -146,7 +146,7 @@ public class UserServiceJdbcImpl implements UserService {
             }
 
             for (Order order : ordersInProgress) {
-                if (user.getId() == order.getPassenger().getId()) {
+                if (user.getId() == order.getIdPassenger()) {
 
                     LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
 
@@ -164,7 +164,7 @@ public class UserServiceJdbcImpl implements UserService {
 
                 message = message == null || message.equals("") ? "" : user.getName() + ": " + message;
 
-                Order newOrder = new Order(from, to, user, distance, price, message);
+                Order newOrder = new Order(from, to, user.getId(), distance, price, message);
                 newOrder.setOrderStatus(OrderStatus.NEW);
                 newOrder.setTimeCreate(new Date());
                 createdOrder = orderDao.create(newOrder);
@@ -204,7 +204,7 @@ public class UserServiceJdbcImpl implements UserService {
             List<Order> ordersInProgress = orderDao.getOrdersByStatus(OrderStatus.IN_PROGRESS);
 
             for (Order order : ordersNew) {
-                if (user.getId() == order.getPassenger().getId()) {
+                if (user.getId() == order.getIdPassenger()) {
 
                     LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
 
@@ -213,7 +213,7 @@ public class UserServiceJdbcImpl implements UserService {
             }
 
             for (Order order : ordersInProgress) {
-                if (user.getId() == order.getPassenger().getId()) {
+                if (user.getId() == order.getIdPassenger()) {
 
                     LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
 
@@ -232,7 +232,7 @@ public class UserServiceJdbcImpl implements UserService {
                 message = message == null || message.equals("") ? "" : user.getName() + ": " + message;
 
                 User anonymousUser = userDao.createUser(new User(UserIdentifier.A, phone, name));
-                Order newOrder = new Order(from, to, anonymousUser, distance, price, message);
+                Order newOrder = new Order(from, to, anonymousUser.getId(), distance, price, message);
                 newOrder.setTimeCreate(new Date());
                 createdOrder = orderDao.create(newOrder);
 
@@ -376,7 +376,7 @@ public class UserServiceJdbcImpl implements UserService {
 
             throw new OrderNotFoundException("Order not found in data base");
 
-        } else if (foundOrder.getDriver() == null) {
+        } else if (foundOrder.getIdDriver() <= 0) {
 
             LOG.error("DriverOrderActionException: failed attempt to close order with ID " +
                     orderId + " by user " + user.getPhone());
@@ -410,7 +410,7 @@ public class UserServiceJdbcImpl implements UserService {
         List<Order> ordersInProgress = orderDao.getOrdersByStatus(OrderStatus.IN_PROGRESS);
 
         for (Order order : ordersInProgress) {
-            if (user.getId() == order.getDriver().getId()) {
+            if (user.getId() == order.getIdDriver()) {
 
                 LOG.error("DriverOrderActionException: failed attempt to take order with ID " +
                         orderId + " by user " + user.getPhone());
@@ -434,7 +434,7 @@ public class UserServiceJdbcImpl implements UserService {
             throw new WrongStatusOrderException("This order has wrong status (not NEW)");
         }
 
-        inProgress.setDriver(user);
+        inProgress.setIdDriver(user.getId());
         inProgress.setOrderStatus(OrderStatus.IN_PROGRESS);
         inProgress.setTimeTaken(new Date());
         Order takenOrder = orderDao.update(inProgress);
@@ -544,7 +544,7 @@ public class UserServiceJdbcImpl implements UserService {
         List<Order> ordersInProgress = orderDao.getOrdersByStatus(OrderStatus.IN_PROGRESS);
 
         for (Order order : ordersNew) {
-            if (user.getId() == order.getPassenger().getId()) {
+            if (user.getId() == order.getIdPassenger()) {
 
                 LOG.error("WrongStatusOrderException: failed attempt to delete user " + user.getPhone());
 
@@ -554,8 +554,8 @@ public class UserServiceJdbcImpl implements UserService {
         }
 
         for (Order order : ordersInProgress) {
-            if (user.getId() == order.getPassenger().getId() ||
-                                    user.getId() == order.getDriver().getId()) {
+            if (user.getId() == order.getIdPassenger() ||
+                                    user.getId() == order.getIdDriver()) {
 
                 LOG.error("WrongStatusOrderException: failed attempt to delete user " + user.getPhone());
 
@@ -585,9 +585,9 @@ public class UserServiceJdbcImpl implements UserService {
     }
 
     @Override
-    public List<Order> getOrdersOfUser(User user, int from, int to) {
+    public List<Order> getOrdersOfUser(int userId, int from, int to) {
 
-        return userDao.getOrdersOfUser(user, from, to);
+        return userDao.getOrdersOfUser(userId, from, to);
     }
 
     @Override
@@ -626,6 +626,16 @@ public class UserServiceJdbcImpl implements UserService {
         LOG.info("Create map of distances from orders to driver address " + lineAddressDriver);
 
         return sortingMapDistances;
+    }
+
+    @Override
+    public User findById(int id) {
+
+        User foundUser = userDao.findById(id);
+
+        LOG.info("Request user with ID=" + id);
+
+        return foundUser;
     }
 
     public List<Integer> getArrayDistancesToDriver(List<Order> orders, Address addressDriver)

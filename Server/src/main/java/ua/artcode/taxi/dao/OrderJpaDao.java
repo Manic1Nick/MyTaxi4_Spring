@@ -34,8 +34,8 @@ public class OrderJpaDao implements OrderDao {
     @Transactional
     public Order create(Order order) {
 
-        User passUser = manager.find(User.class, order.getPassenger().getId());
-        order.setPassenger(passUser);
+        User passUser = manager.find(User.class, order.getIdPassenger());
+        order.setIdPassenger(passUser.getId());
         manager.persist(order);
 
         return order;
@@ -66,12 +66,12 @@ public class OrderJpaDao implements OrderDao {
         foundOrder = updateAddressFrom(foundOrder, newOrder.getFrom());
         foundOrder = updateAddressTo(foundOrder, newOrder.getTo());
 
-        User passenger = manager.find(User.class, newOrder.getPassenger().getId());
-        foundOrder.setPassenger(passenger);
+        User passenger = manager.find(User.class, newOrder.getIdPassenger());
+        foundOrder.setIdPassenger(passenger.getId());
 
-        if (newOrder.getDriver() != null) {
-            User driver = manager.find(User.class, newOrder.getDriver().getId());
-            foundOrder.setDriver(driver);
+        if (newOrder.getIdDriver() > 0) {
+            User driver = manager.find(User.class, newOrder.getIdDriver());
+            foundOrder.setIdDriver(driver.getId());
         }
 
         foundOrder.setDistance(newOrder.getDistance());
@@ -116,10 +116,10 @@ public class OrderJpaDao implements OrderDao {
     public Order getLastOrderOfUser(int userId) {
 
         List<Long> orderIds = manager.createQuery(
-                "SELECT MAX(c.id) FROM Order c WHERE c.passenger.id=:userId OR c.driver.id=:userId")
+                "SELECT MAX(c.id) FROM Order c WHERE c.idPassenger=:userId OR c.idDriver=:userId")
                 .setParameter("userId", userId).setMaxResults(1).getResultList();
 
-        return findById(orderIds.get(0));
+        return orderIds.get(0) != null ? findById(orderIds.get(0)) : null ;
     }
 
     private Order updateAddressFrom(Order foundOrder, Address address) {

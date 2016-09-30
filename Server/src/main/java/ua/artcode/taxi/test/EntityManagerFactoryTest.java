@@ -28,17 +28,17 @@ public class EntityManagerFactoryTest {
 
         //test current orders for driver
         Order order1 = new Order (new Address("Ukraine", "Kiev", "Zhukova", "51"),
-                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger1, 10, 100, "I have a dog!:)");
+                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger1.getId(), 10, 100, "I have a dog!:)");
         Order order2 = new Order(new Address("Ukraine", "Kiev", "Khreschatik", "11"),
-                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger2, 1, 10, "I have a cat!:(");
+                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger2.getId(), 1, 10, "I have a cat!:(");
         Order order3 = new Order (new Address("Ukraine", "Kiev", "Starokievskaya", "1"),
-                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger1, 20, 200, "");
+                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger1.getId(), 20, 200, "");
         Order order4 = new Order(new Address("Ukraine", "Kiev", "Perova", "10"),
-                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger2, 15, 150, "");
+                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger2.getId(), 15, 150, "");
         Order order5 = new Order (new Address("Ukraine", "Kiev", "Shevchenka", "30"),
-                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger2, 2, 20, "");
+                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger2.getId(), 2, 20, "");
         Order order6 = new Order(new Address("Ukraine", "Kiev", "Liskovskaya", "33"),
-                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger1, 30, 250, "");
+                new Address("Ukraine", "Kiev", "Khreschatik", "5"), passenger1.getId(), 30, 250, "");
 
 
 
