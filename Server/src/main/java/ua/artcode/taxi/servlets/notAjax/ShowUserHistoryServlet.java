@@ -1,4 +1,4 @@
-package ua.artcode.taxi.servlets.userServlets;
+package ua.artcode.taxi.servlets.notAjax;
 
 import org.apache.log4j.Logger;
 import ua.artcode.taxi.model.Constants;

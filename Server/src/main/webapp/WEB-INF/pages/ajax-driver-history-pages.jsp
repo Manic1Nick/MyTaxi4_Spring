@@ -98,7 +98,6 @@
             </p>
         </ul>
 
-        <%--todo table for 10 positions with next and previous--%>
         <table>
             <tr>
                 <th>id</th>

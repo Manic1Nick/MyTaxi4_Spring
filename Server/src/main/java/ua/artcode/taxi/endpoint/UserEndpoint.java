@@ -23,10 +23,10 @@ public class UserEndpoint {
         return true;
     }
 
-    @Path("/hello")
+    @Path("/controller")
     @GET
     public String hello(@QueryParam("name") String name){
-        return "hello " + name + " " + new Date();
+        return "controller " + name + " " + new Date();
     }
 
     //

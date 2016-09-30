@@ -10,9 +10,6 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by serhii on 23.04.16.
- */
 public interface UserService {
 
     //register
@@ -38,9 +35,9 @@ public interface UserService {
     //actions for driver
     Order takeOrder(String accessToken, long orderId)
             throws OrderNotFoundException, WrongStatusOrderException, DriverOrderActionException;
-    Map<Integer, Order> getMapDistancesToDriver(String orderStatus, String lineAddressDriver)
-                                                                            throws InputDataWrongException;
     Order[] createArrayOrdersForDriver(OrderStatus orderStatus, User driver)
+            throws InputDataWrongException;
+    Map<Integer, Order> getMapDistancesToDriver(String orderStatus, String lineAddressDriver)
             throws InputDataWrongException;
 
     //actions for all

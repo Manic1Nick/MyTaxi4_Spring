@@ -1,10 +1,6 @@
-package ua.artcode.taxi.servlets.orderServlets;
+package ua.artcode.taxi.servlets.notAjax;
 
 import org.apache.log4j.Logger;
-import ua.artcode.taxi.exception.InputDataWrongException;
-import ua.artcode.taxi.model.Order;
-import ua.artcode.taxi.model.OrderStatus;
-import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -14,8 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
 
 @WebServlet(urlPatterns = {"/order/all"})
 public class GetAllOrdersServlet extends HttpServlet {
@@ -30,7 +24,7 @@ public class GetAllOrdersServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+       /* try {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
 
             User found = userService.getUser(accessToken);
@@ -63,7 +57,7 @@ public class GetAllOrdersServlet extends HttpServlet {
             LOG.error(e);
             req.setAttribute("error", "Wrong calculation in Google API");
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
-        }
+        }*/
     }
 
 }

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalTime;
 
-@WebServlet(urlPatterns = {"/ajax/hello"})
+@WebServlet(urlPatterns = {"/ajax/controller"})
 public class AjaxSimpleServlet extends HttpServlet {
 
 

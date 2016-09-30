@@ -1,4 +1,4 @@
-package ua.artcode.taxi.hello;
+package ua.artcode.taxi.controller;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

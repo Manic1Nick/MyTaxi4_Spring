@@ -1,8 +1,6 @@
-package ua.artcode.taxi.servlets.orderServlets;
+package ua.artcode.taxi.servlets.notAjax;
 
 import org.apache.log4j.Logger;
-import ua.artcode.taxi.exception.OrderNotFoundException;
-import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
@@ -14,13 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@WebServlet(urlPatterns = {"/user-info"})
+public class UserInfoMenuServlet extends HttpServlet {
 
-@WebServlet(urlPatterns = {"/order/get"})
-public class GetOrderInfoServlet extends HttpServlet {
-
+    private static final Logger LOG = Logger.getLogger(UserInfoMenuServlet.class);
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(GetOrderInfoServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -30,24 +27,20 @@ public class GetOrderInfoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String orderId = req.getParameter("id");
-
         try {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
 
-            Order order = userService.getOrderInfo(Integer.parseInt(orderId));
-            User user = userService.getUser(accessToken);
+            User found = userService.getUser(accessToken);
 
-            //forward to order-info.jsp
-            req.setAttribute("order", order);
-            req.setAttribute("user", user);
+            req.setAttribute("user", found);
 
-            req.getRequestDispatcher("/WEB-INF/pages/order-info.jsp").forward(req, resp);
+            req.getServletContext().getRequestDispatcher("/WEB-INF/pages/user-info.jsp").include(req, resp);
 
-        } catch (OrderNotFoundException e) {
-            LOG.error(e);
-            req.setAttribute("errorTitle", "Order not found in data base");
+        } catch (Exception e) {
+            req.setAttribute("errorTitle", "Login Error");
+            req.setAttribute("errorMessage", "invalid name");
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
+
 }

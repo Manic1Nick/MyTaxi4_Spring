@@ -1,10 +1,6 @@
 package ua.artcode.taxi.model;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "addresses")
@@ -176,10 +172,6 @@ public class Address {
 
     @Override
     public int hashCode() {
-        int result = country.hashCode();
-        result = 31 * result + city.hashCode();
-        result = 31 * result + street.hashCode();
-        result = 31 * result + houseNum.hashCode();
-        return result;
+        return (int) (id ^ (id >>> 32));
     }
 }

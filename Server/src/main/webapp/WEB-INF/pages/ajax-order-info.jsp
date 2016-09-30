@@ -115,34 +115,6 @@
         }
     </script>
 
-    <%--<script>--%>
-        <%--function addNewMessageToOrder(id, message) {--%>
-            <%--var user_name = ${"#user_name"}.attr("data-id");--%>
-            <%--var old_message = ${"#old_message"}.val();--%>
-            <%--if (old_message != null) {--%>
-                <%--message = old_message + "\n" + user_name + ": " + message;--%>
-            <%--}--%>
-            <%--$.ajax({--%>
-                <%--type: "POST",--%>
-                <%--url: "/${APP_NAME}/order/add-message",--%>
-                <%--data: {--%>
-                    <%--id : id,--%>
-                    <%--message : message--%>
-                <%--},--%>
-                <%--success: function(resp) {--%>
-                    <%--if (resp == "SUCCESS") {--%>
-                        <%--${"#old_message"}.val(message);--%>
-                    <%--} else {--%>
-                        <%--alert(resp);--%>
-                    <%--}--%>
-                <%--},--%>
-                <%--error: function(resp){--%>
-                    <%--alert(resp);--%>
-                <%--}--%>
-            <%--});--%>
-        <%--}--%>
-    <%--</script>--%>
-
     <style>
         h1 {
             font-family: arial, sans-serif;

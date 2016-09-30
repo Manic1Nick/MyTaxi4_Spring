@@ -1,9 +1,6 @@
 package ua.artcode.taxi.model;
 
-import ua.artcode.taxi.utils.geolocation.Location;
-
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,11 +8,11 @@ import java.util.List;
 @NamedQueries({@NamedQuery(name = "getAllUsers", query = "SELECT c FROM User c")})
 public class User implements PassengerActive, DriverActive {
 
-    @OneToMany(mappedBy = "passenger", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "passenger", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     List<Order> ordersPassenger;
 
-    @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Order> ordersDriver;
+    @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Order>  ordersDriver;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -62,7 +59,7 @@ public class User implements PassengerActive, DriverActive {
         this.pass = pass;
         this.name = name;
         this.homeAddress = homeAddress;
-        ordersPassenger = new ArrayList<>();
+        //ordersPassenger = new ArrayList<>();
     }
 
     //for driver
@@ -72,7 +69,7 @@ public class User implements PassengerActive, DriverActive {
         this.pass = pass;
         this.name = name;
         this.car = car;
-        ordersDriver = new ArrayList<>();
+        //ordersDriver = new ArrayList<>();
     }
 
     //for anonymous
@@ -219,6 +216,6 @@ public class User implements PassengerActive, DriverActive {
 
     @Override
     public int hashCode() {
-        return id;
+        return (int) (id ^ (id >>> 32));
     }
 }

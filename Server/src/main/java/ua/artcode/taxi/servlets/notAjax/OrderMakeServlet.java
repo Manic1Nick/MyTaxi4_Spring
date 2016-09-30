@@ -1,4 +1,4 @@
-package ua.artcode.taxi.servlets.orderServlets;
+package ua.artcode.taxi.servlets.notAjax;
 
 import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.InputDataWrongException;

@@ -1,8 +1,9 @@
-package ua.artcode.taxi.servlets.orderServlets;
+package ua.artcode.taxi.servlets.notAjax;
 
 import org.apache.log4j.Logger;
+import ua.artcode.taxi.exception.DriverOrderActionException;
 import ua.artcode.taxi.exception.OrderNotFoundException;
-import ua.artcode.taxi.exception.UserNotFoundException;
+import ua.artcode.taxi.exception.WrongStatusOrderException;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
@@ -15,11 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/order/last"})
-public class OrderShowLastServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/order/take"})
+public class OrderTakeServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(OrderShowLastServlet.class);
+    private static final Logger LOG = Logger.getLogger(OrderTakeServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -29,10 +30,12 @@ public class OrderShowLastServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        String orderId = req.getParameter("id");
+
         try {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
 
-            Order order = userService.getLastOrderInfo(accessToken);
+            Order order = userService.takeOrder(accessToken, Integer.parseInt(orderId));
             User user = userService.getUser(accessToken);
 
             req.setAttribute("order", order);
@@ -40,14 +43,19 @@ public class OrderShowLastServlet extends HttpServlet {
 
             req.getRequestDispatcher("/WEB-INF/pages/order-info.jsp").include(req, resp);
 
-        } catch (UserNotFoundException e) {
+        } catch (DriverOrderActionException e) {
             LOG.error(e);
-            req.setAttribute("errorTitle", "wrong data user");
+            req.setAttribute("errorTitle", "Driver has orders IN_PROGRESS already");
+            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+        } catch (WrongStatusOrderException e) {
+            LOG.error(e);
+            req.setAttribute("errorTitle", "This order has wrong status (not NEW)");
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         } catch (OrderNotFoundException e) {
             LOG.error(e);
-            req.setAttribute("errorTitle", "User doesn't have any orders");
+            req.setAttribute("errorTitle", "Order not found in data base");
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
+
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package hello;
+package controller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ua.artcode.taxi.hello.Application;
+import ua.artcode.taxi.controller.Application;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-public class GreetingControllerTests {
+public class TaxiAppControllerTests {
 
 	@Autowired
 	private WebApplicationContext ctx;
@@ -53,7 +53,7 @@ public class GreetingControllerTests {
 	@Test
 	public void noParamGreetingShouldReturnDefaultMessage() throws Exception {
 
-		this.mockMvc.perform(get("/greeting"))
+		this.mockMvc.perform(get("/testorder"))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content").value("Hello, World!"));
@@ -62,7 +62,7 @@ public class GreetingControllerTests {
 	@Test
 	public void paramGreetingShouldReturnTailoredMessage() throws Exception {
 
-		this.mockMvc.perform(get("/greeting").param("name", "Spring Community"))
+		this.mockMvc.perform(get("/testorder").param("name", "Spring Community"))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content").value("Hello, Spring Community!"));

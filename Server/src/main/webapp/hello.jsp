@@ -20,7 +20,7 @@
         var name = $("#nameInput").val();
         var confObj = {
             type:"GET",
-            url: "ajax/hello",
+            url: "ajax/controller",
             data: {name : name},
             success: function (result) {
                 $("#responseText").html(result);

@@ -11,7 +11,6 @@ import ua.artcode.taxi.model.User;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class OrderJpaDao implements OrderDao {
     @Transactional
     public Order create(Order order) {
 
-        User passUser = manager.find(User.class,order.getPassenger().getId());
+        User passUser = manager.find(User.class, order.getPassenger().getId());
         order.setPassenger(passUser);
         manager.persist(order);
 
@@ -58,9 +57,7 @@ public class OrderJpaDao implements OrderDao {
 
         Order foundOrder = manager.find(Order.class, newOrder.getId());
 
-        OrderStatus status = newOrder.getOrderStatus();
-
-        foundOrder.setOrderStatus(status);
+        foundOrder.setOrderStatus(newOrder.getOrderStatus());
         foundOrder.setTimeCreate(newOrder.getTimeCreate());
         foundOrder.setTimeCancelled(newOrder.getTimeCancelled());
         foundOrder.setTimeTaken(newOrder.getTimeTaken());
@@ -121,17 +118,8 @@ public class OrderJpaDao implements OrderDao {
         List<Long> orderIds = manager.createQuery(
                 "SELECT MAX(c.id) FROM Order c WHERE c.passenger.id=:userId OR c.driver.id=:userId")
                 .setParameter("userId", userId).setMaxResults(1).getResultList();
-        Long orderId = orderIds.get(0);
 
         return findById(orderIds.get(0));
-    }
-
-    public UserDao getUserDao() {
-        return userDao;
-    }
-
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
     }
 
     private Order updateAddressFrom(Order foundOrder, Address address) {

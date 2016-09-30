@@ -42,21 +42,16 @@ public class UserJpaDao implements UserDao {
 
         UserIdentifier identifier = newUser.getIdentifier();
 
-        foundUser.setIdentifier(identifier);
+        foundUser.setIdentifier(newUser.getIdentifier());
         foundUser.setPhone(newUser.getPhone());
         foundUser.setPass(newUser.getPass());
         foundUser.setName(newUser.getName());
 
         if (identifier.equals(UserIdentifier.P)) {
-            foundUser.getHomeAddress().setCountry(newUser.getHomeAddress().getCountry());
-            foundUser.getHomeAddress().setCity(newUser.getHomeAddress().getCity());
-            foundUser.getHomeAddress().setStreet(newUser.getHomeAddress().getStreet());
-            foundUser.getHomeAddress().setHouseNum(newUser.getHomeAddress().getHouseNum());
+            foundUser = updateHomeAddress(foundUser, newUser.getHomeAddress());
 
         } else if (identifier.equals(UserIdentifier.D)) {
-            foundUser.getCar().setType(newUser.getCar().getType());
-            foundUser.getCar().setModel(newUser.getCar().getModel());
-            foundUser.getCar().setNumber(newUser.getCar().getNumber());
+            foundUser = updateCar(foundUser, newUser.getCar());
         }
 
         manager.merge(foundUser);
@@ -78,17 +73,11 @@ public class UserJpaDao implements UserDao {
     @Transactional
     public User findByPhone(String checkPhone) {
 
-        User user = null;
-
         List<User> users = manager.createQuery(
                 "SELECT c FROM User c WHERE c.phone=:phone")
                 .setParameter("phone", checkPhone).getResultList();
 
-        if (users.size() != 0) {
-            user = users.get(0);
-        }
-
-        return user;
+        return users.size() != 0 ? users.get(0) : null ;
     }
 
     @Override
@@ -118,6 +107,25 @@ public class UserJpaDao implements UserDao {
                 .setParameter("userId", userId).getResultList();
 
         return orderIds.size();
+    }
+
+    private User updateHomeAddress(User foundUser, Address address) {
+
+        foundUser.getHomeAddress().setCountry(address.getCountry());
+        foundUser.getHomeAddress().setCity(address.getCity());
+        foundUser.getHomeAddress().setStreet(address.getStreet());
+        foundUser.getHomeAddress().setHouseNum(address.getHouseNum());
+
+        return foundUser;
+    }
+
+    private User updateCar(User foundUser, Car car) {
+
+        foundUser.getCar().setType(car.getType());
+        foundUser.getCar().setModel(car.getModel());
+        foundUser.getCar().setNumber(car.getNumber());
+
+        return foundUser;
     }
 }
 
