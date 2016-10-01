@@ -61,6 +61,11 @@ public class AjaxGetOrderInfoServlet extends HttpServlet {
                 session.setAttribute("driver", driver);
             }
 
+            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+            User user = userService.getUser(accessToken);
+            LOG.info("Order ID=" + order.getId() +
+                    "info has been obtained for user ID=" + user.getId());
+
             resp.getWriter().print("SUCCESS");
 
         } catch (OrderNotFoundException e) {

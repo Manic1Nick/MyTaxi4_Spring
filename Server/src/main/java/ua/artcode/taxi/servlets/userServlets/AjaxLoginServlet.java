@@ -50,6 +50,8 @@ public class AjaxLoginServlet extends HttpServlet {
             session.setAttribute("accessToken", accessToken);
             session.setAttribute("currentUserName", found.getName());
 
+            LOG.info("Successful attempt to login by user ID=" + found.getId());
+
             resp.getWriter().write("SUCCESS");
 
         } catch (Exception e) {

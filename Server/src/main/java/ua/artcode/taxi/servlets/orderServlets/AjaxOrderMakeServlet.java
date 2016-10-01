@@ -5,6 +5,7 @@ import ua.artcode.taxi.exception.InputDataWrongException;
 import ua.artcode.taxi.exception.OrderMakeException;
 import ua.artcode.taxi.exception.UserNotFoundException;
 import ua.artcode.taxi.model.Order;
+import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -50,6 +51,9 @@ public class AjaxOrderMakeServlet extends HttpServlet {
 
             HttpSession session = req.getSession(true);
             session.setAttribute("order", order);
+
+            User user = userService.getUser(accessToken);
+            LOG.info("New order ID=" + order.getId() + " was created by user ID=" + user.getId());
 
             resp.getWriter().print("id:" + order.getId());
 

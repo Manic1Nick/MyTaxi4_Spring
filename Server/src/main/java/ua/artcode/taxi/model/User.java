@@ -160,6 +160,11 @@ public class User implements PassengerActive, DriverActive {
 
     @Override
     public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    /*@Override
+    public boolean equals(Object obj) {
 
         if (obj instanceof User) {
 
@@ -182,7 +187,7 @@ public class User implements PassengerActive, DriverActive {
         }
 
         return false;
-    }
+    }*/
 
     @Override
     public int hashCode() {

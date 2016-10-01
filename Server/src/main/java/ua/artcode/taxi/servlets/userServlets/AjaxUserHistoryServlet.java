@@ -36,7 +36,7 @@ public class AjaxUserHistoryServlet extends HttpServlet {
         User user = userService.getUser(accessToken);
 
         int quantityOrders = (int) session.getAttribute("quantity");
-        int quantityOrdersOnPage = Constants.quantityOrdersOnPageForUserHistory;
+        int quantityOrdersOnPage = Constants.QUANTITY_ORDERS_ON_HISTORY_PAGE;
         int pageMax = (int) session.getAttribute("pageMax");
         int page = (int) session.getAttribute("page");
         int to = quantityOrders - (quantityOrdersOnPage * (pageMax - page));
@@ -49,8 +49,12 @@ public class AjaxUserHistoryServlet extends HttpServlet {
         req.setAttribute("pageMax", pageMax);
         req.setAttribute("page", page);
 
+        LOG.info("Successful attempt to get info about " + orders.size() +
+                        " orders by user ID=" + user.getId() + " for history page");
+
         UserIdentifier identifier = userService.getUser(accessToken).getIdentifier();
         if (identifier.equals(UserIdentifier.P)) {
+
             req.getRequestDispatcher("/WEB-INF/pages/ajax-passenger-history-pages.jsp").include(req, resp);
 
         } else if (identifier.equals(UserIdentifier.D)) {

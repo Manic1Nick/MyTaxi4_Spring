@@ -37,15 +37,19 @@ public class AjaxGetAllUserOrdersServlet extends HttpServlet {
             HttpSession session = req.getSession(true);
             session.setAttribute("quantity", quantityOrders);
 
-            int ordersOnPage = Constants.quantityOrdersOnPageForUserHistory;
+            int ordersOnPage = Constants.QUANTITY_ORDERS_ON_HISTORY_PAGE;
             int pageMax = quantityOrders % ordersOnPage == 0 ?
                     quantityOrders / ordersOnPage : (quantityOrders / ordersOnPage) + 1;
             session.setAttribute("page", pageMax);
             session.setAttribute("pageMax", pageMax);
 
+            LOG.info("Get all orders to history page by user ID=" + found.getId());
+
             resp.getWriter().print("SUCCESS");
 
         } else {
+
+            LOG.info("There are no orders to history page for user ID=" + found.getId());
             resp.getWriter().print("NOTHING");
         }
     }

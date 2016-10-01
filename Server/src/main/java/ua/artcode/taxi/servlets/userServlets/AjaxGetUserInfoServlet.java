@@ -28,10 +28,11 @@ public class AjaxGetUserInfoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-
         User found = userService.getUser(accessToken);
 
         req.setAttribute("user", found);
+
+        LOG.info("User ID=" + found.getId() + " info has been obtained");
 
         req.getServletContext().getRequestDispatcher("/WEB-INF/pages/ajax-user-info.jsp").include(req, resp);
     }

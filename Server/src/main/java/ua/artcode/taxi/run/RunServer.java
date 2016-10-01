@@ -9,7 +9,7 @@ import ua.artcode.taxi.exception.*;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
-import ua.artcode.taxi.service.UserServiceJdbcImpl;
+import ua.artcode.taxi.service.UserServiceImpl;
 import ua.artcode.taxi.to.Message;
 import ua.artcode.taxi.to.MessageBody;
 import ua.artcode.taxi.utils.ReflectionFormatter;
@@ -23,7 +23,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RunServer {
@@ -37,7 +36,7 @@ public class RunServer {
         UserDao userDao = new UserJpaDao();
         OrderDao orderDao = new OrderJpaDao(userDao);
 
-        UserService userService = new UserServiceJdbcImpl(userDao, orderDao);
+        UserService userService = new UserServiceImpl(userDao, orderDao);
 /*
         User passenger1 = new User(UserIdentifier.P,
                 "1234", "test", "Vasya", new Address("Ukraine", "Kiev", "Khreschatik", "5"));

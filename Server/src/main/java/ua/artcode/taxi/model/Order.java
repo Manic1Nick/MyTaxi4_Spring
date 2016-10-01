@@ -198,6 +198,11 @@ public class Order {
 
     @Override
     public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    /*@Override
+    public boolean equals(Object obj) {
 
         if (obj instanceof Order) {
 
@@ -226,7 +231,7 @@ public class Order {
             }
         }
         return false;
-    }
+    }*/
 
     @Override
     public int hashCode() {

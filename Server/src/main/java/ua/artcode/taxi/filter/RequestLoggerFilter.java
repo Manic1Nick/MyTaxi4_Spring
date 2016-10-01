@@ -28,9 +28,7 @@ public class RequestLoggerFilter implements Filter {
                     req.getSession().getAttribute("currentUserName"),
                     req.getRequestURI()));
         }
-
         chain.doFilter(request,response);
-
     }
 
     @Override

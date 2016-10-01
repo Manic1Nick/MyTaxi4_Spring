@@ -7,7 +7,7 @@ import ua.artcode.taxi.dao.OrderJpaDao;
 import ua.artcode.taxi.dao.UserJpaDao;
 import ua.artcode.taxi.model.*;
 import ua.artcode.taxi.service.UserService;
-import ua.artcode.taxi.service.UserServiceJdbcImpl;
+import ua.artcode.taxi.service.UserServiceImpl;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 
@@ -41,7 +41,7 @@ public class TestMyTaxi {
     public static void beforeClass() {
         userDao = new UserJpaDao();
         orderDao = new OrderJpaDao(userDao);
-        userService = new UserServiceJdbcImpl(userDao, orderDao);
+        userService = new UserServiceImpl(userDao, orderDao);
 
         //delete after sharing to methods below
         address1 = new Address("Ukraine", "Kiev", "Khreschatik", "5");

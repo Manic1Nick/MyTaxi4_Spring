@@ -45,6 +45,10 @@ public class AjaxGetLastOrderInfoServlet extends HttpServlet {
                 session.setAttribute("driver", driver);
             }
 
+            User user = userService.getUser(accessToken);
+            LOG.info("Last order ID=" + order.getId() +
+                        "info has been obtained for user ID=" + user.getId());
+
             resp.getWriter().write("id:" + order.getId());
 
         } catch (UserNotFoundException e) {

@@ -56,6 +56,8 @@ public class AjaxAddMessageToOrderServlet extends HttpServlet {
             HttpSession session = req.getSession(true);
             session.setAttribute("order", updatedOrder);
 
+            LOG.info("Message was added to order ID=" + orderId);
+
             resp.getWriter().print("SUCCESS");
 
         } catch (OrderNotFoundException e) {

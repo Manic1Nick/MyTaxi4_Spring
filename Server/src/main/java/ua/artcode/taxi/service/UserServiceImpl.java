@@ -16,9 +16,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service(value = "service")
-public class UserServiceJdbcImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
-    private final static Logger LOG = Logger.getLogger(UserServiceJdbcImpl.class);
+    private final static Logger LOG = Logger.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserDao userDao;
@@ -30,16 +30,16 @@ public class UserServiceJdbcImpl implements UserService {
     private GoogleMapsAPI googleMapsAPI;
     private Map<String, User> accessKeys;
 
-    public UserServiceJdbcImpl() {
-        pricePerKilometer = Constants.pricePerKilometer;
+    public UserServiceImpl() {
+        pricePerKilometer = Constants.PRICE_PER_KILOMETER;
         googleMapsAPI = new GoogleMapsAPIImpl();
         accessKeys = new ConcurrentHashMap<>();
     }
 
-    public UserServiceJdbcImpl(UserDao userDao, OrderDao orderDao) {
+    public UserServiceImpl(UserDao userDao, OrderDao orderDao) {
         this.userDao = userDao;
         this.orderDao = orderDao;
-        pricePerKilometer = Constants.pricePerKilometer;
+        pricePerKilometer = Constants.PRICE_PER_KILOMETER;
         googleMapsAPI = new GoogleMapsAPIImpl();
         accessKeys = new ConcurrentHashMap<>();
     }
@@ -753,7 +753,7 @@ public class UserServiceJdbcImpl implements UserService {
             this.fromLocation = fromLocation;
             this.toLocation = toLocation;
             googleMapsAPI = new GoogleMapsAPIImpl();
-            averageSpeedKmH = Constants.averageSpeedKmH;
+            averageSpeedKmH = Constants.AVERAGE_SPEED_KM_H;
         }
 
         public Location getFromLocation() {
@@ -789,14 +789,9 @@ public class UserServiceJdbcImpl implements UserService {
 
             Distance tmp = (Distance)o;
             try {
-                if(this.googleMapsAPI.getDistance(fromLocation, toLocation) <
-                        tmp.googleMapsAPI.getDistance(fromLocation, toLocation)) {
-                    return -1;
-
-                } else if (this.googleMapsAPI.getDistance(fromLocation, toLocation) >
-                        tmp.googleMapsAPI.getDistance(fromLocation, toLocation)) {
-                    return 1;
-                }
+                double distance1 = this.googleMapsAPI.getDistance(fromLocation, toLocation);
+                double distance2 = tmp.googleMapsAPI.getDistance(fromLocation, toLocation);
+                return distance1 - distance2 > 0 ? 1 : -1 ;
 
             } catch (InputDataWrongException e) {
                 e.printStackTrace();

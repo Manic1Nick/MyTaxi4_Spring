@@ -3,6 +3,7 @@ package ua.artcode.taxi.servlets.orderServlets;
 import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.OrderNotFoundException;
 import ua.artcode.taxi.exception.UserNotFoundException;
+import ua.artcode.taxi.model.Address;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
@@ -33,15 +34,19 @@ public class AjaxGetAddressesFromLastOrderServlet extends HttpServlet {
 
             Order order = userService.getLastOrderInfo(accessToken);
 
-            String addressFrom = order.getFrom().getCountry() + "," +
-                    order.getFrom().getCity() + "," +
-                    order.getFrom().getStreet() + "," +
-                    order.getFrom().getHouseNum();
+            Address from = order.getFrom();
+            String addressFrom = from.getCountry() + "," +
+                    from.getCity() + "," +
+                    from.getStreet() + "," +
+                    from.getHouseNum();
 
-            String addressTo = order.getTo().getCountry() + "," +
-                    order.getTo().getCity() + "," +
-                    order.getTo().getStreet() + "," +
-                    order.getTo().getHouseNum();
+            Address to = order.getTo();
+            String addressTo = to.getCountry() + "," +
+                    to.getCity() + "," +
+                    to.getStreet() + "," +
+                    to.getHouseNum();
+
+            LOG.info("Addresses have been obtained from order ID=" + order.getId());
 
             resp.getWriter().print(addressFrom + ";" + addressTo);
 

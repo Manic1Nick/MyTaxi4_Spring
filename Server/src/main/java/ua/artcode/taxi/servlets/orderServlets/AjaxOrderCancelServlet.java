@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.OrderNotFoundException;
 import ua.artcode.taxi.exception.WrongStatusOrderException;
 import ua.artcode.taxi.model.Order;
+import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -38,6 +39,9 @@ public class AjaxOrderCancelServlet extends HttpServlet {
 
             HttpSession session = req.getSession(true);
             session.setAttribute("order", order);
+
+            User user = userService.getUser(accessToken);
+            LOG.info("Order ID=" + order.getId() + " was cancelled by user ID=" + user.getId());
 
             resp.getWriter().print("CANCELLED");
 

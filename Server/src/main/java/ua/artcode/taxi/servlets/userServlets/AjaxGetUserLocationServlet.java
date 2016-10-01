@@ -2,6 +2,7 @@ package ua.artcode.taxi.servlets.userServlets;
 
 import org.apache.log4j.Logger;
 import ua.artcode.taxi.model.Address;
+import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -33,6 +34,11 @@ public class AjaxGetUserLocationServlet extends HttpServlet {
                     userLocation.getCity() + "," +
                     userLocation.getStreet() + "," +
                     userLocation.getHouseNum();
+
+            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+            User user = userService.getUser(accessToken);
+
+            LOG.info("User ID=" + user.getId() + " location has been obtained");
 
             resp.getWriter().write(location);
 

@@ -64,6 +64,8 @@ public class AjaxRegisterPassengerServlet extends HttpServlet {
                 accessToken = String.valueOf(accessTokenObj);
                 user = userService.updateUser(registerData, accessToken);
 
+                LOG.info("Successful attempt to change register data by user ID=" + user.getId());
+
             } else {
                 user = userService.registerPassenger(registerData);
                 accessToken = userService.login(user.getPhone(), user.getPass());
@@ -72,6 +74,8 @@ public class AjaxRegisterPassengerServlet extends HttpServlet {
                 session.setAttribute("inSystem", true);
                 session.setAttribute("accessToken", accessToken);
                 session.setAttribute("currentUserName", user.getName());
+
+                LOG.info("Successful attempt to register new passenger ID=" + user.getId());
             }
 
             resp.getWriter().write("SUCCESS");

@@ -53,9 +53,14 @@ public class AjaxGetAllNewOrdersServlet extends HttpServlet {
                 HttpSession session = req.getSession(true);
                 session.setAttribute("orders", orders);
 
+                LOG.info("New orders have been obtained for driver ID=" + found.getId());
+
                 resp.getWriter().print("SUCCESS");
 
             } else {
+
+                LOG.info("There are no new orders for driver ID=" + found.getId());
+
                 resp.getWriter().print("NOTHING");
             }
 

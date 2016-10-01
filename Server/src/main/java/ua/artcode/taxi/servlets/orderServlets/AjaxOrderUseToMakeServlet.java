@@ -2,6 +2,7 @@ package ua.artcode.taxi.servlets.orderServlets;
 
 import org.apache.log4j.Logger;
 import ua.artcode.taxi.model.Order;
+import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -31,6 +32,10 @@ public class AjaxOrderUseToMakeServlet extends HttpServlet {
         Order order = (Order) session.getAttribute("order");
 
         req.setAttribute("order", order);
+
+        String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+        User user = userService.getUser(accessToken);
+        LOG.info("Order ID=" + order.getId() + " was used from history page by user ID=" + user.getId());
 
         req.getRequestDispatcher("/WEB-INF/pages/ajax-order-make.jsp").forward(req,resp);
     }

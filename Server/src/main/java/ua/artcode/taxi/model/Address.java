@@ -6,10 +6,6 @@ import javax.persistence.*;
 @Table(name = "addresses")
 public class Address {
 
-    /*@OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
-    private User user;*/
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

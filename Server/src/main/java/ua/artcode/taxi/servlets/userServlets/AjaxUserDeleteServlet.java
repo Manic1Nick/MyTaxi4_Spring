@@ -46,6 +46,8 @@ public class AjaxUserDeleteServlet extends HttpServlet {
             HttpSession session = req.getSession();
             session.invalidate();
 
+            LOG.info("Successful attempt to delete user ID=" + user.getId());
+
             resp.getWriter().write("id:" + user.getId());
 
         } catch (WrongStatusOrderException e) {

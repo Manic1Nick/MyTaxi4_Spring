@@ -1,6 +1,7 @@
 package ua.artcode.taxi.servlets.userServlets;
 
 import org.apache.log4j.Logger;
+import ua.artcode.taxi.model.Address;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
@@ -29,17 +30,19 @@ public class AjaxGetUserHomeAddressServlet extends HttpServlet {
 
         try {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-
             User found = userService.getUser(accessToken);
 
             req.setAttribute("user", found);
 
-            String homeAddress = found.getHomeAddress().getCountry() + "," +
-                    found.getHomeAddress().getCity() + "," +
-                    found.getHomeAddress().getStreet() + "," +
-                    found.getHomeAddress().getHouseNum();
+            Address homeAddress = found.getHomeAddress();
+            String fullAddress = homeAddress.getCountry() + "," +
+                    homeAddress.getCity() + "," +
+                    homeAddress.getStreet() + "," +
+                    homeAddress.getHouseNum();
 
-            resp.getWriter().write(homeAddress);
+            LOG.info("Get home address by user ID=" + found.getId());
+
+            resp.getWriter().write(fullAddress);
 
         } catch (Exception e) {
             LOG.error(e);
