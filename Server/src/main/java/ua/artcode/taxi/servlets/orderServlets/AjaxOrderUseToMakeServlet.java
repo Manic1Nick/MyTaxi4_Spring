@@ -30,12 +30,12 @@ public class AjaxOrderUseToMakeServlet extends HttpServlet {
 
         HttpSession session = req.getSession(true);
         Order order = (Order) session.getAttribute("order");
-
+        order.setMessage("");
         req.setAttribute("order", order);
 
-        String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-        User user = userService.getUser(accessToken);
-        LOG.info("Order ID=" + order.getId() + " was used from history page by user ID=" + user.getId());
+        User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
+        LOG.info("Order ID=" + order.getId() +
+                " was used as new from history page by user ID=" + user.getId());
 
         req.getRequestDispatcher("/WEB-INF/pages/ajax-order-make.jsp").forward(req,resp);
     }

@@ -7,12 +7,21 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
     <script>
+        function beforeCancelOrder(id) {
+            var r = confirm("Are you sure to cancel order ID=" + id + " ?");
+            if (r == true) {
+                cancelOrder(id);
+            }
+        }
+    </script>
+
+    <script>
         function cancelOrder(id) {
             var confObj = {
                 type:"POST",
                 url: "/${APP_NAME}/order/cancel",
                 data: {
-                    id : id
+                    orderID : id
                 },
                 success: function(resp){
                     if (resp == "CANCELLED") {
@@ -31,12 +40,21 @@
     </script>
 
     <script>
+        function beforeCloseOrder(id) {
+            var r = confirm("Are you sure to close order ID=" + id + " ?");
+            if (r == true) {
+                closeOrder(id);
+            }
+        }
+    </script>
+
+    <script>
         function closeOrder(id) {
             var confObj = {
                 type:"POST",
                 url: "/${APP_NAME}/order/close",
                 data: {
-                    id : id
+                    orderID : id
                 },
                 success: function(resp){
                     if (resp == "CLOSED") {
@@ -60,7 +78,7 @@
                 type: "GET",
                 url: "/${APP_NAME}/order/take",
                 data: {
-                    id : id
+                    orderID : id
                 },
                 success: function(resp) {
                     if (resp == "TAKEN") {
@@ -73,6 +91,29 @@
                 error: function(resp){
                     alert(resp);
                 }
+            });
+        }
+    </script>
+
+    <script>
+        function copyOrderToMakeNew(id) {
+            $.ajax({
+                type: "POST",
+                url: "/${APP_NAME}/order/get",
+                data: {
+                    orderID : id
+                },
+                success: function(resp){
+                    if (resp == "SUCCESS") {
+                        window.location = "/${APP_NAME}/order/use-to-make";
+                    } else {
+                        alert(resp);
+                    }
+                },
+                error: function(resp){
+                    alert(resp);
+                }
+
             });
         }
     </script>
@@ -98,7 +139,7 @@
                 type: "POST",
                 url: "/${APP_NAME}/order/add-message",
                 data: {
-                    id : id,
+                    orderID : id,
                     message : message
                 },
                 success: function(resp) {
@@ -237,31 +278,33 @@
         <c:set var="user" value="${user}"/>
         <div id="user_name" class="comment" data-id=${user.name}></div>
 
-        <c:if test="${user.identifier == 'P'}">
-            <p>
-                <button onclick="cancelOrder(${transfered.id})">
+        <p>
+            <c:if test="${user.identifier == 'P'}">
+
+                <button onclick="beforeCancelOrder(${transfered.id})" style="background-color:lightsalmon">
                     CANCEL ORDER</button>
-            </p>
-        </c:if>
-        <c:if test="${user.identifier == 'D'}">
-            <c:if test="${transfered.orderStatus == 'NEW'}">
-                <p>
+
+                <button onclick="beforeCloseOrder(${transfered.id})" style="background-color:yellow">
+                    CLOSE ORDER</button>
+
+                <button onclick="copyOrderToMakeNew(${transfered.id})" style="background-color:lightgreen">
+                    COPY AS NEW</button>
+            </c:if>
+            <c:if test="${user.identifier == 'D'}">
+                <c:if test="${transfered.orderStatus == 'NEW'}">
+
                     <button onclick="takeOrder(${transfered.id})" style="background-color:lightgreen">
                         TAKE ORDER</button>
-                </p>
+                </c:if>
+
+                <button onclick="beforeCloseOrder(${transfered.id})" style="background-color:yellow">
+                    CLOSE ORDER</button>
             </c:if>
-        </c:if>
-
-        <p>
-            <button onclick="closeOrder(${transfered.id})">
-                CLOSE ORDER</button>
         </p>
-
         <p>
             <button onclick="makeCall()">
                 MAKE CALL</button>
-        </p>
-        <p>
+
             <button onclick="showMap()">
                 SHOW MAP</button>
         </p>

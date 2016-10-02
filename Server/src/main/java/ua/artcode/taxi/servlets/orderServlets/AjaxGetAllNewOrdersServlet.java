@@ -44,8 +44,7 @@ public class AjaxGetAllNewOrdersServlet extends HttpServlet {
                                             throws ServletException, IOException {
 
         try {
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-            User found = userService.getUser(accessToken);
+            User found = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
 
             Order[] orders = userService.createArrayOrdersForDriver(OrderStatus.NEW, found);
 
@@ -53,20 +52,20 @@ public class AjaxGetAllNewOrdersServlet extends HttpServlet {
                 HttpSession session = req.getSession(true);
                 session.setAttribute("orders", orders);
 
-                LOG.info("New orders have been obtained for driver ID=" + found.getId());
+                LOG.info(orders.length + " new orders have been obtained for driver ID=" + found.getId());
 
                 resp.getWriter().print("SUCCESS");
 
             } else {
 
-                LOG.info("There are no new orders for driver ID=" + found.getId());
+                LOG.info("Not found new orders for driver ID=" + found.getId());
 
                 resp.getWriter().print("NOTHING");
             }
 
         } catch (InputDataWrongException e) {
             LOG.error(e);
-            resp.getWriter().print("Wrong calculation in Google API. Check internet connection");
+            resp.getWriter().print(e.getMessage());
         }
     }
 }

@@ -45,7 +45,7 @@ public class AjaxOrderMakeServlet extends HttpServlet {
         String message = req.getParameter("message");
 
         try {
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+            String accessToken = String.valueOf(req.getAttribute("accessToken"));
 
             Order order = userService.makeOrder(accessToken, lineFrom, lineTo, message);
 
@@ -55,19 +55,11 @@ public class AjaxOrderMakeServlet extends HttpServlet {
             User user = userService.getUser(accessToken);
             LOG.info("New order ID=" + order.getId() + " was created by user ID=" + user.getId());
 
-            resp.getWriter().print("id:" + order.getId());
+            resp.getWriter().print("orderID:" + order.getId());
 
-        } catch (InputDataWrongException e) {
+        } catch (InputDataWrongException | OrderMakeException | UserNotFoundException e) {
             LOG.error(e);
-            resp.getWriter().print("Check input data or internet connection");
-
-        } catch (UserNotFoundException e) {
-            LOG.error(e);
-            resp.getWriter().print("User not found");
-
-        } catch (OrderMakeException e) {
-            LOG.error(e);
-            resp.getWriter().print("User has orders NEW or IN_PROGRESS already");
+            resp.getWriter().print(e.getMessage());
         }
     }
 }

@@ -29,8 +29,7 @@ public class AjaxGetUserHomeAddressServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-            User found = userService.getUser(accessToken);
+            User found = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
 
             req.setAttribute("user", found);
 
@@ -46,7 +45,7 @@ public class AjaxGetUserHomeAddressServlet extends HttpServlet {
 
         } catch (Exception e) {
             LOG.error(e);
-            resp.getWriter().write("User not found");
+            resp.getWriter().write(e.getMessage());
         }
     }
 

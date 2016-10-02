@@ -1,7 +1,6 @@
 package ua.artcode.taxi.servlets.userServlets;
 
 import org.apache.log4j.Logger;
-import ua.artcode.taxi.exception.RegisterException;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
@@ -53,37 +52,30 @@ public class AjaxRegisterDriverServlet extends HttpServlet {
         registerData.put("carNumber", req.getParameter("carNumber"));
 
         try {
-            Object accessTokenObj = req.getSession().getAttribute("accessToken");
-            User user = null;
-            String accessToken = "";
+            String accessToken = String.valueOf(req.getAttribute("accessToken"));
 
-            if (accessTokenObj != null) {
-                accessToken = String.valueOf(accessTokenObj);
-                user = userService.updateUser(registerData, accessToken);
+            if (accessToken != null) {
+                User user = userService.updateUser(registerData, accessToken);
 
                 LOG.info("Successful attempt to change register data by user ID=" + user.getId());
 
             } else {
-                user = userService.registerDriver(registerData);
+                User user = userService.registerDriver(registerData);
                 accessToken = userService.login(user.getPhone(), user.getPass());
 
                 HttpSession session = req.getSession(true);
                 session.setAttribute("inSystem", true);
                 session.setAttribute("accessToken", accessToken);
-                session.setAttribute("currentUserName", user.getName());
+                session.setAttribute("currentUserID", user.getId());
 
                 LOG.info("Successful attempt to register new driver ID=" + user.getId());
             }
 
             resp.getWriter().write("SUCCESS");
 
-        } catch (RegisterException e) {
-            LOG.error(e);
-            resp.getWriter().write("This phone using already");
-
         } catch (Exception e) {
             LOG.error(e);
-            resp.getWriter().write("Incorrect registration data");
+            resp.getWriter().write(e.getMessage());
         }
     }
 }

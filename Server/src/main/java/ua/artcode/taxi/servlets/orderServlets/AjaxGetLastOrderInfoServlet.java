@@ -34,6 +34,10 @@ public class AjaxGetLastOrderInfoServlet extends HttpServlet {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
 
             Order order = userService.getLastOrderInfo(accessToken);
+            req.setAttribute("orderID", order.getId());
+
+            req.getServletContext().getRequestDispatcher("/WEB-INF/pages/ajax-order-info.jsp").include(req, resp);
+
             User passenger = userService.findById(order.getIdPassenger());
 
             HttpSession session = req.getSession(true);
@@ -51,13 +55,9 @@ public class AjaxGetLastOrderInfoServlet extends HttpServlet {
 
             resp.getWriter().write("id:" + order.getId());
 
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | OrderNotFoundException e) {
             LOG.error(e);
-            resp.getWriter().write("User not found");
-
-        } catch (OrderNotFoundException e) {
-            LOG.error(e);
-            resp.getWriter().write("User doesn't have any orders");
+            resp.getWriter().write(e.getMessage());
         }
     }
 }

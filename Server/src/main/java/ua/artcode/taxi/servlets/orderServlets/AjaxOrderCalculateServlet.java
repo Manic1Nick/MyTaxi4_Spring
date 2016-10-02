@@ -34,15 +34,14 @@ public class AjaxOrderCalculateServlet extends HttpServlet {
         try {
             Map<String, Object> map = userService.calculateOrder(lineFrom, lineTo);
 
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-            User user = userService.getUser(accessToken);
+            User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
             LOG.info("Calculate distance and price for user ID=" + user.getId());
 
-            resp.getWriter().print(map.get("distance") + ":" + map.get("price"));
+            resp.getWriter().print(map.get("distance") + "," + map.get("price"));
 
         } catch (InputDataWrongException e) {
             LOG.error(e);
-            resp.getWriter().print("Check input data or internet connection");
+            resp.getWriter().print(e.getMessage());
         }
     }
 }

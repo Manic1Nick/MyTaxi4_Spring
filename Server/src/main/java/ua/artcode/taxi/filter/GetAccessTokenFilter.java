@@ -7,13 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class RequestLoggerFilter implements Filter {
+public class GetAccessTokenFilter implements Filter {
 
-    private static final Logger LOG = Logger.getLogger(RequestLoggerFilter.class);
+    private static final Logger LOG = Logger.getLogger(GetAccessTokenFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        LOG.info("created RequestLoggerFilter");
+        LOG.info("created GetAccessTokenFilter");
     }
 
     @Override
@@ -25,9 +25,11 @@ public class RequestLoggerFilter implements Filter {
             HttpServletRequest req = (HttpServletRequest) request;
             HttpServletResponse resp = (HttpServletResponse) response;
 
-            LOG.info(String.format("User ID=%s, request %s",
-                    req.getSession().getAttribute("currentUserID"),
-                    req.getRequestURI()));
+            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+            req.setAttribute("accessToken", accessToken);
+
+            LOG.info(String.format("Get accessToken from current session for user ID=%s",
+                    req.getSession().getAttribute("currentUserID")));
         }
         chain.doFilter(request,response);
     }

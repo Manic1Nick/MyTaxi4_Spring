@@ -45,7 +45,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerPassenger(Map<String, String> map) throws RegisterException {
+    public User registerPassenger(Map<String, String> map)
+                                throws RegisterException, InputDataWrongException {
+
+        if (!validateRegisterData(map)) {
+
+            LOG.error("InputDataWrongException: wrong input register data");
+
+            throw new InputDataWrongException("Wrong input register data");
+        }
 
         if (userDao.findByPhone(map.get("phone")) != null) {
 
@@ -54,12 +62,14 @@ public class UserServiceImpl implements UserService {
             throw new RegisterException("This phone using already");
         }
 
+        Address newAddress = new Address(map.get("homeAddress"));
+
         User newUser = new User(
                 UserIdentifier.P,
                 map.get("phone"),
                 map.get("pass"),
                 map.get("name"),
-                new Address(map.get("homeAddress")));
+                newAddress);
 
         User createdUser = userDao.createUser(newUser);
 
@@ -69,7 +79,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerDriver(Map<String, String> map) throws RegisterException {
+    public User registerDriver(Map<String, String> map)
+                            throws RegisterException, InputDataWrongException {
+
+        if (!validateRegisterData(map)) {
+
+            LOG.error("InputDataWrongException: wrong input register data");
+
+            throw new InputDataWrongException("Wrong input register data");
+        }
 
         if (userDao.findByPhone(map.get("phone")) != null) {
 
@@ -122,7 +140,7 @@ public class UserServiceImpl implements UserService {
         Address to = new Address(lineTo);
         Order createdOrder = null;
 
-        if (!validateAddress(from) && !validateAddress(to)) {
+        if (!validateAddress(from) || !validateAddress(to)) {
 
             LOG.error("InputDataWrongException: wrong input data address");
 
@@ -257,7 +275,7 @@ public class UserServiceImpl implements UserService {
         Address to = new Address(lineTo);
         Map<String, Object> map = new HashMap<>();
 
-        if (!validateAddress(from) && !validateAddress(to)) {
+        if (!validateAddress(from) || !validateAddress(to)) {
 
             LOG.error("InputDataWrongException: wrong input data address");
 
@@ -312,7 +330,7 @@ public class UserServiceImpl implements UserService {
 
             LOG.error("UserNotFoundException: failed attempt to find user in data base");
 
-            throw new UserNotFoundException("wrong data user");
+            throw new UserNotFoundException("User not found");
         }
 
         User user = accessKeys.get(accessToken);
@@ -323,7 +341,7 @@ public class UserServiceImpl implements UserService {
             LOG.error("OrderNotFoundException: failed attempt to get info about last order of user " +
                     user.getPhone());
 
-            throw new OrderNotFoundException("User doesn't have any orders");
+            throw new OrderNotFoundException("You don't have any orders");
         }
 
         LOG.info("User " + user.getPhone() +
@@ -376,7 +394,7 @@ public class UserServiceImpl implements UserService {
 
             throw new OrderNotFoundException("Order not found in data base");
 
-        } else if (foundOrder.getIdDriver() <= 0) {
+        } else if (user.getIdentifier() == UserIdentifier.D && foundOrder.getIdDriver() <= 0) {
 
             LOG.error("DriverOrderActionException: failed attempt to close order with ID " +
                     orderId + " by user " + user.getPhone());
@@ -473,8 +491,13 @@ public class UserServiceImpl implements UserService {
         Map <Integer, Order> mapOfDistances = new HashMap<>();
         int[] distances = new int[ordersByStatus.size()];
 
+        int increaseDistance = 1;
         for (Order order : ordersByStatus) {
             int distance = calculateDistanceFromPassengerToDriver(order.getFrom(), locationDriver);
+
+            if (mapOfDistances.keySet().size() > 0 && mapOfDistances.keySet().contains(distance)) {
+                distance += increaseDistance++;
+            }
 
             order.setDistanceToDriver(distance/1000);
             mapOfDistances.put(distance, order);
@@ -501,27 +524,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(Map<String, String> map, String accessToken) throws RegisterException {
 
-        User user = accessKeys.get(accessToken);
-        int idUser = user.getId();
+        User currentUser = accessKeys.get(accessToken);
+        int currentUserId = currentUser.getId();
 
-        User found = userDao.findByPhone(map.get("phone"));
+        User testUser = userDao.findByPhone(map.get("phone"));
 
-        if (found != null && user.getId() != found.getId()) {
+        if (testUser != null && currentUserId != testUser.getId()) {
 
             LOG.error("RegisterException: failed attempt to update user " +
-                    user.getPhone() + " (phone " + map.get("phone") + " already in use by another user)");
+                    currentUser.getPhone() + " (phone " + map.get("phone") + " already in use by another user)");
 
             throw new RegisterException("This phone is already in use by another user");
 
         } else {
 
             //create user for update
-            User newUser = new User(user.getIdentifier(), map.get("phone"), map.get("name"));
-            newUser.setId(idUser);
+            User newUser = new User(currentUser.getIdentifier(), map.get("phone"), map.get("name"));
+            newUser.setId(currentUserId);
             newUser.setPass(map.get("pass"));
-            if (user.getIdentifier().equals(UserIdentifier.P)) {
+            if (currentUser.getIdentifier().equals(UserIdentifier.P)) {
                 newUser.setHomeAddress(new Address(map.get("homeAddress")));
-            } else if (user.getIdentifier().equals(UserIdentifier.D)) {
+            } else if (currentUser.getIdentifier().equals(UserIdentifier.D)) {
                 newUser.setCar(new Car(map.get("carType"), map.get("carModel"), map.get("carNumber")));
             }
 
@@ -802,20 +825,61 @@ public class UserServiceImpl implements UserService {
 
     private boolean validateAddress(Address address) throws InputDataWrongException {
 
-        if (address.getCountry().equals("")) {
-            throw new InputDataWrongException("Wrong data: country");
+        if (!address.getCountry().matches("(?i).*[a-zA-Z].*")) {
+            throw new InputDataWrongException("Wrong data \"country\"");
             //result = false;
-        } else if (address.getCity().equals("")) {
-            throw new InputDataWrongException("Wrong data: city");
+        } else if (!address.getCity().matches("(?i).*[a-zA-Z].*")) {
+            throw new InputDataWrongException("Wrong data \"city\"");
             //result = false;
-        } else if (address.getStreet().equals("")) {
-            throw new InputDataWrongException("Wrong data: street");
+        } else if (!address.getStreet().matches("(?i).*[a-zA-Z].*")) {
+            throw new InputDataWrongException("Wrong data \"street\"");
             //result = false;
-        } else if (address.getHouseNum().equals("")) {
-            throw new InputDataWrongException("Wrong data: houseNum");
+        } else if (!address.getHouseNum().matches(".*\\d+.*")) {
+            throw new InputDataWrongException("Wrong data \"houseNum\"");
             //result = false;
         }
 
+        return true;
+    }
+
+    private boolean validateRegisterData(Map<String, String> map) throws InputDataWrongException {
+
+        if (!map.get("phone").matches(".*\\d+.*") ||
+                map.get("phone").length() != 12) {
+            throw new InputDataWrongException
+                    ("Wrong data \"phone\". Please input your phone in format 380XXXXXXXXX");
+            //result = false;
+        } else if (!map.get("pass").matches("(?i).*[a-zA-Z].*") ||
+                !map.get("pass").matches(".*\\d+.*")) {
+            throw new InputDataWrongException("Wrong data \"password\". " +
+                            "Password must has length > 3 \nand contains any letters and digits");
+            //result = false;
+        } else if (!map.get("name").matches("(?i).*[a-zA-Z].*")) {
+            throw new InputDataWrongException("Wrong data \"name\"");
+            //result = false;
+        }
+
+        return (map.get("homeAddress") != null &&
+                        validateAddress(new Address(map.get("homeAddress")))) ||
+                ((map.get("carType") != null ||
+                        map.get("carModel") != null || map.get("carNumber") != null) &&
+                        validateCar(map));
+    }
+
+    private boolean validateCar(Map<String, String> map) throws InputDataWrongException {
+
+        if (!map.get("carType").matches("(?i).*[a-zA-Z].*")) {
+            throw new InputDataWrongException("Wrong data \"cat type\"");
+            //result = false;
+        } else if (!map.get("carModel").matches("(?i).*[a-zA-Z].*")) {
+            throw new InputDataWrongException("Wrong data \"car model\"");
+            //result = false;
+        } else if (!map.get("carNumber").matches("(?i).*[a-zA-Z].*") ||
+                !map.get("carNumber").matches(".*\\d+.*")) {
+            throw new InputDataWrongException
+                    ("Wrong data \"car number\". Please input your car number with letters and digits");
+            //result = false;
+        }
         return true;
     }
 }

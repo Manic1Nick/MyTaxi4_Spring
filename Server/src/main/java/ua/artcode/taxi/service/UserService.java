@@ -13,8 +13,8 @@ import java.util.Map;
 public interface UserService {
 
     //register
-    User registerPassenger(Map<String, String> map) throws RegisterException;
-    User registerDriver(Map<String, String> map) throws RegisterException;
+    User registerPassenger(Map<String, String> map) throws RegisterException, InputDataWrongException;
+    User registerDriver(Map<String, String> map) throws RegisterException, InputDataWrongException;
 
     //login (return accessToken)
     String login(String phone, String pass) throws Exception;

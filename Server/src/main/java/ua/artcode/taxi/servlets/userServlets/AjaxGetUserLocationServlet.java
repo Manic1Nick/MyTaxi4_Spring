@@ -35,8 +35,7 @@ public class AjaxGetUserLocationServlet extends HttpServlet {
                     userLocation.getStreet() + "," +
                     userLocation.getHouseNum();
 
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-            User user = userService.getUser(accessToken);
+            User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
 
             LOG.info("User ID=" + user.getId() + " location has been obtained");
 
@@ -44,7 +43,7 @@ public class AjaxGetUserLocationServlet extends HttpServlet {
 
         } catch (Exception e) {
             LOG.error(e);
-            resp.getWriter().write("User not found");
+            resp.getWriter().write(e.getMessage());
         }
     }
 

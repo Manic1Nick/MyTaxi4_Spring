@@ -27,8 +27,7 @@ public class AjaxGetUserInfoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-        User found = userService.getUser(accessToken);
+        User found = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
 
         req.setAttribute("user", found);
 

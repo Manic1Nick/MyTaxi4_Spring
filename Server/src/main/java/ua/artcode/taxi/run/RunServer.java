@@ -142,7 +142,7 @@ class ClientThreadLogic implements Runnable {
                     pw.println(gson.toJson(responseMessage));
                     pw.flush();
 
-                } catch (RegisterException e) {
+                } catch (RegisterException | InputDataWrongException e) {
                     pw.println(e);
                     pw.flush();
                 }
@@ -166,7 +166,7 @@ class ClientThreadLogic implements Runnable {
                     pw.println(gson.toJson(responseMessage));
                     pw.flush();
 
-                } catch (RegisterException e) {
+                } catch (RegisterException | InputDataWrongException e) {
                     pw.println(e);
                     pw.flush();
                 }

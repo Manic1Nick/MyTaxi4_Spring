@@ -28,8 +28,9 @@ public class AjaxLoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        req.setAttribute("accessToken", null);
+
         HttpSession session = req.getSession();
-        session.setAttribute("accessToken", null);
         session.invalidate();
 
         req.getRequestDispatcher("/WEB-INF/pages/ajax-login.jsp").forward(req,resp);
@@ -48,7 +49,7 @@ public class AjaxLoginServlet extends HttpServlet {
             HttpSession session = req.getSession(true);
             session.setAttribute("inSystem", true);
             session.setAttribute("accessToken", accessToken);
-            session.setAttribute("currentUserName", found.getName());
+            session.setAttribute("currentUserID", found.getId());
 
             LOG.info("Successful attempt to login by user ID=" + found.getId());
 
@@ -56,7 +57,7 @@ public class AjaxLoginServlet extends HttpServlet {
 
         } catch (Exception e) {
             LOG.error(e);
-            resp.getWriter().write("Incorrect name or password");
+            resp.getWriter().write(e.getMessage());
         }
     }
 }

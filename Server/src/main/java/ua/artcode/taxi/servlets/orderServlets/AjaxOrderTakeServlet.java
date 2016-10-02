@@ -31,10 +31,10 @@ public class AjaxOrderTakeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String orderId = req.getParameter("id");
+        String orderId = req.getParameter("orderID");
 
         try {
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+            String accessToken = String.valueOf(req.getAttribute("accessToken"));
 
             Order order = userService.takeOrder(accessToken, Long.parseLong(orderId));
 
@@ -46,17 +46,9 @@ public class AjaxOrderTakeServlet extends HttpServlet {
 
             resp.getWriter().print("TAKEN");
 
-        } catch (DriverOrderActionException e) {
+        } catch (DriverOrderActionException | WrongStatusOrderException | OrderNotFoundException e) {
             LOG.error(e);
-            resp.getWriter().print("Driver has orders IN_PROGRESS already");
-
-        } catch (WrongStatusOrderException e) {
-            LOG.error(e);
-            resp.getWriter().print("This order has wrong status (not NEW)");
-
-        } catch (OrderNotFoundException e) {
-            LOG.error(e);
-            resp.getWriter().print("Order not found in data base");
+            resp.getWriter().print(e.getMessage());
         }
     }
 

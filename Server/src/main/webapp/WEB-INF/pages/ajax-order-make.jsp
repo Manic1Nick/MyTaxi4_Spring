@@ -65,7 +65,7 @@
                         var arrayResp = resp.split(":", 2);
                         var id = arrayResp[1];
                         alert("Order ID=" + id + " was created");
-                        window.location = "/${APP_NAME}/order/get";
+                        window.location = "/${APP_NAME}/order/get?id=" + id;
 
                     } else {
                         alert(resp);
@@ -123,8 +123,8 @@
                     addressTo : addressTo
                 },
                 success: function(resp){
-                    if (resp.includes(":")) {
-                        var arrayResp = resp.split(":", 2);
+                    if (resp.includes(",")) {
+                        var arrayResp = resp.split(",", 2);
 
                         var distance = arrayResp[0];
                         var price = arrayResp[1];
@@ -185,8 +185,8 @@
                         alert(resp);
                     }
                 },
-                error: function(resp){
-                    alert(resp);
+                error: function(jsonResponse){
+                    alert(jsonResponse);
                 }
             };
             $.ajax(confObj);
@@ -328,7 +328,7 @@
 </head>
 <body>
 
-<c:set var="order" value="${order}"/>
+<c:set var="transfered" value="${order}"/>
 
 <div class="container">
     <h1>MAKE ORDER</h1>
@@ -341,7 +341,7 @@
     </ul>
 
 
-    <c:if test="${order == null}">
+    <c:if test="${transfered == null}">
         <table>
             <tr>
                 <td>Input country from:</td>
@@ -403,46 +403,46 @@
         </ul>
     </c:if>
 
-    <c:if test="${order != null}">
+    <c:if test="${transfered != null}">
         <table>
             <tr>
                 <td>Input country from:</td>
-                <td><input id="insert_countryFrom" type="text" value="${order.from.country}"></td>
+                <td><input id="insert_countryFrom" type="text" value="${transfered.from.country}"></td>
             </tr>
             <tr>
                 <td>Input city from:</td>
-                <td><input id="insert_cityFrom" type="text" value="${order.from.city}"></td>
+                <td><input id="insert_cityFrom" type="text" value="${transfered.from.city}"></td>
             </tr>
             <tr>
                 <td>Input street from:</td>
-                <td><input id="insert_streetFrom" type="text" value="${order.from.street}"></td>
+                <td><input id="insert_streetFrom" type="text" value="${transfered.from.street}"></td>
             </tr>
             <tr>
                 <td>Input house number from:</td>
-                <td><input id="insert_houseNumFrom" type="text" value="${order.from.houseNum}"></td>
+                <td><input id="insert_houseNumFrom" type="text" value="${transfered.from.houseNum}"></td>
             </tr>
         </table></br>
 
         <table>
             <tr>
                 <td>Input country to:</td>
-                <td><input id="insert_countryTo" type="text" value="${order.to.country}"></td>
+                <td><input id="insert_countryTo" type="text" value="${transfered.to.country}"></td>
             </tr>
             <tr>
                 <td>Input city to:</td>
-                <td><input id="insert_cityTo" type="text" value="${order.to.city}"></td>
+                <td><input id="insert_cityTo" type="text" value="${transfered.to.city}"></td>
             </tr>
             <tr>
                 <td>Input street from:</td>
-                <td><input id="insert_streetTo" type="text" value="${order.to.street}"></td>
+                <td><input id="insert_streetTo" type="text" value="${transfered.to.street}"></td>
             </tr>
             <tr>
                 <td>Input house number from:</td>
-                <td><input id="insert_houseNumTo" type="text" value="${order.to.houseNum}"></td>
+                <td><input id="insert_houseNumTo" type="text" value="${transfered.to.houseNum}"></td>
             </tr>
             <tr>
                 <td>Input your message to driver:</td>
-                <td><input id="insert_message" type="text" value="${order.message}"></td>
+                <td><input id="insert_message" type="text" value="${transfered.message}"></td>
             </tr>
         </table>
 
@@ -450,7 +450,7 @@
             <button onclick="makeOrderFromInsertData()" style="background-color:lightgreen">
                 MAKE ORDER</button>
 
-            <button onclick="calculateOrderFromInsertData()">CALCULATE ORDER</button>
+            <button onclick="calculateOrderFromInsertData()" style="background-color:yellow">CALCULATE ORDER</button>
         </p>
         <ul>
             <p>
@@ -465,6 +465,5 @@
         </ul>
     </c:if>
 </div>
-
 </body>
 </html>

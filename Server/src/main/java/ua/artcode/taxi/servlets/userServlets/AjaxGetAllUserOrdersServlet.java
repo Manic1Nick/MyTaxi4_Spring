@@ -29,8 +29,7 @@ public class AjaxGetAllUserOrdersServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
                                             throws ServletException, IOException {
 
-        String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-        User found = userService.getUser(accessToken);
+        User found = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
         int quantityOrders = userService.getQuantityOrdersOfUser(found.getId());
 
         if (quantityOrders > 0) {
@@ -49,7 +48,7 @@ public class AjaxGetAllUserOrdersServlet extends HttpServlet {
 
         } else {
 
-            LOG.info("There are no orders to history page for user ID=" + found.getId());
+            LOG.info("Not found orders to history page for user ID=" + found.getId());
             resp.getWriter().print("NOTHING");
         }
     }

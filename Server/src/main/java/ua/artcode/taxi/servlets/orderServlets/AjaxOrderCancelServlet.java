@@ -30,28 +30,22 @@ public class AjaxOrderCancelServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String orderId = req.getParameter("id");
+        String orderId = req.getParameter("orderID");
 
         try {
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-
             Order order = userService.cancelOrder(Integer.parseInt(orderId));
 
             HttpSession session = req.getSession(true);
             session.setAttribute("order", order);
 
-            User user = userService.getUser(accessToken);
+            User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
             LOG.info("Order ID=" + order.getId() + " was cancelled by user ID=" + user.getId());
 
             resp.getWriter().print("CANCELLED");
 
-        } catch (OrderNotFoundException e) {
+        } catch (OrderNotFoundException | WrongStatusOrderException e) {
             LOG.error(e);
-            resp.getWriter().print("Order not found");
-
-        } catch (WrongStatusOrderException e) {
-            LOG.error(e);
-            resp.getWriter().print("This order has been CLOSED or CANCELLED already");
+            resp.getWriter().print(e.getMessage());
         }
     }
 }

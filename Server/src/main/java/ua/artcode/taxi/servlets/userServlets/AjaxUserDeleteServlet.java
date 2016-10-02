@@ -28,9 +28,7 @@ public class AjaxUserDeleteServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-
-        User user = userService.getUser(accessToken);
+        User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
 
         resp.getWriter().write("id:" + user.getId());
     }
@@ -39,9 +37,7 @@ public class AjaxUserDeleteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-
-            User user = userService.deleteUser(accessToken);
+            User user = userService.deleteUser(String.valueOf(req.getAttribute("accessToken")));
 
             HttpSession session = req.getSession();
             session.invalidate();
@@ -52,7 +48,7 @@ public class AjaxUserDeleteServlet extends HttpServlet {
 
         } catch (WrongStatusOrderException e) {
             LOG.error(e);
-            resp.getWriter().write("Can't delete. You have orders with status NEW or IN_PROGRESS");
+            resp.getWriter().write(e.getMessage());
         }
     }
 }

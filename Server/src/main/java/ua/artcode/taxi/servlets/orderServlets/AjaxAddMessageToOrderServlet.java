@@ -42,11 +42,10 @@ public class AjaxAddMessageToOrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
-            String orderId = req.getParameter("id");
+            String orderId = req.getParameter("orderID");
             String message = req.getParameter("message");
 
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-            User user = userService.getUser(accessToken);
+            User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
 
             Order order = userService.getOrderInfo(Integer.parseInt(orderId));
             String messageRes = order.getMessage() + "\n" + user.getName() + ": " + message;
@@ -56,13 +55,13 @@ public class AjaxAddMessageToOrderServlet extends HttpServlet {
             HttpSession session = req.getSession(true);
             session.setAttribute("order", updatedOrder);
 
-            LOG.info("Message was added to order ID=" + orderId);
+            LOG.info("Message was added by user ID=" + user.getId() + "to order ID=" + orderId);
 
             resp.getWriter().print("SUCCESS");
 
         } catch (OrderNotFoundException e) {
             LOG.error(e);
-            resp.getWriter().print("Order not found");
+            resp.getWriter().print(e.getMessage());
         }
     }
 }

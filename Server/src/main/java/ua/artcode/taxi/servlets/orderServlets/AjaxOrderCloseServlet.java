@@ -31,10 +31,10 @@ public class AjaxOrderCloseServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String orderId = req.getParameter("id");
+        String orderId = req.getParameter("orderID");
 
         try {
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
+            String accessToken = String.valueOf(req.getAttribute("accessToken"));
 
             Order order = userService.closeOrder(accessToken, Integer.parseInt(orderId));
 
@@ -46,18 +46,9 @@ public class AjaxOrderCloseServlet extends HttpServlet {
 
             resp.getWriter().print("CLOSED");
 
-        } catch (OrderNotFoundException e) {
+        } catch (OrderNotFoundException | WrongStatusOrderException | DriverOrderActionException e) {
             LOG.error(e);
-            resp.getWriter().print("Order not found");
-
-        } catch (WrongStatusOrderException e) {
-            LOG.error(e);
-            resp.getWriter().print("Order must have status IN_PROGRESS to close");
-
-        } catch (DriverOrderActionException e) {
-            LOG.error(e);
-            resp.getWriter().print("This order is not your order");
+            resp.getWriter().print(e.getMessage());
         }
     }
-
 }

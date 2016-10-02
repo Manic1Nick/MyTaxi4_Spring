@@ -47,6 +47,7 @@
 
     <script>
         function redirectGetLastOrder() {
+            //window.location = "${APP_NAME}/order/get/last";
             var confObj = {
                 type:"GET",
                 url: "/${APP_NAME}/order/get/last",
@@ -168,7 +169,7 @@
 
     <div id="user-info"></div>
 
-    <c:set var="transfered" value="${user}"/>
+    <c:set var="user" value="${user}"/>
 
     <div class="container">
         <h1>USER INFO</h1>
@@ -176,58 +177,58 @@
         <table>
             <tr>
                 <td>id</td>
-                <td>${transfered.id}</td>
+                <td>${user.id}</td>
             </tr>
             <tr>
                 <td>identifier</td>
-                <td>${transfered.identifier}</td>
+                <td>${user.identifier}</td>
             </tr>
             <tr>
                 <td>phone</td>
-                <td>${transfered.phone}</td>
+                <td>${user.phone}</td>
             </tr>
             <tr>
                 <td>name</td>
-                <td>${transfered.name}</td>
+                <td>${user.name}</td>
             </tr>
 
-            <c:if test="${transfered.identifier == 'P'}">
+            <c:if test="${user.identifier == 'P'}">
                 <tr>
                     <td>address country</td>
-                    <td>${transfered.homeAddress.country}</td>
+                    <td>${user.homeAddress.country}</td>
                 </tr>
                 <tr>
                     <td>address city</td>
-                    <td>${transfered.homeAddress.city}</td>
+                    <td>${user.homeAddress.city}</td>
                 </tr>
                 <tr>
                     <td>address street</td>
-                    <td>${transfered.homeAddress.street}</td>
+                    <td>${user.homeAddress.street}</td>
                 </tr>
                 <tr>
                     <td>address home number</td>
-                    <td>${transfered.homeAddress.houseNum}</td>
+                    <td>${user.homeAddress.houseNum}</td>
                 </tr>
             </c:if>
-            <c:if test="${transfered.identifier == 'D'}">
+            <c:if test="${user.identifier == 'D'}">
                 <tr>
                     <td>car type</td>
-                    <td>${transfered.car.type}</td>
+                    <td>${user.car.type}</td>
                 </tr>
                 <tr>
                     <td>car model</td>
-                    <td>${transfered.car.model}</td>
+                    <td>${user.car.model}</td>
                 </tr>
                 <tr>
                     <td>car number</td>
-                    <td>${transfered.car.number}</td>
+                    <td>${user.car.number}</td>
                 </tr>
             </c:if>
 
         </table>
 
         <ul>
-            <c:if test="${transfered.identifier == 'P'}">
+            <c:if test="${user.identifier == 'P'}">
                 <p>
                     <button onclick="redirectMakeOrder()" style="background-color:lightgreen">
                         FIND TAXI</button>
@@ -238,7 +239,7 @@
                 </p>
             </c:if>
 
-            <c:if test="${transfered.identifier == 'D'}">
+            <c:if test="${user.identifier == 'D'}">
                 <p>
                     <button onclick="redirectFindNewOrders()" style="background-color:lightgreen">
                         FIND PASSENGERS</button>

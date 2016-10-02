@@ -109,6 +109,8 @@
 </head>
 <body>
 
+<c:set var="user" value="${user}"/>
+
 <div class="container">
     <h1>REGISTER DRIVER</h1>
 

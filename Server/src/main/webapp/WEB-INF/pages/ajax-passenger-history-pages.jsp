@@ -12,7 +12,7 @@
                 type: "POST",
                 url: "/${APP_NAME}/order/get",
                 data: {
-                    id : id
+                    orderID : id
                 },
                 success: function(resp){
                     if (resp == "SUCCESS") {
@@ -35,7 +35,7 @@
                 type: "POST",
                 url: "/${APP_NAME}/order/get",
                 data: {
-                    id : id
+                    orderID : id
                 },
                 success: function(resp){
                     if (resp == "SUCCESS") {
@@ -143,8 +143,10 @@
                     <td><c:out value="${order.to.country} ${order.to.city} ${order.to.street} ${order.to.houseNum}"/></td>
                     <td><c:out value="${order.distance}"/></td>
                     <td><c:out value="${order.price}"/></td>
-                    <td><button onclick="showOrderInfo(${order.id})">SHOW</button></td>
-                    <td><button onclick="copyOrderToMakeNew(${order.id})">USE NOW</button></td>
+                    <td><button onclick="showOrderInfo(${order.id})"
+                                style="background-color:yellow">SHOW</button></td>
+                    <td><button onclick="copyOrderToMakeNew(${order.id})"
+                                style="background-color:lightgreen">USE NOW</button></td>
                 </tr>
             </c:forEach>
         </table>

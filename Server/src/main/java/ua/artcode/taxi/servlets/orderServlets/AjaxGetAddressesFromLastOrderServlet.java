@@ -30,9 +30,7 @@ public class AjaxGetAddressesFromLastOrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-
-            Order order = userService.getLastOrderInfo(accessToken);
+            Order order = userService.getLastOrderInfo(String.valueOf(req.getAttribute("accessToken")));
 
             Address from = order.getFrom();
             String addressFrom = from.getCountry() + "," +
@@ -50,13 +48,9 @@ public class AjaxGetAddressesFromLastOrderServlet extends HttpServlet {
 
             resp.getWriter().print(addressFrom + ";" + addressTo);
 
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | OrderNotFoundException e) {
             LOG.error(e);
-            resp.getWriter().write("User not found");
-
-        } catch (OrderNotFoundException e) {
-            LOG.error(e);
-            resp.getWriter().write("User doesn't have any orders");
+            resp.getWriter().write(e.getMessage());
         }
     }
 }

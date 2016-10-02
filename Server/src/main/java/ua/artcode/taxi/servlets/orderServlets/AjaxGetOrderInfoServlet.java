@@ -31,8 +31,7 @@ public class AjaxGetOrderInfoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-        User user = userService.getUser(accessToken);
+        User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
 
         HttpSession session = req.getSession(true);
         Order order = (Order) session.getAttribute("order");
@@ -46,7 +45,7 @@ public class AjaxGetOrderInfoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String orderId = req.getParameter("id");
+        String orderId = req.getParameter("orderID");
 
         try {
             Order order = userService.getOrderInfo(Integer.parseInt(orderId));
@@ -64,13 +63,13 @@ public class AjaxGetOrderInfoServlet extends HttpServlet {
             String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
             User user = userService.getUser(accessToken);
             LOG.info("Order ID=" + order.getId() +
-                    "info has been obtained for user ID=" + user.getId());
+                    " info has been obtained for user ID=" + user.getId());
 
             resp.getWriter().print("SUCCESS");
 
         } catch (OrderNotFoundException e) {
             LOG.error(e);
-            resp.getWriter().print("Order not found");
+            resp.getWriter().print(e.getMessage());
         }
     }
 }

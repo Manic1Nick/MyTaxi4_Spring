@@ -31,10 +31,9 @@ public class AjaxUserHistoryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        HttpSession session = req.getSession();
-        String accessToken = String.valueOf(session.getAttribute("accessToken"));
-        User user = userService.getUser(accessToken);
+        User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
 
+        HttpSession session = req.getSession();
         int quantityOrders = (int) session.getAttribute("quantity");
         int quantityOrdersOnPage = Constants.QUANTITY_ORDERS_ON_HISTORY_PAGE;
         int pageMax = (int) session.getAttribute("pageMax");
@@ -52,14 +51,12 @@ public class AjaxUserHistoryServlet extends HttpServlet {
         LOG.info("Successful attempt to get info about " + orders.size() +
                         " orders by user ID=" + user.getId() + " for history page");
 
-        UserIdentifier identifier = userService.getUser(accessToken).getIdentifier();
-        if (identifier.equals(UserIdentifier.P)) {
+        String requestDispatcher = user.getIdentifier() == UserIdentifier.P ?
+                "/WEB-INF/pages/ajax-passenger-history-pages.jsp" :
+                user.getIdentifier() == UserIdentifier.D ?
+                "/WEB-INF/pages/ajax-driver-history-pages.jsp" : "" ;
 
-            req.getRequestDispatcher("/WEB-INF/pages/ajax-passenger-history-pages.jsp").include(req, resp);
-
-        } else if (identifier.equals(UserIdentifier.D)) {
-            req.getRequestDispatcher("/WEB-INF/pages/ajax-driver-history-pages.jsp").include(req, resp);
-        }
+        req.getRequestDispatcher(requestDispatcher).include(req, resp);
     }
 
     @Override
