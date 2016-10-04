@@ -83,12 +83,6 @@
             <version>${aspectj.version}</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>aspectj</groupId>
-            <artifactId>aspectjtools</artifactId>
-            <version>1.5.4</version>
-        </dependency>-->
-
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.1-api</artifactId>

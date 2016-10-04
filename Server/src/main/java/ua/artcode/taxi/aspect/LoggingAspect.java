@@ -8,10 +8,11 @@ import org.aspectj.lang.annotation.Pointcut;
 
 @Aspect
 //@Component
-public class LogginAspect {
+public class LoggingAspect {
 
     @Before(value = "publicMethodsPointCut()")
     public void logginPublicMethodsAdvice() {
+
         System.out.println("public method was called");
     }
 
@@ -21,11 +22,11 @@ public class LogginAspect {
     @Around(value = "publicMethodsPointCut()")
     public Object aroundAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String methodName = proceedingJoinPoint.getSignature().getName();
-        System.out.printf("before method %s\n", methodName);
+        System.out.println(String.format("before method %s", methodName));
 
         try{
             Object proceed = proceedingJoinPoint.proceed();
-            System.out.printf("after method %s\n", methodName);
+            System.out.println(String.format("after method %s", methodName));
             return proceed;
 
         } catch (Throwable throwable) {

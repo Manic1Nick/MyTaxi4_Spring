@@ -9,6 +9,8 @@ public final class Constants {
 
     public static final int QUANTITY_ORDERS_ON_HISTORY_PAGE = 5;
 
+    public static final int FEE_FOR_FILING_TAXI = 30;
+
     //todo find location
     public static final String USER_LOCATION_PATH = "UA Kiev Starokievskaya 10";
 }

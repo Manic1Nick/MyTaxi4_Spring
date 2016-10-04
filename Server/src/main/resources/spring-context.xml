@@ -15,6 +15,8 @@
     <context:component-scan base-package="ua.artcode.taxi"/>
     <import resource="orm-spring-context.xml"/>
 
-    <bean class="ua.artcode.taxi.aspect.LogginAspect"/>
+    <!--<bean class="ua.artcode.taxi.aspect.LoggingAspect"/>-->
+    <!--<bean class="ua.artcode.taxi.aspect.TimeCountAspect"/>-->
+    <bean class="ua.artcode.taxi.aspect.LoggerAspect"/>
 
 </beans>

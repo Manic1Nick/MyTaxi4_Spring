@@ -17,7 +17,7 @@ public interface UserService {
     User registerDriver(Map<String, String> map) throws RegisterException, InputDataWrongException;
 
     //login (return accessToken)
-    String login(String phone, String pass) throws Exception;
+    String login(String phone, String pass) throws LoginException;
 
     //actions for passenger
     Order makeOrder(String accessToken, String lineFrom, String lineTo, String message) throws OrderMakeException,

@@ -14,7 +14,6 @@ import ua.artcode.taxi.to.Message;
 import ua.artcode.taxi.to.MessageBody;
 import ua.artcode.taxi.utils.ReflectionFormatter;
 
-import javax.security.auth.login.LoginException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -191,9 +190,6 @@ class ClientThreadLogic implements Runnable {
                     pw.flush();
 
                 } catch (LoginException e) {
-                    pw.println(e);
-                    pw.flush();
-                } catch (Exception e) {
                     pw.println(e);
                     pw.flush();
                 }

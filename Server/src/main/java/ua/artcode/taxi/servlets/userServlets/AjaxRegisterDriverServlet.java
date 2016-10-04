@@ -29,7 +29,7 @@ public class AjaxRegisterDriverServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Object accessTokenObj = req.getSession().getAttribute("accessToken");
+        Object accessTokenObj = req.getAttribute("accessToken");
 
         if (accessTokenObj != null) {
             User user = userService.getUser(String.valueOf(accessTokenObj));
@@ -52,16 +52,16 @@ public class AjaxRegisterDriverServlet extends HttpServlet {
         registerData.put("carNumber", req.getParameter("carNumber"));
 
         try {
-            String accessToken = String.valueOf(req.getAttribute("accessToken"));
+            Object accessTokenObj = req.getAttribute("accessToken");
 
-            if (accessToken != null) {
-                User user = userService.updateUser(registerData, accessToken);
+            if (accessTokenObj != null) {
+                User user = userService.updateUser(registerData, String.valueOf(accessTokenObj));
 
                 LOG.info("Successful attempt to change register data by user ID=" + user.getId());
 
             } else {
                 User user = userService.registerDriver(registerData);
-                accessToken = userService.login(user.getPhone(), user.getPass());
+                String accessToken = userService.login(user.getPhone(), user.getPass());
 
                 HttpSession session = req.getSession(true);
                 session.setAttribute("inSystem", true);

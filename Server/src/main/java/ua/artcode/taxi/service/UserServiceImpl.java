@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
         User createdUser = userDao.createUser(newUser);
 
-        LOG.info("New passenger " + createdUser.getPhone() + " registered");
+        LOG.info("New passenger ID=" + createdUser.getId() + " registered");
 
         return createdUser;
     }
@@ -107,19 +107,19 @@ public class UserServiceImpl implements UserService {
 
         User createdUser = userDao.createUser(newUser);
 
-        LOG.info("New driver " + createdUser.getPhone() + " registered");
+        LOG.info("New driver ID=" + createdUser.getId() + " registered");
 
         return createdUser;
     }
 
     @Override
-    public String login(String phone, String pass) throws Exception {
+    public String login(String phone, String pass) throws LoginException {
 
         User found = userDao.findByPhone(phone);
 
         if (found == null) {
 
-            LOG.error("LoginException: failed attempt to log in with phone " + phone);
+            LOG.error("LoginException: failed attempt to log in with phone=" + phone);
 
             throw new LoginException("User not found or incorrect password");
         }
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
         String accessKey = UUID.randomUUID().toString();
         accessKeys.put(accessKey, found);
 
-        LOG.info("User " + phone + " logged in");
+        LOG.info("User ID=" + found.getId() + " logged in");
 
         return accessKey;
     }
@@ -196,6 +196,9 @@ public class UserServiceImpl implements UserService {
                 throw new InputDataWrongException("Wrong calculation in Google API");
             }
         }
+
+        LOG.info("New order ID=" + createdOrder.getId() + "was created by user ID=" + user.getId());
+
         return createdOrder;
     }
 
@@ -288,7 +291,7 @@ public class UserServiceImpl implements UserService {
             Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
                     to.getStreet(), to.getHouseNum());
             int distance = ((int) googleMapsAPI.getDistance(location, location1) / 1000);
-            int price = (int) pricePerKilometer * distance + 30;
+            int price = (int) pricePerKilometer * distance + Constants.FEE_FOR_FILING_TAXI;
 
             map.put("distance", distance + "");
             map.put("price", price + "");
@@ -318,7 +321,7 @@ public class UserServiceImpl implements UserService {
             throw new OrderNotFoundException("Order not found in data base");
         }
 
-        LOG.info("Information has been requested for order " + found.getId());
+        LOG.info("Information has been requested for order ID=" + found.getId());
 
         return found;
     }
@@ -345,7 +348,7 @@ public class UserServiceImpl implements UserService {
         }
 
         LOG.info("User " + user.getPhone() +
-                " get information for his last order " + lastOrder.getId());
+                " get information for his last order ID=" + lastOrder.getId());
 
         return lastOrder;
     }
@@ -365,7 +368,7 @@ public class UserServiceImpl implements UserService {
         } else if (foundOrder.getOrderStatus().equals(OrderStatus.CLOSED) ||
                     foundOrder.getOrderStatus().equals(OrderStatus.CANCELLED)) {
 
-            LOG.error("WrongStatusOrderException: failed attempt to close order with ID " +
+            LOG.error("WrongStatusOrderException: failed attempt to close order ID=" +
                     orderId);
 
             throw new WrongStatusOrderException("This order has been CLOSED or CANCELLED already");
@@ -375,7 +378,7 @@ public class UserServiceImpl implements UserService {
         foundOrder.setTimeCancelled(new Date());
         Order cancelledOrder = orderDao.update(foundOrder);
 
-        LOG.info("Order " + cancelledOrder.getId() + " was cancelled by user");
+        LOG.info("Order ID=" + cancelledOrder.getId() + " was cancelled");
 
         return cancelledOrder;
     }
@@ -396,15 +399,15 @@ public class UserServiceImpl implements UserService {
 
         } else if (user.getIdentifier() == UserIdentifier.D && foundOrder.getIdDriver() <= 0) {
 
-            LOG.error("DriverOrderActionException: failed attempt to close order with ID " +
-                    orderId + " by user " + user.getPhone());
+            LOG.error("DriverOrderActionException: failed attempt to close order ID=" +
+                    orderId + " by user ID=" + user.getId());
 
             throw new DriverOrderActionException("Order not found in driver orders list");
 
-        } else if (!foundOrder.getOrderStatus().equals(OrderStatus.IN_PROGRESS)) {
+        } else if (foundOrder.getOrderStatus() != OrderStatus.IN_PROGRESS) {
 
-            LOG.error("WrongStatusOrderException: failed attempt to close order with ID " +
-                    orderId + " by user " + user.getPhone());
+            LOG.error("WrongStatusOrderException: failed attempt to close order ID=" +
+                    orderId + " by user ID=" + user.getId());
 
             throw new WrongStatusOrderException("This order has wrong status (not IN_PROGRESS)");
         }
@@ -413,7 +416,7 @@ public class UserServiceImpl implements UserService {
         foundOrder.setTimeClosed(new Date());
         Order closedOrder = orderDao.update(foundOrder);
 
-        LOG.info("User " + user.getPhone() + " closed his order " + closedOrder.getId());
+        LOG.info("User ID=" + user.getId() + " closed his order ID=" + closedOrder.getId());
 
         return closedOrder;
     }
@@ -444,9 +447,9 @@ public class UserServiceImpl implements UserService {
 
             throw new OrderNotFoundException("Order not found in data base");
 
-        } else if (!inProgress.getOrderStatus().equals(OrderStatus.NEW)) {
+        } else if (inProgress.getOrderStatus() != OrderStatus.NEW) {
 
-            LOG.error("WrongStatusOrderException: failed attempt to take order with ID " +
+            LOG.error("WrongStatusOrderException: failed attempt to take order ID=" +
                     orderId + " by user " + user.getPhone());
 
             throw new WrongStatusOrderException("This order has wrong status (not NEW)");
@@ -457,7 +460,7 @@ public class UserServiceImpl implements UserService {
         inProgress.setTimeTaken(new Date());
         Order takenOrder = orderDao.update(inProgress);
 
-        LOG.info("User " + user.getPhone() + " was take order " + takenOrder.getId() + " for execution");
+        LOG.info("User ID=" + user.getId() + " was take order ID=" + takenOrder.getId() + " for execution");
 
         return takenOrder;
     }
@@ -467,7 +470,7 @@ public class UserServiceImpl implements UserService {
 
         User foundUser = accessKeys.get(accessToken);
 
-        LOG.info("Request user " + foundUser.getPhone());
+        LOG.info("Request user ID=" + foundUser.getId());
 
         return foundUser;
     }
@@ -516,7 +519,7 @@ public class UserServiceImpl implements UserService {
         }
 
         LOG.info("Add new array orders with status " + orderStatus.toString() +
-                                                " for driver ID " + driver.getId());
+                                                " for driver ID=" + driver.getId());
 
         return sortingOrders;
     }
@@ -551,7 +554,7 @@ public class UserServiceImpl implements UserService {
             User updatedUser = userDao.updateUser(newUser);
             accessKeys.put(accessToken, updatedUser);
 
-            LOG.info("Change registered data for user. User " + updatedUser.getPhone() + " was updated");
+            LOG.info("Change registered data for user. User ID=" + updatedUser.getId() + " was updated");
 
             return updatedUser;
         }
@@ -572,7 +575,7 @@ public class UserServiceImpl implements UserService {
                 LOG.error("WrongStatusOrderException: failed attempt to delete user " + user.getPhone());
 
                 throw new WrongStatusOrderException
-                        ("Can't delete user. User can't has orders with status NEW");
+                        ("Can't delete. You have orders with status NEW");
             }
         }
 
@@ -583,14 +586,14 @@ public class UserServiceImpl implements UserService {
                 LOG.error("WrongStatusOrderException: failed attempt to delete user " + user.getPhone());
 
                 throw new WrongStatusOrderException
-                        ("Can't delete user. User can't has orders with status IN_PROGRESS");
+                        ("Can't delete. You have orders with status IN_PROGRESS");
             }
         }
 
         User deleteUser = userDao.deleteUser(user.getId());
         accessKeys.remove(accessToken);
 
-        LOG.info("User " + user.getPhone() + " was deleted");
+        LOG.info("User ID=" + user.getId() + " was deleted");
 
         return deleteUser;
     }
@@ -656,7 +659,7 @@ public class UserServiceImpl implements UserService {
 
         User foundUser = userDao.findById(id);
 
-        LOG.info("Request user with ID=" + id);
+        LOG.info("Request user by ID=" + id);
 
         return foundUser;
     }

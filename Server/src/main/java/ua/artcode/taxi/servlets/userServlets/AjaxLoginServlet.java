@@ -1,6 +1,7 @@
 package ua.artcode.taxi.servlets.userServlets;
 
 import org.apache.log4j.Logger;
+import ua.artcode.taxi.exception.LoginException;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
@@ -26,7 +27,8 @@ public class AjaxLoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
         req.setAttribute("accessToken", null);
 
@@ -37,7 +39,8 @@ public class AjaxLoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
         String phone = req.getParameter("phone");
         String pass = req.getParameter("password");
@@ -55,7 +58,7 @@ public class AjaxLoginServlet extends HttpServlet {
 
             resp.getWriter().write("SUCCESS");
 
-        } catch (Exception e) {
+        } catch (LoginException e) {
             LOG.error(e);
             resp.getWriter().write(e.getMessage());
         }

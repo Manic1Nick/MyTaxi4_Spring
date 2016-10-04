@@ -25,11 +25,11 @@ public class GetAccessTokenFilter implements Filter {
             HttpServletRequest req = (HttpServletRequest) request;
             HttpServletResponse resp = (HttpServletResponse) response;
 
-            String accessToken = String.valueOf(req.getSession().getAttribute("accessToken"));
-            req.setAttribute("accessToken", accessToken);
+            Object accessTokenObj = req.getSession().getAttribute("accessToken");
+            req.setAttribute("accessToken", accessTokenObj);
 
-            LOG.info(String.format("Get accessToken from current session for user ID=%s",
-                    req.getSession().getAttribute("currentUserID")));
+            LOG.info(String.format("Get accessToken %s from current session for user ID=%s",
+                    String.valueOf(accessTokenObj), req.getSession().getAttribute("currentUserID")));
         }
         chain.doFilter(request,response);
     }
