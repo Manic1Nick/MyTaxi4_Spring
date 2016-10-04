@@ -1,6 +1,5 @@
 package ua.artcode.taxi.servlets.orderServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.OrderNotFoundException;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
@@ -19,9 +18,7 @@ import java.io.IOException;
 @WebServlet(urlPatterns = {"/ajax/order/add-message"})
 public class AjaxAddMessageToOrderServlet extends HttpServlet {
 
-
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxAddMessageToOrderServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -55,12 +52,9 @@ public class AjaxAddMessageToOrderServlet extends HttpServlet {
             HttpSession session = req.getSession(true);
             session.setAttribute("order", updatedOrder);
 
-            LOG.info("Message was added by user ID=" + user.getId() + "to order ID=" + orderId);
-
             resp.getWriter().print("SUCCESS");
 
         } catch (OrderNotFoundException e) {
-            LOG.error(e);
             resp.getWriter().print(e.getMessage());
         }
     }

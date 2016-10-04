@@ -1,6 +1,5 @@
 package ua.artcode.taxi.servlets.userServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.WrongStatusOrderException;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
@@ -18,7 +17,6 @@ import java.io.IOException;
 public class AjaxUserDeleteServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxUserDeleteServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -41,13 +39,9 @@ public class AjaxUserDeleteServlet extends HttpServlet {
 
             HttpSession session = req.getSession();
             session.invalidate();
-
-            LOG.info("Successful attempt to delete user ID=" + user.getId());
-
             resp.getWriter().write("id:" + user.getId());
 
         } catch (WrongStatusOrderException e) {
-            LOG.error(e);
             resp.getWriter().write(e.getMessage());
         }
     }

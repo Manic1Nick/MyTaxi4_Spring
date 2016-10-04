@@ -1,6 +1,5 @@
 package ua.artcode.taxi.servlets.orderServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.InputDataWrongException;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.OrderStatus;
@@ -20,7 +19,6 @@ import java.io.IOException;
 public class AjaxGetAllNewOrdersServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxGetAllNewOrdersServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -52,19 +50,13 @@ public class AjaxGetAllNewOrdersServlet extends HttpServlet {
                 HttpSession session = req.getSession(true);
                 session.setAttribute("orders", orders);
 
-                LOG.info(orders.length + " new orders have been obtained for driver ID=" + found.getId());
-
                 resp.getWriter().print("SUCCESS");
 
             } else {
-
-                LOG.info("Not found new orders for driver ID=" + found.getId());
-
                 resp.getWriter().print("NOTHING");
             }
 
         } catch (InputDataWrongException e) {
-            LOG.error(e);
             resp.getWriter().print(e.getMessage());
         }
     }

@@ -1,6 +1,5 @@
 package ua.artcode.taxi.service;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.artcode.taxi.dao.OrderDao;
@@ -17,8 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service(value = "service")
 public class UserServiceImpl implements UserService {
-
-    private final static Logger LOG = Logger.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserDao userDao;
@@ -49,16 +46,10 @@ public class UserServiceImpl implements UserService {
                                 throws RegisterException, InputDataWrongException {
 
         if (!validateRegisterData(map)) {
-
-            LOG.error("InputDataWrongException: wrong input register data");
-
             throw new InputDataWrongException("Wrong input register data");
         }
 
         if (userDao.findByPhone(map.get("phone")) != null) {
-
-            LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
-
             throw new RegisterException("This phone using already");
         }
 
@@ -71,11 +62,7 @@ public class UserServiceImpl implements UserService {
                 map.get("name"),
                 newAddress);
 
-        User createdUser = userDao.createUser(newUser);
-
-        LOG.info("New passenger ID=" + createdUser.getId() + " registered");
-
-        return createdUser;
+        return userDao.createUser(newUser);
     }
 
     @Override
@@ -83,16 +70,10 @@ public class UserServiceImpl implements UserService {
                             throws RegisterException, InputDataWrongException {
 
         if (!validateRegisterData(map)) {
-
-            LOG.error("InputDataWrongException: wrong input register data");
-
             throw new InputDataWrongException("Wrong input register data");
         }
 
         if (userDao.findByPhone(map.get("phone")) != null) {
-
-            LOG.error("RegisterException: failed attempt to register with phone " + map.get("phone"));
-
             throw new RegisterException("This phone using already");
         }
 
@@ -107,8 +88,6 @@ public class UserServiceImpl implements UserService {
 
         User createdUser = userDao.createUser(newUser);
 
-        LOG.info("New driver ID=" + createdUser.getId() + " registered");
-
         return createdUser;
     }
 
@@ -118,16 +97,11 @@ public class UserServiceImpl implements UserService {
         User found = userDao.findByPhone(phone);
 
         if (found == null) {
-
-            LOG.error("LoginException: failed attempt to log in with phone=" + phone);
-
             throw new LoginException("User not found or incorrect password");
         }
 
         String accessKey = UUID.randomUUID().toString();
         accessKeys.put(accessKey, found);
-
-        LOG.info("User ID=" + found.getId() + " logged in");
 
         return accessKey;
     }
@@ -141,9 +115,6 @@ public class UserServiceImpl implements UserService {
         Order createdOrder = null;
 
         if (!validateAddress(from) || !validateAddress(to)) {
-
-            LOG.error("InputDataWrongException: wrong input data address");
-
             throw new InputDataWrongException("Wrong input data addresses. Can not make order");
         }
 
@@ -156,18 +127,12 @@ public class UserServiceImpl implements UserService {
 
             for (Order order : ordersNew) {
                 if (user.getId() == order.getIdPassenger()) {
-
-                    LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
-
                     throw new OrderMakeException("User has orders NEW already");
                 }
             }
 
             for (Order order : ordersInProgress) {
                 if (user.getId() == order.getIdPassenger()) {
-
-                    LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
-
                     throw new OrderMakeException("User has orders IN_PROGRESS already");
                 }
             }
@@ -187,18 +152,10 @@ public class UserServiceImpl implements UserService {
                 newOrder.setTimeCreate(new Date());
                 createdOrder = orderDao.create(newOrder);
 
-                LOG.info("User " + user.getPhone() + " makes new order " + createdOrder.getId());
-
             } catch (InputDataWrongException | IndexOutOfBoundsException e) {
-
-                LOG.error("InputDataWrongException: errors in calculate locations in Google API");
-
                 throw new InputDataWrongException("Wrong calculation in Google API");
             }
         }
-
-        LOG.info("New order ID=" + createdOrder.getId() + "was created by user ID=" + user.getId());
-
         return createdOrder;
     }
 
@@ -211,9 +168,6 @@ public class UserServiceImpl implements UserService {
         Order createdOrder = null;
 
         if (!validateAddress(from) && !validateAddress(to)) {
-
-            LOG.error("InputDataWrongException: wrong input data address");
-
             throw new InputDataWrongException("Wrong input data addresses. Can not make order");
         }
 
@@ -226,18 +180,12 @@ public class UserServiceImpl implements UserService {
 
             for (Order order : ordersNew) {
                 if (user.getId() == order.getIdPassenger()) {
-
-                    LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
-
                     throw new OrderMakeException("User has orders NEW already");
                 }
             }
 
             for (Order order : ordersInProgress) {
                 if (user.getId() == order.getIdPassenger()) {
-
-                    LOG.error("OrderMakeException: failed attempt to make order by user " + user.getPhone());
-
                     throw new OrderMakeException("User has orders IN_PROGRESS already");
                 }
             }
@@ -257,12 +205,7 @@ public class UserServiceImpl implements UserService {
                 newOrder.setTimeCreate(new Date());
                 createdOrder = orderDao.create(newOrder);
 
-                LOG.info("User anonymous makes new order " + newOrder.getId());
-
             } catch (InputDataWrongException | IndexOutOfBoundsException e) {
-
-                LOG.error("InputDataWrongException: errors in calculate locations in Google API");
-
                 throw new InputDataWrongException("Wrong calculation in Google API");
             }
         }
@@ -279,9 +222,6 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> map = new HashMap<>();
 
         if (!validateAddress(from) || !validateAddress(to)) {
-
-            LOG.error("InputDataWrongException: wrong input data address");
-
             throw new InputDataWrongException("Wrong input data. Can not make order");
         }
 
@@ -297,14 +237,8 @@ public class UserServiceImpl implements UserService {
             map.put("price", price + "");
 
         } catch (InputDataWrongException | IndexOutOfBoundsException e) {
-
-            LOG.error("InputDataWrongException: errors in calculate locations in Google API");
-
             throw new InputDataWrongException("Wrong calculation in Google API");
         }
-
-        LOG.info("Someone calculates order from " + lineFrom + " to " + lineTo);
-
         return map;
     }
 
@@ -314,15 +248,8 @@ public class UserServiceImpl implements UserService {
         Order found = orderDao.findById(orderId);
 
         if (found == null) {
-
-            LOG.error("OrderNotFoundException: failed attempt to get info about order with ID " +
-                    orderId + " (order not found in data base)");
-
             throw new OrderNotFoundException("Order not found in data base");
         }
-
-        LOG.info("Information has been requested for order ID=" + found.getId());
-
         return found;
     }
 
@@ -330,9 +257,6 @@ public class UserServiceImpl implements UserService {
     public Order getLastOrderInfo(String accessToken) throws UserNotFoundException, OrderNotFoundException {
 
         if (accessToken == null) {
-
-            LOG.error("UserNotFoundException: failed attempt to find user in data base");
-
             throw new UserNotFoundException("User not found");
         }
 
@@ -340,16 +264,8 @@ public class UserServiceImpl implements UserService {
         Order lastOrder = orderDao.getLastOrderOfUser(user.getId());
 
         if (lastOrder == null) {
-
-            LOG.error("OrderNotFoundException: failed attempt to get info about last order of user " +
-                    user.getPhone());
-
             throw new OrderNotFoundException("You don't have any orders");
         }
-
-        LOG.info("User " + user.getPhone() +
-                " get information for his last order ID=" + lastOrder.getId());
-
         return lastOrder;
     }
 
@@ -359,28 +275,16 @@ public class UserServiceImpl implements UserService {
         Order foundOrder = orderDao.findById(orderId);
 
         if (foundOrder == null) {
-
-            LOG.error("OrderNotFoundException: failed attempt to cancel order with ID " +
-                    orderId + " (not found in data base)");
-
             throw new OrderNotFoundException("Order not found in data base");
 
         } else if (foundOrder.getOrderStatus().equals(OrderStatus.CLOSED) ||
                     foundOrder.getOrderStatus().equals(OrderStatus.CANCELLED)) {
-
-            LOG.error("WrongStatusOrderException: failed attempt to close order ID=" +
-                    orderId);
-
             throw new WrongStatusOrderException("This order has been CLOSED or CANCELLED already");
         }
-
         foundOrder.setOrderStatus(OrderStatus.CANCELLED);
         foundOrder.setTimeCancelled(new Date());
-        Order cancelledOrder = orderDao.update(foundOrder);
 
-        LOG.info("Order ID=" + cancelledOrder.getId() + " was cancelled");
-
-        return cancelledOrder;
+        return orderDao.update(foundOrder);
     }
 
     @Override
@@ -391,34 +295,19 @@ public class UserServiceImpl implements UserService {
         Order foundOrder = orderDao.findById(orderId);
 
         if (foundOrder == null) {
-
-            LOG.error("OrderNotFoundException: failed attempt to close order with ID " +
-                    orderId + " by user " + user.getPhone());
-
             throw new OrderNotFoundException("Order not found in data base");
 
         } else if (user.getIdentifier() == UserIdentifier.D && foundOrder.getIdDriver() <= 0) {
-
-            LOG.error("DriverOrderActionException: failed attempt to close order ID=" +
-                    orderId + " by user ID=" + user.getId());
-
             throw new DriverOrderActionException("Order not found in driver orders list");
 
         } else if (foundOrder.getOrderStatus() != OrderStatus.IN_PROGRESS) {
-
-            LOG.error("WrongStatusOrderException: failed attempt to close order ID=" +
-                    orderId + " by user ID=" + user.getId());
-
             throw new WrongStatusOrderException("This order has wrong status (not IN_PROGRESS)");
         }
 
         foundOrder.setOrderStatus(OrderStatus.CLOSED);
         foundOrder.setTimeClosed(new Date());
-        Order closedOrder = orderDao.update(foundOrder);
 
-        LOG.info("User ID=" + user.getId() + " closed his order ID=" + closedOrder.getId());
-
-        return closedOrder;
+        return orderDao.update(foundOrder);
     }
 
     @Override
@@ -432,47 +321,28 @@ public class UserServiceImpl implements UserService {
 
         for (Order order : ordersInProgress) {
             if (user.getId() == order.getIdDriver()) {
-
-                LOG.error("DriverOrderActionException: failed attempt to take order with ID " +
-                        orderId + " by user " + user.getPhone());
-
                 throw new DriverOrderActionException("Driver has orders IN_PROGRESS already");
             }
         }
 
         if (inProgress == null) {
-
-            LOG.error("OrderNotFoundException: failed attempt to take order with ID" +
-                    orderId + " by user " + user.getPhone());
-
             throw new OrderNotFoundException("Order not found in data base");
 
         } else if (inProgress.getOrderStatus() != OrderStatus.NEW) {
-
-            LOG.error("WrongStatusOrderException: failed attempt to take order ID=" +
-                    orderId + " by user " + user.getPhone());
-
             throw new WrongStatusOrderException("This order has wrong status (not NEW)");
         }
 
         inProgress.setIdDriver(user.getId());
         inProgress.setOrderStatus(OrderStatus.IN_PROGRESS);
         inProgress.setTimeTaken(new Date());
-        Order takenOrder = orderDao.update(inProgress);
 
-        LOG.info("User ID=" + user.getId() + " was take order ID=" + takenOrder.getId() + " for execution");
-
-        return takenOrder;
+        return orderDao.update(inProgress);
     }
 
     @Override
     public User getUser(String accessToken) {
 
-        User foundUser = accessKeys.get(accessToken);
-
-        LOG.info("Request user ID=" + foundUser.getId());
-
-        return foundUser;
+        return accessKeys.get(accessToken);
     }
 
     @Override
@@ -481,9 +351,6 @@ public class UserServiceImpl implements UserService {
 
         //find all orders with status
         List<Order> ordersByStatus = getAllOrdersByStatus(orderStatus);
-
-        LOG.info("Found " + ordersByStatus.size() + " orders with status " + orderStatus);
-
         Address addressDriver = new Address(driver.getUserCurrentLocation());
         Location locationDriver = googleMapsAPI.findLocation(
                 addressDriver.getCountry(),
@@ -507,9 +374,6 @@ public class UserServiceImpl implements UserService {
             distances[ordersByStatus.indexOf(order)] = distance;
         }
 
-        LOG.info("Create array orders with status " + orderStatus.toString() +
-                                    " with distance to " + addressDriver.toLine());
-
         //create array orders and sorting by distance to driver
         Order[] sortingOrders = new Order[ordersByStatus.size()];
         Arrays.sort(distances);
@@ -517,9 +381,6 @@ public class UserServiceImpl implements UserService {
         for (int i = 0; i < distances.length; i++) {
             sortingOrders[i] = mapOfDistances.get(distances[i]);
         }
-
-        LOG.info("Add new array orders with status " + orderStatus.toString() +
-                                                " for driver ID=" + driver.getId());
 
         return sortingOrders;
     }
@@ -533,10 +394,6 @@ public class UserServiceImpl implements UserService {
         User testUser = userDao.findByPhone(map.get("phone"));
 
         if (testUser != null && currentUserId != testUser.getId()) {
-
-            LOG.error("RegisterException: failed attempt to update user " +
-                    currentUser.getPhone() + " (phone " + map.get("phone") + " already in use by another user)");
-
             throw new RegisterException("This phone is already in use by another user");
 
         } else {
@@ -554,8 +411,6 @@ public class UserServiceImpl implements UserService {
             User updatedUser = userDao.updateUser(newUser);
             accessKeys.put(accessToken, updatedUser);
 
-            LOG.info("Change registered data for user. User ID=" + updatedUser.getId() + " was updated");
-
             return updatedUser;
         }
     }
@@ -571,9 +426,6 @@ public class UserServiceImpl implements UserService {
 
         for (Order order : ordersNew) {
             if (user.getId() == order.getIdPassenger()) {
-
-                LOG.error("WrongStatusOrderException: failed attempt to delete user " + user.getPhone());
-
                 throw new WrongStatusOrderException
                         ("Can't delete. You have orders with status NEW");
             }
@@ -582,9 +434,6 @@ public class UserServiceImpl implements UserService {
         for (Order order : ordersInProgress) {
             if (user.getId() == order.getIdPassenger() ||
                                     user.getId() == order.getIdDriver()) {
-
-                LOG.error("WrongStatusOrderException: failed attempt to delete user " + user.getPhone());
-
                 throw new WrongStatusOrderException
                         ("Can't delete. You have orders with status IN_PROGRESS");
             }
@@ -592,8 +441,6 @@ public class UserServiceImpl implements UserService {
 
         User deleteUser = userDao.deleteUser(user.getId());
         accessKeys.remove(accessToken);
-
-        LOG.info("User ID=" + user.getId() + " was deleted");
 
         return deleteUser;
     }
@@ -629,8 +476,6 @@ public class UserServiceImpl implements UserService {
         //find all orders with status
         List<Order> orders = getAllOrdersByStatus(Enum.valueOf(OrderStatus.class, orderStatus));
 
-        LOG.info("Found " + orders.size() + " orders with status " + orderStatus);
-
         //create list of int unique distances
         List<Integer> distancesList = getArrayDistancesToDriver(orders, new Address(lineAddressDriver));
         int[] distances = new int[distancesList.size()];
@@ -649,19 +494,13 @@ public class UserServiceImpl implements UserService {
             sortingMapDistances.put(distances[i], mapDistances.get(distances[i]));
         }
 
-        LOG.info("Create map of distances from orders to driver address " + lineAddressDriver);
-
         return sortingMapDistances;
     }
 
     @Override
     public User findById(int id) {
 
-        User foundUser = userDao.findById(id);
-
-        LOG.info("Request user by ID=" + id);
-
-        return foundUser;
+        return userDao.findById(id);
     }
 
     public List<Integer> getArrayDistancesToDriver(List<Order> orders, Address addressDriver)
@@ -756,11 +595,7 @@ public class UserServiceImpl implements UserService {
 
     public List<Order> getAllOrdersByStatus(OrderStatus status) {
 
-        List<Order> ordersByStatus = orderDao.getOrdersByStatus(status);
-
-        LOG.info("Get all order by status " + status.toString());
-
-        return ordersByStatus;
+        return orderDao.getOrdersByStatus(status);
     }
 
     public class Distance implements Comparable {

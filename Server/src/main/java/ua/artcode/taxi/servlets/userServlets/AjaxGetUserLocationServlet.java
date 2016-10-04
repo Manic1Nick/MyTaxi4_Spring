@@ -1,8 +1,6 @@
 package ua.artcode.taxi.servlets.userServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.model.Address;
-import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -15,8 +13,6 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/ajax/user/get-location"})
 public class AjaxGetUserLocationServlet extends HttpServlet {
-
-    private static final Logger LOG = Logger.getLogger(AjaxGetUserLocationServlet.class);
 
     private UserService userService;
 
@@ -35,14 +31,9 @@ public class AjaxGetUserLocationServlet extends HttpServlet {
                     userLocation.getStreet() + "," +
                     userLocation.getHouseNum();
 
-            User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
-
-            LOG.info("User ID=" + user.getId() + " location has been obtained");
-
             resp.getWriter().write(location);
 
         } catch (Exception e) {
-            LOG.error(e);
             resp.getWriter().write(e.getMessage());
         }
     }

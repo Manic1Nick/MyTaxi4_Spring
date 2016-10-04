@@ -1,6 +1,5 @@
 package ua.artcode.taxi.servlets.userServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.model.Constants;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
@@ -18,7 +17,6 @@ import java.io.IOException;
 public class AjaxGetAllUserOrdersServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxGetAllUserOrdersServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -42,13 +40,9 @@ public class AjaxGetAllUserOrdersServlet extends HttpServlet {
             session.setAttribute("page", pageMax);
             session.setAttribute("pageMax", pageMax);
 
-            LOG.info("Get all orders to history page by user ID=" + found.getId());
-
             resp.getWriter().print("SUCCESS");
 
         } else {
-
-            LOG.info("Not found orders to history page for user ID=" + found.getId());
             resp.getWriter().print("NOTHING");
         }
     }

@@ -1,11 +1,9 @@
 package ua.artcode.taxi.servlets.orderServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.InputDataWrongException;
 import ua.artcode.taxi.exception.OrderMakeException;
 import ua.artcode.taxi.exception.UserNotFoundException;
 import ua.artcode.taxi.model.Order;
-import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -21,7 +19,6 @@ import java.io.IOException;
 public class AjaxOrderMakeServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxOrderMakeServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -51,14 +48,9 @@ public class AjaxOrderMakeServlet extends HttpServlet {
 
             HttpSession session = req.getSession(true);
             session.setAttribute("order", order);
-
-            User user = userService.getUser(accessToken);
-            LOG.info("New order ID=" + order.getId() + " was created by user ID=" + user.getId());
-
             resp.getWriter().print("orderID:" + order.getId());
 
         } catch (InputDataWrongException | OrderMakeException | UserNotFoundException e) {
-            LOG.error(e);
             resp.getWriter().print(e.getMessage());
         }
     }

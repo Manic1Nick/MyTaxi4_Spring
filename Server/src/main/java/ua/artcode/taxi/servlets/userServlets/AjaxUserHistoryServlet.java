@@ -1,6 +1,5 @@
 package ua.artcode.taxi.servlets.userServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.model.Constants;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.User;
@@ -21,7 +20,6 @@ import java.util.List;
 public class AjaxUserHistoryServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxUserHistoryServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -47,9 +45,6 @@ public class AjaxUserHistoryServlet extends HttpServlet {
         req.setAttribute("ordersOnPage", quantityOrdersOnPage);
         req.setAttribute("pageMax", pageMax);
         req.setAttribute("page", page);
-
-        LOG.info("Successful attempt to get info about " + orders.size() +
-                        " orders by user ID=" + user.getId() + " for history page");
 
         String requestDispatcher = user.getIdentifier() == UserIdentifier.P ?
                 "/WEB-INF/pages/ajax-passenger-history-pages.jsp" :

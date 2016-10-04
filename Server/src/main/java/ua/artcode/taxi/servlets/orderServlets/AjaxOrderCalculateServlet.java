@@ -1,8 +1,6 @@
 package ua.artcode.taxi.servlets.orderServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.InputDataWrongException;
-import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -18,7 +16,6 @@ import java.util.Map;
 public class AjaxOrderCalculateServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxOrderCalculateServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -33,14 +30,9 @@ public class AjaxOrderCalculateServlet extends HttpServlet {
 
         try {
             Map<String, Object> map = userService.calculateOrder(lineFrom, lineTo);
-
-            User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
-            LOG.info("Calculate distance and price for user ID=" + user.getId());
-
             resp.getWriter().print(map.get("distance") + "," + map.get("price"));
 
         } catch (InputDataWrongException e) {
-            LOG.error(e);
             resp.getWriter().print(e.getMessage());
         }
     }

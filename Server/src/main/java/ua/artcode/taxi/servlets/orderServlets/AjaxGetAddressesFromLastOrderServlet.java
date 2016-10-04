@@ -1,6 +1,5 @@
 package ua.artcode.taxi.servlets.orderServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.OrderNotFoundException;
 import ua.artcode.taxi.exception.UserNotFoundException;
 import ua.artcode.taxi.model.Address;
@@ -19,7 +18,6 @@ import java.io.IOException;
 public class AjaxGetAddressesFromLastOrderServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxGetAddressesFromLastOrderServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -44,12 +42,9 @@ public class AjaxGetAddressesFromLastOrderServlet extends HttpServlet {
                     to.getStreet() + "," +
                     to.getHouseNum();
 
-            LOG.info("Addresses have been obtained from order ID=" + order.getId());
-
             resp.getWriter().print(addressFrom + ";" + addressTo);
 
         } catch (UserNotFoundException | OrderNotFoundException e) {
-            LOG.error(e);
             resp.getWriter().write(e.getMessage());
         }
     }

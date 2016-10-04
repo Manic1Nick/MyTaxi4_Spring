@@ -45,7 +45,6 @@ public class User implements PassengerActive, DriverActive {
         this.pass = pass;
         this.name = name;
         this.homeAddress = homeAddress;
-        //ordersPassenger = new ArrayList<>();
     }
 
     //for driver
@@ -55,7 +54,6 @@ public class User implements PassengerActive, DriverActive {
         this.pass = pass;
         this.name = name;
         this.car = car;
-        //ordersDriver = new ArrayList<>();
     }
 
     //for anonymous

@@ -18,12 +18,12 @@ public class LoggerAspect {
             String methodName = point.getSignature().toShortString();
             long start = System.currentTimeMillis();
 
-            LOG.info(String.format("[start method] %s",
+            LOG.info(String.format("start method >>> %s",
                     methodName));
 
             result = point.proceed();
 
-            LOG.info(String.format("[end method] %s in %d ms: %s",
+            LOG.info(String.format("<<< end method %s in %d ms: %s",
                     methodName,
                     System.currentTimeMillis() - start,
                     result));

@@ -1,6 +1,5 @@
 package ua.artcode.taxi.servlets.userServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.model.Address;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
@@ -15,8 +14,6 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/ajax/user/get-address"})
 public class AjaxGetUserHomeAddressServlet extends HttpServlet {
-
-    private static final Logger LOG = Logger.getLogger(AjaxGetUserHomeAddressServlet.class);
 
     private UserService userService;
 
@@ -39,12 +36,9 @@ public class AjaxGetUserHomeAddressServlet extends HttpServlet {
                     homeAddress.getStreet() + "," +
                     homeAddress.getHouseNum();
 
-            LOG.info("Get home address by user ID=" + found.getId());
-
             resp.getWriter().write(fullAddress);
 
         } catch (Exception e) {
-            LOG.error(e);
             resp.getWriter().write(e.getMessage());
         }
     }

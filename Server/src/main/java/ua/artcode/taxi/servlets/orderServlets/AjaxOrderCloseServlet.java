@@ -1,11 +1,9 @@
 package ua.artcode.taxi.servlets.orderServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.DriverOrderActionException;
 import ua.artcode.taxi.exception.OrderNotFoundException;
 import ua.artcode.taxi.exception.WrongStatusOrderException;
 import ua.artcode.taxi.model.Order;
-import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
 
@@ -21,7 +19,6 @@ import java.io.IOException;
 public class AjaxOrderCloseServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxOrderCloseServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -41,14 +38,9 @@ public class AjaxOrderCloseServlet extends HttpServlet {
 
             HttpSession session = req.getSession(true);
             session.setAttribute("order", order);
-
-            User user = userService.getUser(accessToken);
-            LOG.info("Order ID=" + order.getId() + " was closed by user ID=" + user.getId());
-
             resp.getWriter().print("CLOSED");
 
         } catch (OrderNotFoundException | WrongStatusOrderException | DriverOrderActionException e) {
-            LOG.error(e);
             resp.getWriter().print(e.getMessage());
         }
     }

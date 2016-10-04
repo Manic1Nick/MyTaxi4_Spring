@@ -1,6 +1,5 @@
 package ua.artcode.taxi.servlets.userServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.exception.LoginException;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
@@ -16,8 +15,6 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/ajax/login"})
 public class AjaxLoginServlet extends HttpServlet {
-
-    private static final Logger LOG = Logger.getLogger(AjaxLoginServlet.class);
 
     private UserService userService;
 
@@ -54,12 +51,9 @@ public class AjaxLoginServlet extends HttpServlet {
             session.setAttribute("accessToken", accessToken);
             session.setAttribute("currentUserID", found.getId());
 
-            LOG.info("Successful attempt to login by user ID=" + found.getId());
-
             resp.getWriter().write("SUCCESS");
 
         } catch (LoginException e) {
-            LOG.error(e);
             resp.getWriter().write(e.getMessage());
         }
     }

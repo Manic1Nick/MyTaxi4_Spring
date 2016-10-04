@@ -1,6 +1,5 @@
 package ua.artcode.taxi.servlets.userServlets;
 
-import org.apache.log4j.Logger;
 import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.utils.BeansFactory;
@@ -19,7 +18,6 @@ import java.util.Map;
 public class AjaxRegisterDriverServlet extends HttpServlet {
 
     private UserService userService;
-    private static final Logger LOG = Logger.getLogger(AjaxRegisterDriverServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -55,9 +53,7 @@ public class AjaxRegisterDriverServlet extends HttpServlet {
             Object accessTokenObj = req.getAttribute("accessToken");
 
             if (accessTokenObj != null) {
-                User user = userService.updateUser(registerData, String.valueOf(accessTokenObj));
-
-                LOG.info("Successful attempt to change register data by user ID=" + user.getId());
+                userService.updateUser(registerData, String.valueOf(accessTokenObj));
 
             } else {
                 User user = userService.registerDriver(registerData);
@@ -67,14 +63,10 @@ public class AjaxRegisterDriverServlet extends HttpServlet {
                 session.setAttribute("inSystem", true);
                 session.setAttribute("accessToken", accessToken);
                 session.setAttribute("currentUserID", user.getId());
-
-                LOG.info("Successful attempt to register new driver ID=" + user.getId());
             }
-
             resp.getWriter().write("SUCCESS");
 
         } catch (Exception e) {
-            LOG.error(e);
             resp.getWriter().write(e.getMessage());
         }
     }
