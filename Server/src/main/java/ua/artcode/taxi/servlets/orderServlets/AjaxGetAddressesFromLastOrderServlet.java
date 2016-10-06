@@ -31,16 +31,12 @@ public class AjaxGetAddressesFromLastOrderServlet extends HttpServlet {
             Order order = userService.getLastOrderInfo(String.valueOf(req.getAttribute("accessToken")));
 
             Address from = order.getFrom();
-            String addressFrom = from.getCountry() + "," +
-                    from.getCity() + "," +
-                    from.getStreet() + "," +
-                    from.getHouseNum();
+            String addressFrom = String.format("%s,%s,%s,%s",
+                    from.getCountry(), from.getCity(), from.getStreet(), from.getHouseNum());
 
             Address to = order.getTo();
-            String addressTo = to.getCountry() + "," +
-                    to.getCity() + "," +
-                    to.getStreet() + "," +
-                    to.getHouseNum();
+            String addressTo = String.format("%s,%s,%s,%s",
+                    to.getCountry(), to.getCity(), to.getStreet(), to.getHouseNum());
 
             resp.getWriter().print(addressFrom + ";" + addressTo);
 

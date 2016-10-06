@@ -27,16 +27,11 @@ public class AjaxGetUserHomeAddressServlet extends HttpServlet {
 
         try {
             User found = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
-
-            req.setAttribute("user", found);
-
             Address homeAddress = found.getHomeAddress();
-            String fullAddress = homeAddress.getCountry() + "," +
-                    homeAddress.getCity() + "," +
-                    homeAddress.getStreet() + "," +
-                    homeAddress.getHouseNum();
 
-            resp.getWriter().write(fullAddress);
+            //req.setAttribute("user", found);
+            resp.getWriter().write(homeAddress.separateByCommas(homeAddress));
+
 
         } catch (Exception e) {
             resp.getWriter().write(e.getMessage());

@@ -116,13 +116,20 @@
                 <tr>
                     <td><c:out value="${order.id}"/></td>
                     <td><c:out value="${order.orderStatus}"/></td>
-                    <td><c:out value="${order.to.country} ${order.to.city} ${order.to.street} ${order.to.houseNum}"/></td>
+                    <td><c:out value="${order.to.country},
+                                        ${order.to.city},
+                                        ${order.to.street},
+                                        ${order.to.houseNum}"/></td>
                     <td><c:out value="${order.price}"/></td>
                     <td><c:out value="${order.distanceToDriver}"/></td>
+
                     <td><button onclick="showOrderInfo(${order.id})"
-                                style="background-color:yellow">SHOW</button></td>
+                                style="background-color:yellow">
+                                    SHOW</button></td>
+
                     <td><button onclick="takeOrderNow(${order.id})"
-                                style="background-color:lightgreen">TAKE NOW</button></td>
+                                style="background-color:lightgreen">
+                                    TAKE NOW</button></td>
                 </tr>
             </c:forEach>
         </table>

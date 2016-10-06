@@ -24,14 +24,6 @@ public class AjaxUserDeleteServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
-
-        resp.getWriter().write("id:" + user.getId());
-    }
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {

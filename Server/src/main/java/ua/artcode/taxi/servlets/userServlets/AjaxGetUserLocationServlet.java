@@ -26,12 +26,7 @@ public class AjaxGetUserLocationServlet extends HttpServlet {
 
         try {
             Address userLocation = userService.getUserLocation();
-            String location = userLocation.getCountry() + "," +
-                    userLocation.getCity() + "," +
-                    userLocation.getStreet() + "," +
-                    userLocation.getHouseNum();
-
-            resp.getWriter().write(location);
+            resp.getWriter().write(userLocation.separateByCommas(userLocation));
 
         } catch (Exception e) {
             resp.getWriter().write(e.getMessage());

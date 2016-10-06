@@ -30,7 +30,7 @@
                 },
                 success: function(resp){
                     if (resp == "SUCCESS") {
-                        alert("Welcome to MyTaxi!");
+                        alert("Congratulations!\nYou are registered successful!\nWelcome to MyTaxi! :)");
                         window.location = "/${APP_NAME}/user-info";
                     } else {
                         alert(resp);

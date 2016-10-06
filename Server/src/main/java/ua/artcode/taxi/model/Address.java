@@ -1,5 +1,7 @@
 package ua.artcode.taxi.model;
 
+import com.google.gson.Gson;
+
 import javax.persistence.*;
 
 @Entity
@@ -45,13 +47,13 @@ public class Address {
 
     public Address(String line){
 
-        String[] address = line.split(" ");
+        String[] address = line.split(",");
 
         if (address.length >= 4) {
-            this.country = address[0];
-            this.city = address[1];
-            this.street = address[2];
-            this.houseNum = address[3];
+            this.country = address[0].trim();
+            this.city = address[1].trim();
+            this.street = address[2].trim();
+            this.houseNum = address[3].trim();
         } else {
             this.country = line;
             this.city = "";
@@ -128,12 +130,12 @@ public class Address {
                 '}';
     }
 
-    public String toLine() {
-        return country + " " + city + " " + street + " " + houseNum;
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
-
-    @Override
+    /*@Override
     public boolean equals(Object obj) {
 
         if (obj instanceof Address) {
@@ -144,10 +146,19 @@ public class Address {
         }
 
         return false;
-    }
+    }*/
 
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
+    }
+
+    public String separateByCommas(Address address) {
+
+        return String.format("%s,%s,%s,%s",
+                address.getCountry(),
+                address.getCity(),
+                address.getStreet(),
+                address.getHouseNum());
     }
 }

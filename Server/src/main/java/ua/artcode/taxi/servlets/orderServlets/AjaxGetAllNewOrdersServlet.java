@@ -49,7 +49,6 @@ public class AjaxGetAllNewOrdersServlet extends HttpServlet {
             if (orders.length > 0) {
                 HttpSession session = req.getSession(true);
                 session.setAttribute("orders", orders);
-
                 resp.getWriter().print("SUCCESS");
 
             } else {

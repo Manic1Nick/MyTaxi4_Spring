@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     private Map<String, User> accessKeys;
 
     public UserServiceImpl() {
-        pricePerKilometer = Constants.PRICE_PER_KILOMETER;
+        pricePerKilometer = Constants.PRICE_PER_KILOMETER_UAH;
         googleMapsAPI = new GoogleMapsAPIImpl();
         accessKeys = new ConcurrentHashMap<>();
     }
@@ -36,59 +36,58 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserDao userDao, OrderDao orderDao) {
         this.userDao = userDao;
         this.orderDao = orderDao;
-        pricePerKilometer = Constants.PRICE_PER_KILOMETER;
+        pricePerKilometer = Constants.PRICE_PER_KILOMETER_UAH;
         googleMapsAPI = new GoogleMapsAPIImpl();
         accessKeys = new ConcurrentHashMap<>();
     }
 
     @Override
     public User registerPassenger(Map<String, String> map)
-                                throws RegisterException, InputDataWrongException {
-
-        if (!validateRegisterData(map)) {
-            throw new InputDataWrongException("Wrong input register data");
-        }
+            throws RegisterException, InputDataWrongException {
 
         if (userDao.findByPhone(map.get("phone")) != null) {
             throw new RegisterException("This phone using already");
         }
 
-        Address newAddress = new Address(map.get("homeAddress"));
+        User newUser = null;
 
-        User newUser = new User(
-                UserIdentifier.P,
-                map.get("phone"),
-                map.get("pass"),
-                map.get("name"),
-                newAddress);
+        if (validateRegisterData(map)) {
+            newUser = new User(
+                    UserIdentifier.P,
+                    map.get("phone"),
+                    map.get("pass"),
+                    map.get("name"),
+                    new Address(map.get("country"),
+                            map.get("city"),
+                            map.get("street"),
+                            map.get("houseNum")));
+        }
 
         return userDao.createUser(newUser);
     }
 
     @Override
     public User registerDriver(Map<String, String> map)
-                            throws RegisterException, InputDataWrongException {
-
-        if (!validateRegisterData(map)) {
-            throw new InputDataWrongException("Wrong input register data");
-        }
+            throws RegisterException, InputDataWrongException {
 
         if (userDao.findByPhone(map.get("phone")) != null) {
             throw new RegisterException("This phone using already");
         }
 
-        Car newCar = new Car(map.get("carType"), map.get("carModel"), map.get("carNumber"));
+        User newUser = null;
 
-        User newUser = new User(
-                UserIdentifier.D,
-                map.get("phone"),
-                map.get("pass"),
-                map.get("name"),
-                newCar);
+        if (validateRegisterData(map)) {
+            newUser = new User(
+                    UserIdentifier.D,
+                    map.get("phone"),
+                    map.get("pass"),
+                    map.get("name"),
+                    new Car(map.get("carType"),
+                            map.get("carModel"),
+                            map.get("carNumber")));
+        }
 
-        User createdUser = userDao.createUser(newUser);
-
-        return createdUser;
+        return userDao.createUser(newUser);
     }
 
     @Override
@@ -107,30 +106,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Order makeOrder(String accessToken, String lineFrom, String lineTo, String message) throws
-            OrderMakeException, UserNotFoundException, InputDataWrongException, UnknownHostException {
+    public Order makeOrder(String accessToken, String lineFrom, String lineTo, String message)
+            throws OrderMakeException, UserNotFoundException,
+                    InputDataWrongException, UnknownHostException {
 
-        Address from = new Address(lineFrom);
-        Address to = new Address(lineTo);
         Order createdOrder = null;
 
-        if (!validateAddress(from) || !validateAddress(to)) {
-            throw new InputDataWrongException("Wrong input data addresses. Can not make order");
-        }
+        if (validateAddressFromLine(lineFrom) && validateAddressFromLine(lineTo)) {
 
-        User user = accessKeys.get(accessToken);
-
-        if (user != null) {
+            User user = accessKeys.get(accessToken);
 
             List<Order> ordersNew = orderDao.getOrdersByStatus(OrderStatus.NEW);
-            List<Order> ordersInProgress = orderDao.getOrdersByStatus(OrderStatus.IN_PROGRESS);
-
             for (Order order : ordersNew) {
                 if (user.getId() == order.getIdPassenger()) {
                     throw new OrderMakeException("User has orders NEW already");
                 }
             }
 
+            List<Order> ordersInProgress = orderDao.getOrdersByStatus(OrderStatus.IN_PROGRESS);
             for (Order order : ordersInProgress) {
                 if (user.getId() == order.getIdPassenger()) {
                     throw new OrderMakeException("User has orders IN_PROGRESS already");
@@ -138,6 +131,9 @@ public class UserServiceImpl implements UserService {
             }
 
             try {
+                Address from = new Address(lineFrom);
+                Address to = new Address(lineTo);
+
                 Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
                         from.getStreet(), from.getHouseNum());
                 Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
@@ -163,27 +159,20 @@ public class UserServiceImpl implements UserService {
     public Order makeOrderAnonymous(String phone, String name, String lineFrom, String lineTo, String message)
             throws OrderMakeException, InputDataWrongException {
 
-        Address from = new Address(lineFrom);
-        Address to = new Address(lineTo);
         Order createdOrder = null;
 
-        if (!validateAddress(from) && !validateAddress(to)) {
-            throw new InputDataWrongException("Wrong input data addresses. Can not make order");
-        }
+        if (validateAddressFromLine(lineFrom) && validateAddressFromLine(lineTo)) {
 
-        User user = userDao.findByPhone(phone);
-
-        if (user != null) {
+            User user = userDao.findByPhone(phone);
 
             List<Order> ordersNew = orderDao.getOrdersByStatus(OrderStatus.NEW);
-            List<Order> ordersInProgress = orderDao.getOrdersByStatus(OrderStatus.IN_PROGRESS);
-
             for (Order order : ordersNew) {
                 if (user.getId() == order.getIdPassenger()) {
                     throw new OrderMakeException("User has orders NEW already");
                 }
             }
 
+            List<Order> ordersInProgress = orderDao.getOrdersByStatus(OrderStatus.IN_PROGRESS);
             for (Order order : ordersInProgress) {
                 if (user.getId() == order.getIdPassenger()) {
                     throw new OrderMakeException("User has orders IN_PROGRESS already");
@@ -191,6 +180,9 @@ public class UserServiceImpl implements UserService {
             }
 
             try {
+                Address from = new Address(lineFrom);
+                Address to = new Address(lineTo);
+
                 Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
                         from.getStreet(), from.getHouseNum());
                 Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
@@ -217,28 +209,28 @@ public class UserServiceImpl implements UserService {
     public Map<String, Object> calculateOrder(String lineFrom, String lineTo) throws
             InputDataWrongException, UnknownHostException {
 
-        Address from = new Address(lineFrom);
-        Address to = new Address(lineTo);
         Map<String, Object> map = new HashMap<>();
 
-        if (!validateAddress(from) || !validateAddress(to)) {
-            throw new InputDataWrongException("Wrong input data. Can not make order");
+        if (validateAddressFromLine(lineFrom) && validateAddressFromLine(lineTo)) {
+            try {
+                Address from = new Address(lineFrom);
+                Address to = new Address(lineTo);
+
+                Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
+                        from.getStreet(), from.getHouseNum());
+                Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
+                        to.getStreet(), to.getHouseNum());
+                int distance = ((int) googleMapsAPI.getDistance(location, location1) / 1000);
+                int price = (int) pricePerKilometer * distance + Constants.FEE_FOR_FILING_TAXI_UAH;
+
+                map.put("distance", String.valueOf(distance));
+                map.put("price", String.valueOf(price));
+
+            } catch (InputDataWrongException | IndexOutOfBoundsException e) {
+                throw new InputDataWrongException("Wrong calculation in Google API");
+            }
         }
 
-        try {
-            Location location = googleMapsAPI.findLocation(from.getCountry(), from.getCity(),
-                    from.getStreet(), from.getHouseNum());
-            Location location1 = googleMapsAPI.findLocation(to.getCountry(), to.getCity(),
-                    to.getStreet(), to.getHouseNum());
-            int distance = ((int) googleMapsAPI.getDistance(location, location1) / 1000);
-            int price = (int) pricePerKilometer * distance + Constants.FEE_FOR_FILING_TAXI;
-
-            map.put("distance", distance + "");
-            map.put("price", price + "");
-
-        } catch (InputDataWrongException | IndexOutOfBoundsException e) {
-            throw new InputDataWrongException("Wrong calculation in Google API");
-        }
         return map;
     }
 
@@ -254,7 +246,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Order getLastOrderInfo(String accessToken) throws UserNotFoundException, OrderNotFoundException {
+    public Order getLastOrderInfo(String accessToken)
+            throws UserNotFoundException, OrderNotFoundException {
 
         if (accessToken == null) {
             throw new UserNotFoundException("User not found");
@@ -298,7 +291,7 @@ public class UserServiceImpl implements UserService {
             throw new OrderNotFoundException("Order not found in data base");
 
         } else if (user.getIdentifier() == UserIdentifier.D && foundOrder.getIdDriver() <= 0) {
-            throw new DriverOrderActionException("Order not found in driver orders list");
+            throw new DriverOrderActionException("This order is not your order");
 
         } else if (foundOrder.getOrderStatus() != OrderStatus.IN_PROGRESS) {
             throw new WrongStatusOrderException("This order has wrong status (not IN_PROGRESS)");
@@ -403,9 +396,11 @@ public class UserServiceImpl implements UserService {
             newUser.setId(currentUserId);
             newUser.setPass(map.get("pass"));
             if (currentUser.getIdentifier().equals(UserIdentifier.P)) {
-                newUser.setHomeAddress(new Address(map.get("homeAddress")));
+                newUser.setHomeAddress(new Address(
+                        map.get("country"), map.get("city"), map.get("street"), map.get("houseNum")));
             } else if (currentUser.getIdentifier().equals(UserIdentifier.D)) {
-                newUser.setCar(new Car(map.get("carType"), map.get("carModel"), map.get("carNumber")));
+                newUser.setCar(new Car(
+                        map.get("carType"), map.get("carModel"), map.get("carNumber")));
             }
 
             User updatedUser = userDao.updateUser(newUser);
@@ -661,63 +656,81 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private boolean validateAddress(Address address) throws InputDataWrongException {
+    private boolean validateRegisterData(Map<String, String> map)
+            throws InputDataWrongException {
 
-        if (!address.getCountry().matches("(?i).*[a-zA-Z].*")) {
+        if(!map.get("phone").matches(".*\\d+.*") ||
+                map.get("phone").matches("(?i).*[a-zA-Z].*") ||
+                map.get("phone").length() != 12)
+
+            throw new InputDataWrongException
+                    ("Wrong data \"phone\".\nPlease input your phone in format 380XXXXXXXXX");
+
+        if(!map.get("pass").matches("(?i).*[a-zA-Z].*") ||
+                !map.get("pass").matches(".*\\d+.*"))
+
+            throw new InputDataWrongException("Wrong data \"password\". " +
+                    "Password must has length > 3 \nand contains any letters and digits");
+
+        if(!map.get("name").matches("(?i).*[a-zA-Z].*"))
+
+            throw new InputDataWrongException("Wrong data \"name\"");
+
+        return ((map.get("country") != null && validateAddressData(map)) ||
+                map.get("carType") != null && validateCarData(map));
+    }
+
+
+    private boolean validateAddressData(Map<String, String> map) throws InputDataWrongException {
+
+        if (!map.get("country").matches("(?i).*[a-zA-Z].*"))
             throw new InputDataWrongException("Wrong data \"country\"");
-            //result = false;
-        } else if (!address.getCity().matches("(?i).*[a-zA-Z].*")) {
+
+        else if (!map.get("city").matches("(?i).*[a-zA-Z].*"))
             throw new InputDataWrongException("Wrong data \"city\"");
-            //result = false;
-        } else if (!address.getStreet().matches("(?i).*[a-zA-Z].*")) {
+
+        else if (!map.get("street").matches("(?i).*[a-zA-Z].*"))
             throw new InputDataWrongException("Wrong data \"street\"");
-            //result = false;
-        } else if (!address.getHouseNum().matches(".*\\d+.*")) {
+
+        else if (!map.get("houseNum").matches(".*\\d+.*"))
             throw new InputDataWrongException("Wrong data \"houseNum\"");
-            //result = false;
-        }
 
         return true;
     }
 
-    private boolean validateRegisterData(Map<String, String> map) throws InputDataWrongException {
+    private boolean validateCarData(Map<String, String> map) throws InputDataWrongException {
 
-        if (!map.get("phone").matches(".*\\d+.*") ||
-                map.get("phone").length() != 12) {
-            throw new InputDataWrongException
-                    ("Wrong data \"phone\". Please input your phone in format 380XXXXXXXXX");
-            //result = false;
-        } else if (!map.get("pass").matches("(?i).*[a-zA-Z].*") ||
-                !map.get("pass").matches(".*\\d+.*")) {
-            throw new InputDataWrongException("Wrong data \"password\". " +
-                            "Password must has length > 3 \nand contains any letters and digits");
-            //result = false;
-        } else if (!map.get("name").matches("(?i).*[a-zA-Z].*")) {
-            throw new InputDataWrongException("Wrong data \"name\"");
-            //result = false;
-        }
+        if (!map.get("carType").matches("(?i).*[a-zA-Z].*"))
+            throw new InputDataWrongException("Wrong data \"car type\"");
 
-        return (map.get("homeAddress") != null &&
-                        validateAddress(new Address(map.get("homeAddress")))) ||
-                ((map.get("carType") != null ||
-                        map.get("carModel") != null || map.get("carNumber") != null) &&
-                        validateCar(map));
+        else if (!map.get("carModel").matches("(?i).*[a-zA-Z].*"))
+            throw new InputDataWrongException("Wrong data \"car model\"");
+
+        else if (!map.get("carNumber").matches("(?i).*[a-zA-Z].*") ||
+                !map.get("carNumber").matches(".*\\d+.*"))
+            throw new InputDataWrongException("Wrong data \"car number\". " +
+                    "Please input your car number with letters and digits");
+
+        return true;
     }
 
-    private boolean validateCar(Map<String, String> map) throws InputDataWrongException {
+    private boolean validateAddressFromLine(String line) throws InputDataWrongException {
 
-        if (!map.get("carType").matches("(?i).*[a-zA-Z].*")) {
-            throw new InputDataWrongException("Wrong data \"cat type\"");
-            //result = false;
-        } else if (!map.get("carModel").matches("(?i).*[a-zA-Z].*")) {
-            throw new InputDataWrongException("Wrong data \"car model\"");
-            //result = false;
-        } else if (!map.get("carNumber").matches("(?i).*[a-zA-Z].*") ||
-                !map.get("carNumber").matches(".*\\d+.*")) {
-            throw new InputDataWrongException
-                    ("Wrong data \"car number\". Please input your car number with letters and digits");
-            //result = false;
+        String[] fields = line.split(",", 4);
+
+        if (!fields[0].matches("(?i).*[a-zA-Z].*")) {
+            throw new InputDataWrongException("Wrong data \"country\"");
+
+        } else if (!fields[1].matches("(?i).*[a-zA-Z].*")) {
+            throw new InputDataWrongException("Wrong data \"city\"");
+
+        } else if (!fields[2].matches("(?i).*[a-zA-Z].*")) {
+            throw new InputDataWrongException("Wrong data \"street\"");
+
+        } else if (!fields[3].matches(".*\\d+.*")) {
+            throw new InputDataWrongException("Wrong data \"houseNum\"");
         }
+
         return true;
     }
 }

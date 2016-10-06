@@ -28,8 +28,9 @@ public class GetAccessTokenFilter implements Filter {
             Object accessTokenObj = req.getSession().getAttribute("accessToken");
             req.setAttribute("accessToken", accessTokenObj);
 
-            LOG.info(String.format("Get accessToken %s from current session for user ID=%s",
-                    String.valueOf(accessTokenObj), req.getSession().getAttribute("currentUserID")));
+            LOG.info(String.format("User ID=%s get accessToken: %s",
+                    req.getSession().getAttribute("currentUserID"),
+                    String.valueOf(accessTokenObj)));
         }
         chain.doFilter(request,response);
     }

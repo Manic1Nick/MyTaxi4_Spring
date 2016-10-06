@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Date;
 
 
 @WebServlet(urlPatterns = {"/ajax/order/add-message"})
@@ -43,13 +44,15 @@ public class AjaxAddMessageToOrderServlet extends HttpServlet {
             String message = req.getParameter("message");
 
             User user = userService.getUser(String.valueOf(req.getAttribute("accessToken")));
-
             Order order = userService.getOrderInfo(Integer.parseInt(orderId));
-            String messageRes = order.getMessage() + "\n" + user.getName() + ": " + message;
+
+            String messageRes = String.format("%s" + "\n" + "%s: %s, %s",
+                    order.getMessage(), user.getName(), message, new Date().toString());
             order.setMessage(messageRes);
             Order updatedOrder = userService.updateOrder(order);
 
             HttpSession session = req.getSession(true);
+            session.setAttribute("user", user);
             session.setAttribute("order", updatedOrder);
 
             resp.getWriter().print("SUCCESS");

@@ -12,38 +12,37 @@
         }
     </script>
 
-    <%-- make order --%>
 
+    <%-- make order --%>
     <script>
         function makeOrderFromNewData() {
-            var addressFrom = $("#countryFrom").val() + " " +
-                    $("#cityFrom").val() + " " +
-                    $("#streetFrom").val() + " " +
+            var addressFrom =
+                    $("#countryFrom").val() + "," +
+                    $("#cityFrom").val() + "," +
+                    $("#streetFrom").val() + "," +
                     $("#houseNumFrom").val();
-
-            var addressTo = $("#countryTo").val() + " " +
-                    $("#cityTo").val() + " " +
-                    $("#streetTo").val() + " " +
+            var addressTo =
+                    $("#countryTo").val() + "," +
+                    $("#cityTo").val() + "," +
+                    $("#streetTo").val() + "," +
                     $("#houseNumTo").val();
-
             var message = $("#message").val();
-
             makeOrder(addressFrom, addressTo, message);
         }
     </script>
 
     <script>
         function makeOrderFromInsertData() {
-            var addressFrom = $("#insert_countryFrom").val() + " " +
-                    $("#insert_cityFrom").val() + " " +
-                    $("#insert_streetFrom").val() + " " +
+            var addressFrom =
+                    $("#insert_countryFrom").val() + "," +
+                    $("#insert_cityFrom").val() + "," +
+                    $("#insert_streetFrom").val() + "," +
                     $("#insert_houseNumFrom").val();
-
-            var addressTo = $("#insert_countryTo").val() + " " +
-                    $("#insert_cityTo").val() + " " +
-                    $("#insert_streetTo").val() + " " +
+            var addressTo =
+                    $("#insert_countryTo").val() + "," +
+                    $("#insert_cityTo").val() + "," +
+                    $("#insert_streetTo").val() + "," +
                     $("#insert_houseNumTo").val();
-
             var message = $("#insert_message").val();
 
             makeOrder(addressFrom, addressTo, message);
@@ -66,7 +65,6 @@
                         var id = arrayResp[1];
                         alert("Order ID=" + id + " was created");
                         window.location = "/${APP_NAME}/order/get?id=" + id;
-
                     } else {
                         alert(resp);
                     }
@@ -79,36 +77,35 @@
         }
     </script>
 
-    <%-- calculate order--%>
 
+    <%-- calculate order--%>
     <script>
         function calculateOrderFromNewData() {
-            var addressFrom = $("#countryFrom").val() + " " +
-                    $("#cityFrom").val() + " " +
-                    $("#streetFrom").val() + " " +
+            var addressFrom =
+                    $("#countryFrom").val() + "," +
+                    $("#cityFrom").val() + "," +
+                    $("#streetFrom").val() + "," +
                     $("#houseNumFrom").val();
-
-            var addressTo = $("#countryTo").val() + " " +
-                    $("#cityTo").val() + " " +
-                    $("#streetTo").val() + " " +
+            var addressTo =
+                    $("#countryTo").val() + "," +
+                    $("#cityTo").val() + "," +
+                    $("#streetTo").val() + "," +
                     $("#houseNumTo").val();
-
             calculateOrder(addressFrom, addressTo);
         }
     </script>
 
     <script>
         function calculateOrderFromInsertData() {
-            var addressFrom = $("#insert_countryFrom").val() + " " +
-                    $("#insert_cityFrom").val() + " " +
-                    $("#insert_streetFrom").val() + " " +
+            var addressFrom =
+                    $("#insert_countryFrom").val() + "," +
+                    $("#insert_cityFrom").val() + "," +
+                    $("#insert_streetFrom").val() + "," +
                     $("#insert_houseNumFrom").val();
-
-            var addressTo = $("#insert_countryTo").val() + " " +
-                    $("#insert_cityTo").val() + " " +
-                    $("#insert_streetTo").val() + " " +
+            var addressTo = $("#insert_countryTo").val() + "," +
+                    $("#insert_cityTo").val() + "," +
+                    $("#insert_streetTo").val() + "," +
                     $("#insert_houseNumTo").val();
-
             calculateOrder(addressFrom, addressTo);
         }
     </script>
@@ -125,10 +122,8 @@
                 success: function(resp){
                     if (resp.includes(",")) {
                         var arrayResp = resp.split(",", 2);
-
                         var distance = arrayResp[0];
                         var price = arrayResp[1];
-
                         alert("distance " + distance + "km, " +
                                 "price " + price + "uah");
                     } else {
@@ -145,7 +140,6 @@
 
 
     <%-- insert data --%>
-
     <script>
         function insertHomeAddressAsNew() {
             var confObj = {
@@ -248,19 +242,16 @@
                 success: function(resp){
                     if (resp.includes(";")) {
                         var arrayResp = resp.split(";", 2);
-
                         var addressFrom = arrayResp[0].split(",", 4);
                         $("#countryFrom").val(addressFrom[0]);
                         $("#cityFrom").val(addressFrom[1]);
                         $("#streetFrom").val(addressFrom[2]);
                         $("#houseNumFrom").val(addressFrom[3]);
-
                         var addressTo = arrayResp[1].split(",", 4);
                         $("#countryTo").val(addressTo[0]);
                         $("#cityTo").val(addressTo[1]);
                         $("#streetTo").val(addressTo[2]);
                         $("#houseNumTo").val(addressTo[3]);
-
                     } else {
                         alert(resp);
                     }
@@ -281,19 +272,16 @@
                 success: function(resp){
                     if (resp.includes(";")) {
                         var arrayResp = resp.split(";", 2);
-
                         var addressFrom = arrayResp[0].split(",", 4);
                         $("#insert_countryFrom").val(addressFrom[0]);
                         $("#insert_cityFrom").val(addressFrom[1]);
                         $("#insert_streetFrom").val(addressFrom[2]);
                         $("#insert_houseNumFrom").val(addressFrom[3]);
-
                         var addressTo = arrayResp[1].split(",", 4);
                         $("#insert_countryTo").val(addressTo[0]);
                         $("#insert_cityTo").val(addressTo[1]);
                         $("#insert_streetTo").val(addressTo[2]);
                         $("#insert_houseNumTo").val(addressTo[3]);
-
                     } else {
                         alert(resp);
                     }
@@ -311,13 +299,11 @@
             font-family: arial, sans-serif;
             color: darkslateblue;
         }
-
         table {
             font-family: arial, sans-serif;
             border-collapse: collapse;
             width: 50%;
         }
-
         td, th {
             border: 1px solid #dddddd;
             text-align: left;
@@ -341,6 +327,7 @@
     </ul>
 
 
+    <%--for NEW data--%>
     <c:if test="${transfered == null}">
         <table>
             <tr>
@@ -388,7 +375,8 @@
             <button onclick="makeOrderFromNewData()" style="background-color:lightgreen">
                 MAKE ORDER</button>
 
-            <button onclick="calculateOrderFromNewData()">CALCULATE ORDER</button>
+            <button onclick="calculateOrderFromNewData()" style="background-color:yellow">
+                CALCULATE ORDER</button>
         </p>
         <ul>
             <p>
@@ -403,6 +391,8 @@
         </ul>
     </c:if>
 
+
+    <%--for INSERT data--%>
     <c:if test="${transfered != null}">
         <table>
             <tr>
@@ -450,7 +440,8 @@
             <button onclick="makeOrderFromInsertData()" style="background-color:lightgreen">
                 MAKE ORDER</button>
 
-            <button onclick="calculateOrderFromInsertData()" style="background-color:yellow">CALCULATE ORDER</button>
+            <button onclick="calculateOrderFromInsertData()" style="background-color:yellow">
+                CALCULATE ORDER</button>
         </p>
         <ul>
             <p>

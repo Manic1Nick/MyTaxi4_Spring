@@ -30,7 +30,7 @@
                 type: "POST",
                 url: "/${APP_NAME}/order/get/all-new",
                 success: function(resp) {
-                    if (resp.includes("SUCCESS")) {
+                    if (resp == "SUCCESS") {
                         window.location = "/${APP_NAME}/order/get/all-new";
                     } else if (resp.includes("NOTHING")) {
                         alert("There are no open orders with status NEW");
@@ -47,14 +47,14 @@
 
     <script>
         function redirectGetLastOrder() {
-            //window.location = "${APP_NAME}/order/get/last";
             var confObj = {
                 type:"GET",
                 url: "/${APP_NAME}/order/get/last",
                 success: function(resp){
                     if (resp.includes("id:")) {
                         var arrayResp = resp.split(":", 2);
-                        window.location = "/${APP_NAME}/order/get?id=" + arrayResp[1];
+                        var id = arrayResp[1];
+                        showOrderInfo(id);
                     } else {
                         alert(resp);
                     }
@@ -68,12 +68,35 @@
     </script>
 
     <script>
+        function showOrderInfo(id) {
+            $.ajax({
+                type: "POST",
+                url: "/${APP_NAME}/order/get",
+                data: {
+                    orderID : id
+                },
+                success: function(resp){
+                    if (resp == "SUCCESS") {
+                        window.location = "/${APP_NAME}/order/get";
+                    } else {
+                        alert(resp);
+                    }
+                },
+                error: function(resp){
+                    alert(resp);
+                }
+
+            });
+        }
+    </script>
+
+    <script>
         function getAllUserOrders() {
             $.ajax({
                 type: "POST",
                 url: "/${APP_NAME}/user/get/orders",
                 success: function(resp) {
-                    if (resp.includes("SUCCESS")) {
+                    if (resp == "SUCCESS") {
                         window.location = "/${APP_NAME}/user-history";
                     } else if (resp.includes("NOTHING")) {
                         alert("You don't have any orders");
@@ -98,25 +121,11 @@
     </script>
 
     <script>
-        function beforeDeleteUser() {
-            $.ajax({
-                type:"GET",
-                url: "/${APP_NAME}/user/delete",
-                success: function(resp){
-                    if (resp.includes("id:")) {
-                        var arrayResp = resp.split(":", 2);
-                        var r = confirm("Are you sure to delete user ID=" + arrayResp[1] + " ?");
-                        if (r == true) {
-                            deleteUser();
-                        }
-                    } else {
-                        alert(resp);
-                    }
-                },
-                error: function(resp){
-                    alert(resp);
-                }
-            });
+        function beforeDeleteUser(id) {
+            var r = confirm("Are you sure to delete user ID=" + id + " ?");
+            if (r == true) {
+                deleteUser();
+            }
         }
     </script>
 
@@ -128,8 +137,9 @@
                 success: function(resp){
                     if (resp.includes("id:")) {
                         var arrayResp = resp.split(":", 2);
-                        alert("User ID=" + arrayResp[1] + " will be deleted");
-                        redirectLogin();
+                        var id = arrayResp[1];
+                        alert("User ID=" + id + " will be deleted");
+                        window.location = "/${APP_NAME}/login";
                     } else {
                         alert(resp);
                     }
@@ -263,7 +273,7 @@
                     EXIT TO LOGIN</button>
             </p>
             <p>
-                <button onclick="beforeDeleteUser()" style="background-color:lightgrey">
+                <button onclick="beforeDeleteUser(${user.id})" style="background-color:lightgrey">
                     DELETE USER</button>
             </p>
         </ul>

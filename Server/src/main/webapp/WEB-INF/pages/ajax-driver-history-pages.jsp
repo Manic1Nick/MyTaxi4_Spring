@@ -115,12 +115,20 @@
                     <td><c:out value="${order.id}" /></td>
                     <td><c:out value="${order.orderStatus}"/></td>
                     <td><c:out value="${order.timeCreate}"/></td>
-                    <td><c:out value="${order.from.country} ${order.from.city} ${order.from.street} ${order.from.houseNum}"/></td>
-                    <td><c:out value="${order.to.country} ${order.to.city} ${order.to.street} ${order.to.houseNum}"/></td>
+                    <td><c:out value="${order.from.country},
+                                        ${order.from.city},
+                                        ${order.from.street},
+                                        ${order.from.houseNum}"/></td>
+                    <td><c:out value="${order.to.country},
+                                        ${order.to.city},
+                                        ${order.to.street},
+                                        ${order.to.houseNum}"/></td>
                     <td><c:out value="${order.distance}"/></td>
                     <td><c:out value="${order.price}"/></td>
+
                     <td><button onclick="showOrderInfo(${order.id})"
-                                style="background-color:yellow">SHOW</button></td>
+                                style="background-color:yellow">
+                                    SHOW</button></td>
                 </tr>
             </c:forEach>
         </table>

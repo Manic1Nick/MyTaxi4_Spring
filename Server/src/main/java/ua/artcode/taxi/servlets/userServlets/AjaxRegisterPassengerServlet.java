@@ -45,11 +45,10 @@ public class AjaxRegisterPassengerServlet extends HttpServlet {
         registerData.put("phone", req.getParameter("phone"));
         registerData.put("pass", req.getParameter("password"));
         registerData.put("name", req.getParameter("name"));
-        registerData.put("homeAddress",
-                req.getParameter("country") + " "
-                + req.getParameter("city") + " "
-                + req.getParameter("street") + " "
-                + req.getParameter("houseNum"));
+        registerData.put("country", req.getParameter("country"));
+        registerData.put("city", req.getParameter("city"));
+        registerData.put("street", req.getParameter("street"));
+        registerData.put("houseNum", req.getParameter("houseNum"));
 
         try {
             Object accessTokenObj = req.getAttribute("accessToken");

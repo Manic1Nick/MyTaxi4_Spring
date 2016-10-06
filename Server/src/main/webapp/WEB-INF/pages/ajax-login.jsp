@@ -3,6 +3,10 @@
 <html>
 <head>
     <title>Login</title>
+    <p align="center">
+        <img src="https://lh6.ggpht.com/UGBUfOqA2CZRly317V5U70F-YAY9bMPtFiWAw3JADOfErhIL9V8iNN4x3gR6JGZX51s=w300"
+             alt="MyTaxiLogo">
+    </p>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
