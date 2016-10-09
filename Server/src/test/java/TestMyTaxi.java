@@ -40,7 +40,7 @@ public class TestMyTaxi {
     @BeforeClass
     public static void beforeClass() {
         userDao = new UserJpaDao();
-        orderDao = new OrderJpaDao(userDao);
+        orderDao = new OrderJpaDao();
         userService = new UserServiceImpl(userDao, orderDao);
 
         //delete after sharing to methods below

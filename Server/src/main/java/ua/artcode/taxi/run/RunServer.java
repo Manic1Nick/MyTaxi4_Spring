@@ -33,7 +33,7 @@ public class RunServer {
 
         //create test data
         UserDao userDao = new UserJpaDao();
-        OrderDao orderDao = new OrderJpaDao(userDao);
+        OrderDao orderDao = new OrderJpaDao();
 
         UserService userService = new UserServiceImpl(userDao, orderDao);
 /*

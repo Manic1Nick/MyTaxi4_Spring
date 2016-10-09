@@ -1,6 +1,5 @@
 package ua.artcode.taxi.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.artcode.taxi.model.Address;
@@ -20,14 +19,7 @@ public class OrderJpaDao implements OrderDao {
     @PersistenceContext
     private EntityManager manager;
 
-    @Autowired
-    private UserDao userDao;
-
     public OrderJpaDao() {
-    }
-
-    public OrderJpaDao(UserDao userDao) {
-        this.userDao = userDao;
     }
 
     @Override
